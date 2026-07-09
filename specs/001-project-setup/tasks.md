@@ -119,7 +119,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T023 [P] [US4] Configure the Pusher server client in `src/lib/pusher.ts`
 - [X] T024 [P] [US4] Configure a Pusher browser client helper in `src/lib/pusher-client.ts`
 - [X] T025 [US4] Implement the temporary `setup-test` / `ping` publish trigger per `contracts/realtime-test-channel.md`
-- [ ] T026 [US4] Manually validate that a subscribed client receives the `ping` event in under 1 second per `quickstart.md` US4
+- [X] T026 [US4] Manually validate that a subscribed client receives the `ping` event in under 1 second per `quickstart.md` US4
 - [X] T027 [US4] Remove the temporary publish trigger once validated, keeping the reusable `src/lib/pusher.ts` / `pusher-client.ts` helpers
 
 **Checkpoint**: Realtime round-trip proven under 1 second — SC-004 met.
