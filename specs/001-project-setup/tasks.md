@@ -65,7 +65,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 - [X] T009 [US1] Create the root layout in `src/app/layout.tsx` (global styles import, base HTML structure)
 - [X] T010 [P] [US1] Create a minimal home page in `src/app/page.tsx`
-- [ ] T011 [US1] Run `pnpm dev` and `pnpm build`; resolve any error so both succeed per `quickstart.md` US1
+- [X] T011 [US1] Run `pnpm dev` and `pnpm build`; resolve any error so both succeed per `quickstart.md` US1
 
 **Checkpoint**: Local dev and production build both succeed — SC-001 met.
 
