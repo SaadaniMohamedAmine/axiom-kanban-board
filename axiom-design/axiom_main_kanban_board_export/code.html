@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Axiom - Main Kanban Board</title>
+<!-- Tailwind CSS v3 CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Geist-like appearance (Inter is a common substitute for Geist in web) -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            axiom: {
+              base: '#0B0F19',
+              sidebar: '#111827',
+              card: '#1F2937',
+              border: '#374151',
+              accent: '#3B82F6',
+              high: '#EF4444',
+              medium: '#F59E0B',
+              low: '#10B981',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          borderRadius: {
+            'axiom': '12px',
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="custom-glassmorphism">
+    .glass-card {
+      background: rgba(31, 41, 55, 0.4);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body class="bg-axiom-base text-gray-200 font-sans h-screen flex overflow-hidden">
+<!-- BEGIN: SideNavBar -->
+<aside class="w-64 bg-axiom-sidebar border-r border-axiom-border flex flex-col justify-between p-4 shrink-0">
+<div>
+<div class="flex items-center gap-2 mb-8 px-2" data-purpose="brand-header">
+<div class="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-white">A</div>
+<div>
+<h1 class="text-sm font-bold tracking-tight text-white leading-none">Axiom Engineering</h1>
+<span class="text-[10px] text-gray-500 uppercase tracking-widest font-semibold">Elite Tier</span>
+</div>
+</div>
+<button class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-axiom mb-8 flex items-center justify-center gap-2 text-sm font-medium transition-colors" data-purpose="new-task-btn">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><line x1="12" x2="12" y1="5" y2="19"></line><line x1="5" x2="19" y1="12" y2="12"></line></svg>
+        New Task
+      </button>
+<nav class="space-y-1" data-purpose="primary-navigation">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 rounded-axiom transition-all" href="#">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><rect height="7" width="7" x="3" y="3"></rect><rect height="7" width="7" x="14" y="3"></rect><rect height="7" width="7" x="14" y="14"></rect><rect height="7" width="7" x="3" y="14"></rect></svg>
+          Workspace
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-blue-400 bg-blue-400/10 rounded-axiom transition-all" href="#">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M4 11l2-2 2 2"></path><path d="M4 19h16"></path><path d="M4 5h16"></path><path d="M4 12h16"></path></svg>
+          Boards
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 rounded-axiom transition-all" href="#">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+          My Tasks
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 rounded-axiom transition-all" href="#">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><line x1="18" x2="18" y1="20" y2="10"></line><line x1="12" x2="12" y1="20" y2="4"></line><line x1="6" x2="6" y1="20" y2="14"></line></svg>
+          Analytics
+        </a>
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 rounded-axiom transition-all" href="#">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          Settings
+        </a>
+</nav>
+</div>
+<div class="space-y-4" data-purpose="secondary-navigation">
+<a class="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-400 hover:text-white transition-all" href="#">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+        Help
+      </a>
+<div class="flex items-center justify-between px-3 py-2 text-sm font-medium text-gray-400 border-t border-axiom-border pt-4">
+<div class="flex items-center gap-2">
+<svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewbox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"></path></svg>
+          Command Palette
+        </div>
+<kbd class="text-[10px] bg-gray-800 px-1.5 py-0.5 rounded border border-gray-700">⌘ K</kbd>
+</div>
+<!-- User Profile -->
+<div class="flex items-center gap-3 px-2 pt-2">
+<div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-xs font-bold overflow-hidden">
+<img alt="Alex Chen" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyZON-ek0M4c2xQfYgpSSmTGnKzWQSsmYpQxxgf4ZCxZL7m3wBQYVWXuk9PZIEhlNy9GqbitgjSVulJSdEJGFIdd_u3Yku5hN3WE_P6zsKDDEpc-iXWOuQ_iTr2zGqKhpJcqGVANfUl-dt5W78G0CxbhR7k6z7fidQ-zdADlcAnraSdZlLaasYzp_IioY4bvdXYSS4ogZEsVY-pphVZbpA6xwqq1QxKc2yvr0RMsOjT_9DvyFR1GSbUUQ7FlKsIZYY9H0SppQqutCa"/>
+</div>
+<div>
+<p class="text-xs font-semibold text-white">Alex Chen</p>
+<p class="text-[10px] text-gray-500">Lead Engineer</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- END: SideNavBar -->
+<!-- BEGIN: MainContent -->
+<main class="flex-1 flex flex-col h-full bg-axiom-base">
+<!-- BEGIN: TopNavBar -->
+<header class="h-16 border-b border-axiom-border flex items-center justify-between px-8" data-purpose="top-navigation">
+<div class="flex items-center gap-6">
+<h2 class="text-xl font-bold text-white tracking-tight">Sprint Planning</h2>
+<div class="flex -space-x-2">
+<div class="w-7 h-7 rounded-full bg-blue-500 border-2 border-axiom-base flex items-center justify-center text-[10px] font-bold text-white">JD</div>
+<div class="w-7 h-7 rounded-full bg-purple-500 border-2 border-axiom-base flex items-center justify-center text-[10px] font-bold text-white">AS</div>
+<div class="w-7 h-7 rounded-full bg-cyan-500 border-2 border-axiom-base flex items-center justify-center text-[10px] font-bold text-white">ML</div>
+<div class="w-7 h-7 rounded-full bg-gray-700 border-2 border-axiom-base flex items-center justify-center text-[10px] font-bold text-gray-300">+12</div>
+</div>
+</div>
+<div class="relative group">
+<svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="8"></circle><line x1="21" x2="16.65" y1="21" y2="16.65"></line></svg>
+<input class="bg-axiom-sidebar border border-axiom-border rounded-axiom pl-10 pr-4 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500 w-64 transition-all" placeholder="Filter tasks..." type="text"/>
+</div>
+</header>
+<!-- END: TopNavBar -->
+<!-- BEGIN: BoardArea -->
+<div class="flex-1 overflow-x-auto flex gap-6 p-8 custom-scrollbar">
+<!-- BEGIN: Column Backlog -->
+<section class="w-80 flex flex-col gap-4 shrink-0" data-purpose="kanban-column">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">Backlog</h3>
+<span class="bg-gray-800 text-gray-400 text-[10px] px-2 py-0.5 rounded-full font-bold">6</span>
+</div>
+<button class="text-gray-500 hover:text-white transition-colors">
+<svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+</button>
+</div>
+<div class="space-y-4" data-purpose="card-container">
+<!-- Card 1 -->
+<article class="bg-axiom-card border border-axiom-border p-4 rounded-axiom hover:border-blue-500/50 transition-colors cursor-pointer group" data-id="AX-4821">
+<div class="flex gap-2 mb-3">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">High</span>
+</div>
+<h4 class="text-sm font-semibold text-gray-100 leading-snug mb-4">Refactor Authentication Middleware for edge deployment</h4>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full bg-blue-600 border border-axiom-card flex items-center justify-center text-[8px] font-bold">AC</div>
+<div class="w-6 h-6 rounded-full bg-gray-600 border border-axiom-card flex items-center justify-center text-[8px] font-bold">BK</div>
+</div>
+<div class="flex items-center gap-1.5 text-gray-500 text-[10px]">
+<svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+                Oct 12
+              </div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-axiom-card border border-axiom-border p-4 rounded-axiom hover:border-blue-500/50 transition-colors cursor-pointer" data-id="AX-3912">
+<div class="flex gap-2 mb-3">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">Medium</span>
+</div>
+<h4 class="text-sm font-semibold text-gray-100 leading-snug mb-4">Update Documentation for GraphQL API Endpoints</h4>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full bg-green-600 border border-axiom-card flex items-center justify-center text-[8px] font-bold">ML</div>
+</div>
+<div class="flex items-center gap-1.5 text-gray-500 text-[10px]">
+<svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+                Oct 15
+              </div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-axiom-card border border-axiom-border p-4 rounded-axiom hover:border-blue-500/50 transition-colors cursor-pointer" data-id="AX-2201">
+<div class="flex gap-2 mb-3">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">Low</span>
+</div>
+<h4 class="text-sm font-semibold text-gray-100 leading-snug mb-4">Asset cleanup in legacy repository</h4>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full bg-orange-600 border border-axiom-card flex items-center justify-center text-[8px] font-bold">TS</div>
+</div>
+<div class="flex items-center gap-1.5 text-gray-500 text-[10px]">
+<svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                2
+              </div>
+</div>
+</article>
+</div>
+</section>
+<!-- END: Column Backlog -->
+<!-- BEGIN: Column In Progress -->
+<section class="w-80 flex flex-col gap-4 shrink-0" data-purpose="kanban-column">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-2">
+<h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest">In Progress</h3>
+<span class="bg-blue-600/20 text-blue-500 text-[10px] px-2 py-0.5 rounded-full font-bold">4</span>
+</div>
+<button class="text-gray-500 hover:text-white transition-colors">
+<svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+</button>
+</div>
+<div class="space-y-4" data-purpose="card-container">
+<!-- Card 4 (AI Active) -->
+<article class="bg-axiom-card border-2 border-blue-500/40 p-4 rounded-axiom shadow-[0_0_15px_rgba(59,130,246,0.1)] relative" data-id="AX-8821">
+<div class="flex items-center gap-2 mb-3">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 border border-red-500/20">High</span>
+<span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 uppercase tracking-tighter italic">AI Optimized</span>
+</div>
+<h4 class="text-sm font-semibold text-gray-100 leading-snug mb-4">Initialize Cluster Sharding for Real-time Analytics Engine</h4>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full bg-red-600 border border-axiom-card flex items-center justify-center text-[8px] font-bold">JD</div>
+<div class="w-6 h-6 rounded-full bg-indigo-600 border border-axiom-card flex items-center justify-center text-[8px] font-bold">AC</div>
+</div>
+<div class="text-blue-500">
+<svg class="animate-pulse" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+</div>
+</div>
+</article>
+<!-- Card 5 -->
+<article class="bg-axiom-card border border-axiom-border p-4 rounded-axiom hover:border-blue-500/50 transition-colors cursor-pointer" data-id="AX-1102">
+<div class="flex gap-2 mb-3">
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">Medium</span>
+</div>
+<h4 class="text-sm font-semibold text-gray-100 leading-snug mb-4">Design System: Implement Glassmorphic Overlay Logic</h4>
+<div class="flex items-center justify-between mt-auto">
+<div class="flex -space-x-1">
+<div class="w-6 h-6 rounded-full bg-orange-500 border border-axiom-card flex items-center justify-center text-[8px] font-bold">SV</div>
+</div>
+<div class="flex items-center gap-1.5 text-gray-500 text-[10px]">
+<svg fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg"><rect height="18" rx="2" ry="2" width="18" x="3" y="4"></rect><line x1="16" x2="16" y1="2" y2="6"></line><line x1="8" x2="8" y1="2" y2="6"></line><line x1="3" x2="21" y1="10" y2="10"></line></svg>
+                12d
+              </div>
+</div>
+</article>
+</div>
+</section>
+<!-- END: Column In Progress -->
+</div>
+<!-- END: BoardArea -->
+</main>
+<!-- END: MainContent -->
+<!-- BEGIN: IntelligencePanel -->
+<aside class="w-80 bg-axiom-sidebar border-l border-axiom-border p-6 flex flex-col gap-6" data-purpose="axiom-intelligence">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-2 h-2 rounded-full bg-blue-400 animate-ping"></div>
+<h3 class="text-xs font-bold uppercase tracking-widest text-gray-400">Axiom Intelligence</h3>
+</div>
+<button class="text-gray-500"><svg fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" x2="21" y1="14" y2="3"></line></svg></button>
+</div>
+<!-- Efficiency Alert Card -->
+<div class="glass-card p-4 rounded-axiom border-l-4 border-l-blue-500" data-purpose="intelligence-card">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2 text-blue-400">
+<svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v4"></path><path d="m16.2 7.8 2.9-2.9"></path><path d="M18 12h4"></path><path d="m16.2 16.2 2.9 2.9"></path><path d="M12 18v4"></path><path d="m4.9 19.1 2.9-2.9"></path><path d="M2 12h4"></path><path d="m4.9 4.9 2.9 2.9"></path></svg>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Efficiency Alert</span>
+</div>
+<span class="text-[10px] text-gray-500 font-medium">85% confidence</span>
+</div>
+<p class="text-xs text-gray-300 leading-relaxed mb-4 italic">
+        "I noticed 3 tasks may need re-estimating based on historical sprint velocity."
+      </p>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 text-[10px] font-bold rounded-md transition-all border border-blue-500/20">Apply</button>
+<button class="flex-1 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-400 text-[10px] font-bold rounded-md transition-all">Dismiss</button>
+</div>
+</div>
+<!-- Blocker Detect Card -->
+<div class="glass-card p-4 rounded-axiom border-l-4 border-l-orange-500" data-purpose="intelligence-card">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2 text-orange-400">
+<svg fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewbox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" x2="12" y1="9" y2="13"></line><line x1="12" x2="12.01" y1="17" y2="17"></line></svg>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Blocker Detect</span>
+</div>
+<span class="text-[10px] text-gray-500 font-medium">92% confidence</span>
+</div>
+<p class="text-xs text-gray-300 leading-relaxed mb-4 italic">
+        "I noticed this task may be blocked by pending PR #882 in Sprint B."
+      </p>
+<div class="flex gap-2">
+<button class="flex-1 py-1.5 bg-orange-600/20 hover:bg-orange-600/40 text-orange-400 text-[10px] font-bold rounded-md transition-all border border-orange-500/20">Resolve</button>
+<button class="flex-1 py-1.5 bg-gray-800 hover:bg-gray-700 text-gray-400 text-[10px] font-bold rounded-md transition-all">Dismiss</button>
+</div>
+</div>
+<div class="mt-auto border-t border-axiom-border pt-6">
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Sprint Health</span>
+<span class="text-[10px] font-bold text-emerald-500">Good</span>
+</div>
+<div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[78%] rounded-full"></div>
+</div>
+</div>
+</aside>
+<!-- END: IntelligencePanel -->
+</body></html>

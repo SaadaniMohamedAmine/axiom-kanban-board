@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Axiom - Onboarding (Workspace Name)</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts: Geist-like appearance using Inter and JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular'],
+          },
+          colors: {
+            brand: {
+              black: '#0B0F19',
+              glow: '#3B82F6',
+              border: 'rgba(255, 255, 255, 0.1)',
+            }
+          }
+        }
+      }
+    }
+  </script>
+<style data-purpose="background-effects">
+    /* Grain texture overlay */
+    .grain-overlay {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Radial glow behind the central card */
+    .radial-glow {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0) 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body {
+      background-color: #0B0F19;
+      color: #FFFFFF;
+    }
+  </style>
+<style data-purpose="card-styling">
+    /* Subtle 1px gradient border for the card */
+    .glass-card {
+      background: rgba(17, 24, 39, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid transparent;
+      background-clip: padding-box;
+      position: relative;
+    }
+    
+    .glass-card::before {
+      content: "";
+      position: absolute;
+      top: -1px; left: -1px; right: -1px; bottom: -1px;
+      border-radius: 14px; 
+      padding: 1px; 
+      background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: destination-out;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col items-center justify-center font-sans antialiased">
+<div class="grain-overlay"></div>
+<div class="radial-glow"></div>
+<!-- BEGIN: MainContent -->
+<main class="relative z-10 w-full max-w-md px-6 flex flex-col items-center" data-purpose="onboarding-container">
+<!-- BEGIN: Header -->
+<header class="mb-12 text-center" data-purpose="branding">
+<h1 class="text-2xl font-semibold tracking-tight text-white font-sans">
+        Axiom
+      </h1>
+</header>
+<!-- END: Header -->
+<!-- BEGIN: WorkspaceCard -->
+<section class="glass-card w-full rounded-[14px] p-8 shadow-2xl" data-purpose="workspace-onboarding-card">
+<div class="space-y-6">
+<!-- Title and Description -->
+<div class="space-y-2">
+<h2 class="text-xl font-medium text-gray-100">Create your workspace</h2>
+<p class="text-sm text-gray-400">
+            Give your workspace a name. This is where your team will collaborate and manage projects.
+          </p>
+</div>
+<!-- Input Form -->
+<form action="#" class="space-y-6" data-purpose="workspace-form" method="POST">
+<div class="space-y-2">
+<label class="block text-xs font-medium text-gray-400 uppercase tracking-wider" for="workspace-name">
+              Workspace Name
+            </label>
+<input class="w-full bg-black/40 border border-white/10 rounded-[8px] px-4 py-3 text-sm text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-brand-glow/50 focus:border-brand-glow transition-all duration-200" id="workspace-name" name="workspace-name" placeholder="Acme Corp" required="" type="text"/>
+</div>
+<!-- Actions -->
+<div class="pt-2">
+<button class="w-full bg-white text-black font-medium text-sm py-3 rounded-[8px] hover:bg-gray-200 transition-colors duration-200" data-purpose="submit-button" type="submit">
+              Continue
+            </button>
+</div>
+</form>
+</div>
+</section>
+<!-- END: WorkspaceCard -->
+<!-- BEGIN: Footer -->
+<footer class="mt-8" data-purpose="onboarding-footer">
+<p class="text-xs text-gray-500">
+        You can always change this later in settings.
+      </p>
+</footer>
+<!-- END: Footer -->
+</main>
+<!-- END: MainContent -->
+</body></html>

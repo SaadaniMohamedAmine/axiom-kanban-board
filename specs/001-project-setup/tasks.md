@@ -31,9 +31,9 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 **Purpose**: Scaffold the project and its dependencies
 
-- [ ] T001 Scaffold a Next.js 16 project (App Router, TypeScript, Tailwind CSS) at the repository root
-- [ ] T002 Install Prisma 7, Better Auth (+ its Prisma adapter), Pusher (`pusher` server SDK + `pusher-js` client), and Zod as dependencies; configure ESLint/Prettier per the constitution's Clean Code principle
-- [ ] T003 [P] Create `.env.example` documenting every required variable (`DATABASE_URL`, Better Auth provider secrets, Pusher app id/key/secret/cluster, `GROQ_API_KEY`, `GEMINI_API_KEY`) and confirm `.env.local` / `.env*.local` are listed in `.gitignore`
+- [X] T001 Scaffold a Next.js 16 project (App Router, TypeScript, Tailwind CSS) at the repository root
+- [X] T002 Install Prisma 7, Better Auth (+ its Prisma adapter), Pusher (`pusher` server SDK + `pusher-js` client), and Zod as dependencies; configure ESLint/Prettier per the constitution's Clean Code principle
+- [X] T003 [P] Create `.env.example` documenting every required variable (`DATABASE_URL`, Better Auth provider secrets, Pusher app id/key/secret/cluster, `GROQ_API_KEY`, `GEMINI_API_KEY`) and confirm `.env.local` / `.env*.local` are listed in `.gitignore`
 
 **Checkpoint**: Project scaffold exists, dependencies installed, no secrets can accidentally be committed.
 
@@ -46,10 +46,10 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 **⚠️ CRITICAL**: T004–T008 must be complete before US2 or US3 work begins
 
 - [ ] T004 Provision a Vercel Postgres database and obtain its `DATABASE_URL`
-- [ ] T005 Initialize Prisma (`prisma init`) and author `prisma/schema.prisma` with every entity from `data-model.md` (User, Account, Session, Verification, Workspace, WorkspaceMember, Invitation, Board, Column, Task, TaskAssignee, Label, TaskLabel, Comment, ActivityEvent, Sprint, AILog, Notification) plus all enums (role, priority, template, status, etc.)
+- [X] T005 Initialize Prisma (`prisma init`) and author `prisma/schema.prisma` with every entity from `data-model.md` (User, Account, Session, Verification, Workspace, WorkspaceMember, Invitation, Board, Column, Task, TaskAssignee, Label, TaskLabel, Comment, ActivityEvent, Sprint, AILog, Notification) plus all enums (role, priority, template, status, etc.)
 - [ ] T006 Run the first migration locally (`prisma migrate dev --name init`) against `DATABASE_URL`
-- [ ] T007 [P] Create a Prisma client singleton in `src/lib/prisma.ts`
-- [ ] T008 [P] Establish the shared-types convention required by the constitution's TypeScript Strict Mode principle: create `src/types/` and an initial `src/types/auth.types.ts`
+- [X] T007 [P] Create a Prisma client singleton in `src/lib/prisma.ts`
+- [X] T008 [P] Establish the shared-types convention required by the constitution's TypeScript Strict Mode principle: create `src/types/` and an initial `src/types/auth.types.ts`
 
 **Checkpoint**: Schema exists and migrates cleanly; US2 and US3 can now proceed.
 
@@ -63,9 +63,9 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Create the root layout in `src/app/layout.tsx` (global styles import, base HTML structure)
-- [ ] T010 [P] [US1] Create a minimal home page in `src/app/page.tsx`
-- [ ] T011 [US1] Run `pnpm dev` and `pnpm build`; resolve any error so both succeed per `quickstart.md` US1
+- [X] T009 [US1] Create the root layout in `src/app/layout.tsx` (global styles import, base HTML structure)
+- [X] T010 [P] [US1] Create a minimal home page in `src/app/page.tsx`
+- [X] T011 [US1] Run `pnpm dev` and `pnpm build`; resolve any error so both succeed per `quickstart.md` US1
 
 **Checkpoint**: Local dev and production build both succeed — SC-001 met.
 
@@ -94,14 +94,14 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 3
 
-- [ ] T014 [US3] Configure the Better Auth server instance in `src/lib/auth.ts` (Prisma adapter; Google, GitHub, and credentials providers; email verification explicitly disabled)
-- [ ] T015 [P] [US3] Create the Better Auth client in `src/lib/auth-client.ts`
-- [ ] T016 [US3] Create the Better Auth route handler at `src/app/api/auth/[...all]/route.ts`
-- [ ] T017 [US3] Implement the duplicate-email conflict check from `contracts/auth-conflict.md` (query for an existing `Account` by email across providers before creation; return the `409 EMAIL_ALREADY_LINKED` contract when found)
-- [ ] T018 [P] [US3] Create Zod validation schemas for the credentials sign-up/sign-in forms in `src/lib/validations/auth.ts`
-- [ ] T019 [US3] Build the login screen in `src/app/(auth)/login/page.tsx` reusing the approved design
-- [ ] T020 [US3] Build the sign-up screen in `src/app/(auth)/sign-up/page.tsx`, reusing the exported design from `axiom-design/axiom_sign_up/code.html`, including the inline conflict-error state defined in `contracts/auth-conflict.md`
-- [ ] T021 [US3] Wire the Google/GitHub OAuth buttons and the credentials form on both screens to the Better Auth client
+- [X] T014 [US3] Configure the Better Auth server instance in `src/lib/auth.ts` (Prisma adapter; Google, GitHub, and credentials providers; email verification explicitly disabled)
+- [X] T015 [P] [US3] Create the Better Auth client in `src/lib/auth-client.ts`
+- [X] T016 [US3] Create the Better Auth route handler at `src/app/api/auth/[...all]/route.ts`
+- [X] T017 [US3] Implement the duplicate-email conflict check from `contracts/auth-conflict.md` (query for an existing `Account` by email across providers before creation; return the `409 EMAIL_ALREADY_LINKED` contract when found)
+- [X] T018 [P] [US3] Create Zod validation schemas for the credentials sign-up/sign-in forms in `src/lib/validations/auth.ts`
+- [X] T019 [US3] Build the login screen in `src/app/(auth)/login/page.tsx` reusing the approved design
+- [X] T020 [US3] Build the sign-up screen in `src/app/(auth)/sign-up/page.tsx`, reusing the exported design from `axiom-design/axiom_sign_up/code.html`, including the inline conflict-error state defined in `contracts/auth-conflict.md`
+- [X] T021 [US3] Wire the Google/GitHub OAuth buttons and the credentials form on both screens to the Better Auth client
 - [ ] T022 [US3] Manually validate all four acceptance scenarios (Google, GitHub, credentials, duplicate-email block) per `quickstart.md` US3
 
 **Checkpoint**: Account creation works frictionlessly through all three methods, and the security-critical duplicate-email block from FR-011 is enforced — SC-003 met.
@@ -116,11 +116,11 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 4
 
-- [ ] T023 [P] [US4] Configure the Pusher server client in `src/lib/pusher.ts`
-- [ ] T024 [P] [US4] Configure a Pusher browser client helper in `src/lib/pusher-client.ts`
-- [ ] T025 [US4] Implement the temporary `setup-test` / `ping` publish trigger per `contracts/realtime-test-channel.md`
+- [X] T023 [P] [US4] Configure the Pusher server client in `src/lib/pusher.ts`
+- [X] T024 [P] [US4] Configure a Pusher browser client helper in `src/lib/pusher-client.ts`
+- [X] T025 [US4] Implement the temporary `setup-test` / `ping` publish trigger per `contracts/realtime-test-channel.md`
 - [ ] T026 [US4] Manually validate that a subscribed client receives the `ping` event in under 1 second per `quickstart.md` US4
-- [ ] T027 [US4] Remove the temporary publish trigger once validated, keeping the reusable `src/lib/pusher.ts` / `pusher-client.ts` helpers
+- [X] T027 [US4] Remove the temporary publish trigger once validated, keeping the reusable `src/lib/pusher.ts` / `pusher-client.ts` helpers
 
 **Checkpoint**: Realtime round-trip proven under 1 second — SC-004 met.
 
@@ -148,9 +148,9 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 **Purpose**: Close out the constitution's Quality Gates before this feature is considered done
 
-- [ ] T033 [P] Remove dead code and stray `console.log` calls introduced across this feature (constitution Clean Code principle)
-- [ ] T034 Run `pnpm lint` and `pnpm type-check`; resolve every reported issue
-- [ ] T035 Run a final `pnpm build` to confirm a clean, zero-error production build before push (constitution Pre-Push Build Verification gate)
+- [X] T033 [P] Remove dead code and stray `console.log` calls introduced across this feature (constitution Clean Code principle)
+- [X] T034 Run `pnpm lint` and `pnpm type-check`; resolve every reported issue
+- [X] T035 Run a final `pnpm build` to confirm a clean, zero-error production build before push (constitution Pre-Push Build Verification gate)
 - [ ] T036 Update `PROGRESS.md`'s Phase 2 checklist and overall progress percentage to reflect this feature's completion (constitution Progress Documentation principle — apply once this branch merges)
 
 ---

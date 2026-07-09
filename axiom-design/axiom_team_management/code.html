@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Axiom | Team Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://cdn.jsdelivr.net/npm/geist-font@1.1.0/fonts/geist-sans/Geist-Regular.woff2') format('woff2');
+            font-weight: 400;
+        }
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://cdn.jsdelivr.net/npm/geist-font@1.1.0/fonts/geist-sans/Geist-Medium.woff2') format('woff2');
+            font-weight: 500;
+        }
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://cdn.jsdelivr.net/npm/geist-font@1.1.0/fonts/geist-sans/Geist-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+        }
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://cdn.jsdelivr.net/npm/geist-font@1.1.0/fonts/geist-sans/Geist-Black.woff2') format('woff2');
+            font-weight: 900;
+        }
+
+        body {
+            background-color: #0b0f19;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3仿真%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 1;
+            color: #dfe2f1;
+        }
+
+        .glass-card {
+            background: rgba(26, 34, 54, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(66, 71, 84, 0.3);
+        }
+
+        .primary-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .ai-border {
+            position: relative;
+            border: 1px solid transparent;
+            background: linear-gradient(#1a2236, #1a2236) padding-box,
+                        linear-gradient(to right, #8b5cf6, #06b6d4) border-box;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f131d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #313540;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#0f131d",
+                        "surface-bright": "#353944",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-surface": "#dfe2f1",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-container": "#1c1f2a",
+                        "primary-container": "#4d8eff",
+                        "surface-container-highest": "#313540",
+                        "background": "#0f131d",
+                        "tertiary-fixed-dim": "#2fd9f4",
+                        "inverse-on-surface": "#2c303b",
+                        "tertiary-container": "#009fb4",
+                        "primary": "#adc6ff",
+                        "outline-variant": "#424754",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-surface": "#dfe2f1",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-tertiary": "#00363e",
+                        "surface-dim": "#0f131d",
+                        "on-secondary-container": "#c4abff",
+                        "tertiary": "#2fd9f4",
+                        "secondary-container": "#571bc1",
+                        "on-tertiary-fixed-variant": "#004e5a",
+                        "outline": "#8c909f",
+                        "on-primary-fixed": "#001a42",
+                        "surface-container-high": "#262a35",
+                        "surface-tint": "#adc6ff",
+                        "on-tertiary-fixed": "#001f25",
+                        "surface-variant": "#313540",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-container-lowest": "#0a0e18",
+                        "secondary": "#d0bcff",
+                        "tertiary-fixed": "#a2eeff",
+                        "on-secondary-fixed": "#23005c",
+                        "on-primary": "#002e6a",
+                        "on-tertiary-container": "#002f36",
+                        "inverse-primary": "#005ac2",
+                        "on-primary-container": "#00285d",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#c2c6d6",
+                        "on-secondary": "#3c0091",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#171b26",
+                        "on-background": "#dfe2f1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "4px",
+                        "lg": "8px",
+                        "xl": "12px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "container-padding": "24px",
+                        "unit": "8px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Geist"],
+                        "h1": ["Geist"],
+                        "body-md": ["Geist"],
+                        "display": ["Geist"],
+                        "h2": ["Geist"],
+                        "body-lg": ["Geist"],
+                        "mono": ["JetBrains Mono"],
+                        "h3": ["Geist"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                        "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                        "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                        "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                        "mono": ["13px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                        "h3": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="font-body-md text-on-surface antialiased overflow-hidden">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full w-[260px] flex flex-col py-6 bg-surface-dim border-r border-outline-variant/30 z-50">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary text-[20px]" data-icon="terminal">terminal</span>
+</div>
+<div>
+<h1 class="font-display text-h3 font-bold text-on-surface leading-tight">Axiom HQ</h1>
+<p class="text-[10px] text-on-surface-variant uppercase tracking-widest font-bold">Engineering Team</p>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="grid_view">grid_view</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary border-r-2 border-primary translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="group">group</span>
+<span class="font-label-md text-label-md font-bold">Team</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-label-md text-label-md">My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="group_work">group_work</span>
+<span class="font-label-md text-label-md">Workspaces</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-md text-label-md">AI Insights</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Archive</span>
+</a>
+</nav>
+<div class="mt-auto px-4 space-y-4">
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant/30">
+<p class="text-[11px] font-bold text-on-surface mb-2">PRO PLAN</p>
+<div class="w-full bg-surface h-1.5 rounded-full mb-3 overflow-hidden">
+<div class="bg-primary w-3/4 h-full"></div>
+</div>
+<button class="w-full py-2 bg-primary/10 text-primary font-label-md text-[11px] rounded hover:bg-primary/20 transition-colors uppercase tracking-wider">Upgrade Plan</button>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="headset_mic">headset_mic</span>
+<span class="font-label-md text-label-md">Contact Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- TopNavBar Anchor -->
+<header class="fixed top-0 left-[260px] right-0 h-16 flex justify-between items-center px-8 bg-surface-container/80 backdrop-blur-md border-b border-outline-variant/30 z-40">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative max-w-md w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-10 pr-4 py-2 text-body-md focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-outline/60" placeholder="Search team or roles..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface-container"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="h-8 w-px bg-outline-variant/30"></div>
+<div class="flex items-center gap-3 pl-2">
+<div class="text-right">
+<p class="font-label-md text-on-surface leading-none">Alex Rivera</p>
+<p class="text-[10px] text-on-surface-variant">Admin</p>
+</div>
+<img class="w-9 h-9 rounded-full border border-outline-variant/50 object-cover" data-alt="A professional headshot of a software engineer in a dark studio setting with cinematic rim lighting, conveying a sense of high-level expertise and focused creativity. The background is a deep charcoal black with subtle texture, matching the dark and premium aesthetic of the Axiom design system. The lighting is soft but high-contrast, emphasizing the sharp, modern professional look." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBOL2TEZb4-N1NK0hpTyEA9sf-ZxX7oyGc-a3RND4NuTgWBXM52rcAnEWkbwn3Bxs2peUlxFAdcrY4LCNkq4CjOH1cGcCZ90J9fzMI0nMngEtdl0PRqV1t5FufIQWQOGwUkSb5ie1JZGCbdwliYZ3IAThVKz4OFyt7OKMml3qkDKq33wqUmf2AtRig7Psg3q1aZchm6s1HTVFUWQstVBfecv9fIZtZfIr9o0YXkQs9qU9wvRFYfTzPyVWYQKLcP4kYOQIf_YUUqRTRZ"/>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[260px] pt-16 h-screen overflow-y-auto">
+<div class="max-w-6xl mx-auto p-8 space-y-8">
+<!-- Page Header & Action -->
+<div class="flex justify-between items-end">
+<div>
+<nav class="flex items-center gap-2 text-on-surface-variant mb-2">
+<span class="font-label-md text-label-md">Workspace</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="chevron_right">chevron_right</span>
+<span class="font-label-md text-label-md text-primary">Team Management</span>
+</nav>
+<h2 class="font-display text-h1 font-bold text-on-surface">Team</h2>
+<p class="text-on-surface-variant mt-1">7 members active in Axiom HQ.</p>
+</div>
+<button class="bg-[#3B82F6] hover:bg-blue-600 text-white px-5 py-2.5 rounded-lg font-label-md text-label-md flex items-center gap-2 transition-all active:scale-95 primary-glow">
+<span class="material-symbols-outlined text-[18px]" data-icon="person_add">person_add</span>
+                    Invite Teammate
+                </button>
+</div>
+<!-- AI Insight Panel -->
+<div class="ai-border p-4 rounded-xl flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined text-tertiary text-[24px]" data-icon="auto_awesome">auto_awesome</span>
+<span class="absolute -top-1 -right-1 w-2 h-2 bg-tertiary rounded-full animate-pulse shadow-[0_0_8px_rgba(47,217,244,0.8)]"></span>
+</div>
+<p class="text-body-md text-on-surface-variant italic">
+<span class="text-on-surface font-medium">I noticed your team is growing.</span> Consider setting up role-based access control for the new Engineering workspace to maintain security.
+                    </p>
+</div>
+<button class="text-tertiary font-label-md text-label-md hover:underline">View Suggestion</button>
+</div>
+<!-- Main Member List -->
+<div class="glass-card rounded-xl overflow-hidden">
+<div class="px-6 py-4 border-b border-outline-variant/30 flex justify-between items-center bg-surface-container-high/50">
+<h3 class="font-h3 text-h3 text-on-surface">Active Members</h3>
+<div class="flex items-center gap-3">
+<button class="p-1.5 hover:bg-surface-bright rounded transition-colors">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant" data-icon="filter_list">filter_list</span>
+</button>
+<button class="p-1.5 hover:bg-surface-bright rounded transition-colors">
+<span class="material-symbols-outlined text-[20px] text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</div>
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Member</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Email Address</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Role</th>
+<th class="px-6 py-3 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-6 py-3"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<!-- Row 1: Owner -->
+<tr class="hover:bg-surface-bright/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-sm ring-1 ring-primary/20">AR</div>
+<div>
+<p class="font-body-md text-on-surface font-semibold">Alex Rivera</p>
+<p class="text-[12px] text-on-surface-variant">Joined Jan 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant font-mono">alex.rivera@axiom.ai</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[11px] font-bold uppercase tracking-wider">Owner</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500/80"></span>
+<span class="text-body-md text-on-surface-variant">Online</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Admin -->
+<tr class="hover:bg-surface-bright/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-sm ring-1 ring-secondary/20">SK</div>
+<div>
+<p class="font-body-md text-on-surface font-semibold">Sarah Kensley</p>
+<p class="text-[12px] text-on-surface-variant">Joined Feb 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant font-mono">s.kensley@axiom.ai</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-surface-bright/50 text-on-surface-variant border border-outline-variant/30 text-[11px] font-bold uppercase tracking-wider">Admin</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500/80"></span>
+<span class="text-body-md text-on-surface-variant">Online</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Member -->
+<tr class="hover:bg-surface-bright/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-tertiary-container text-on-tertiary-container flex items-center justify-center font-bold text-sm ring-1 ring-tertiary/20">JM</div>
+<div>
+<p class="font-body-md text-on-surface font-semibold">Jordan Miller</p>
+<p class="text-[12px] text-on-surface-variant">Joined Mar 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant font-mono">jmiller@axiom.ai</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-highest/50 text-on-surface-variant/80 border border-outline-variant/20 text-[11px] font-bold uppercase tracking-wider">Member</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline/40"></span>
+<span class="text-body-md text-on-surface-variant">Offline</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Member -->
+<tr class="hover:bg-surface-bright/20 transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary-fixed-dim text-on-primary-fixed flex items-center justify-center font-bold text-sm">LC</div>
+<div>
+<p class="font-body-md text-on-surface font-semibold">Lena Chen</p>
+<p class="text-[12px] text-on-surface-variant">Joined Apr 2024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-on-surface-variant font-mono">lchen@axiom.ai</td>
+<td class="px-6 py-4">
+<span class="px-2.5 py-1 rounded-full bg-surface-container-highest/50 text-on-surface-variant/80 border border-outline-variant/20 text-[11px] font-bold uppercase tracking-wider">Member</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-green-500/80"></span>
+<span class="text-body-md text-on-surface-variant">Online</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<button class="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:text-primary">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pending Invitations Section -->
+<div class="space-y-4">
+<div class="flex items-center gap-3">
+<h3 class="font-h3 text-h3 text-on-surface">Pending Invitations</h3>
+<span class="bg-surface-container-highest text-on-surface-variant text-[11px] font-bold px-2 py-0.5 rounded-full">3</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+<!-- Invite Card 1 -->
+<div class="glass-card p-5 rounded-xl border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors group">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[22px]" data-icon="mail">mail</span>
+</div>
+<div class="flex gap-1">
+<button class="p-1 hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="close">close</span></button>
+</div>
+</div>
+<p class="font-body-md text-on-surface font-semibold truncate">marcus.v@axiom.ai</p>
+<p class="text-[12px] text-on-surface-variant mb-4">Sent 2 days ago • Member</p>
+<button class="w-full py-1.5 bg-surface-bright/30 hover:bg-surface-bright text-on-surface text-[12px] font-label-md rounded transition-colors">Resend Invite</button>
+</div>
+<!-- Invite Card 2 -->
+<div class="glass-card p-5 rounded-xl border-dashed border-outline-variant/50 hover:border-primary/50 transition-colors">
+<div class="flex justify-between items-start mb-4">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-outline text-[22px]" data-icon="mail">mail</span>
+</div>
+<div class="flex gap-1">
+<button class="p-1 hover:text-error transition-colors"><span class="material-symbols-outlined text-[18px]" data-icon="close">close</span></button>
+</div>
+</div>
+<p class="font-body-md text-on-surface font-semibold truncate">t.roberts@axiom.ai</p>
+<p class="text-[12px] text-on-surface-variant mb-4">Sent 4 hours ago • Viewer</p>
+<button class="w-full py-1.5 bg-surface-bright/30 hover:bg-surface-bright text-on-surface text-[12px] font-label-md rounded transition-colors">Resend Invite</button>
+</div>
+<!-- Add New Invitation Slot -->
+<div class="border-2 border-dashed border-outline-variant/20 rounded-xl p-5 flex flex-col items-center justify-center text-center hover:bg-surface-container/30 cursor-pointer transition-all">
+<div class="w-10 h-10 rounded-full bg-outline-variant/20 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-outline" data-icon="add">add</span>
+</div>
+<p class="font-label-md text-label-md text-outline">New Invitation</p>
+</div>
+</div>
+</div>
+<!-- Footer Anchor -->
+<footer class="w-full py-8 flex justify-between items-center mt-12 border-t border-outline-variant/20">
+<div class="flex items-center gap-6">
+<p class="font-display text-h3 font-bold text-on-surface opacity-50">Axiom</p>
+<p class="text-body-md text-on-surface-variant">© 2024 Axiom AI. All rights reserved.</p>
+</div>
+<div class="flex items-center gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Security</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">API Reference</a>
+</div>
+</footer>
+</div>
+</main>
+<!-- Command Palette Hint (Floating) -->
+<div class="fixed bottom-6 right-8 bg-surface-container/90 border border-outline-variant/30 px-3 py-1.5 rounded-lg flex items-center gap-3 backdrop-blur shadow-xl pointer-events-none">
+<span class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">Command Palette</span>
+<div class="flex items-center gap-1">
+<kbd class="px-1.5 py-0.5 rounded bg-surface-bright text-[11px] font-mono border border-outline-variant/50">⌘</kbd>
+<kbd class="px-1.5 py-0.5 rounded bg-surface-bright text-[11px] font-mono border border-outline-variant/50">K</kbd>
+</div>
+</div>
+<script>
+        // Micro-interactions
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('click', () => {
+                row.classList.add('scale-[0.995]', 'bg-primary/5');
+                setTimeout(() => {
+                    row.classList.remove('scale-[0.995]', 'bg-primary/5');
+                }, 150);
+            });
+        });
+
+        // Animation for AI Insight
+        const aiDot = document.querySelector('.animate-pulse');
+        if (aiDot) {
+            setInterval(() => {
+                aiDot.style.opacity = Math.random() * 0.5 + 0.5;
+            }, 1000);
+        }
+    </script>
+</body></html>

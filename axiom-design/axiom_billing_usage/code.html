@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Axiom | Billing &amp; Subscription</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+    
+    /* Custom Font implementation from Design System */
+    @font-face {
+      font-family: 'Geist';
+      src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    }
+
+    body {
+      font-family: 'Geist', sans-serif;
+      background-color: #0b0f19;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3ExternalIcon %3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+    }
+
+    .glass-card {
+      background: rgba(19, 26, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(66, 71, 84, 0.3);
+    }
+
+    .glow-primary {
+      box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+    }
+
+    .ai-border {
+      position: relative;
+      background-clip: padding-box;
+      border: 1px solid transparent;
+    }
+    .ai-border::before {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      z-index: -1;
+      background: linear-gradient(to right, #8b5cf6, #06b6d4);
+      border-radius: inherit;
+      opacity: 0.4;
+    }
+
+    .grain-overlay {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.02;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface": "#0f131d",
+                  "surface-bright": "#353944",
+                  "primary-fixed-dim": "#adc6ff",
+                  "on-error": "#690005",
+                  "secondary-fixed-dim": "#d0bcff",
+                  "on-surface": "#dfe2f1",
+                  "on-primary-fixed-variant": "#004395",
+                  "surface-container": "#1c1f2a",
+                  "primary-container": "#4d8eff",
+                  "surface-container-highest": "#313540",
+                  "background": "#0f131d",
+                  "tertiary-fixed-dim": "#2fd9f4",
+                  "inverse-on-surface": "#2c303b",
+                  "tertiary-container": "#009fb4",
+                  "primary": "#adc6ff",
+                  "outline-variant": "#424754",
+                  "primary-fixed": "#d8e2ff",
+                  "inverse-surface": "#dfe2f1",
+                  "on-secondary-fixed-variant": "#5516be",
+                  "on-tertiary": "#00363e",
+                  "surface-dim": "#0f131d",
+                  "on-secondary-container": "#c4abff",
+                  "tertiary": "#2fd9f4",
+                  "secondary-container": "#571bc1",
+                  "on-tertiary-fixed-variant": "#004e5a",
+                  "outline": "#8c909f",
+                  "on-primary-fixed": "#001a42",
+                  "surface-container-high": "#262a35",
+                  "surface-tint": "#adc6ff",
+                  "on-tertiary-fixed": "#001f25",
+                  "surface-variant": "#313540",
+                  "secondary-fixed": "#e9ddff",
+                  "surface-container-lowest": "#0a0e18",
+                  "secondary": "#d0bcff",
+                  "tertiary-fixed": "#a2eeff",
+                  "on-secondary-fixed": "#23005c",
+                  "on-primary": "#002e6a",
+                  "on-tertiary-container": "#002f36",
+                  "inverse-primary": "#005ac2",
+                  "on-primary-container": "#00285d",
+                  "on-error-container": "#ffdad6",
+                  "on-surface-variant": "#c2c6d6",
+                  "on-secondary": "#3c0091",
+                  "error-container": "#93000a",
+                  "error": "#ffb4ab",
+                  "surface-container-low": "#171b26",
+                  "on-background": "#dfe2f1"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "sidebar-width": "260px",
+                  "container-padding": "24px",
+                  "unit": "8px",
+                  "gutter": "16px"
+          },
+          "fontFamily": {
+                  "label-md": ["Geist"],
+                  "h1-mobile": ["Geist"],
+                  "h1": ["Geist"],
+                  "body-md": ["Geist"],
+                  "display": ["Geist"],
+                  "h2": ["Geist"],
+                  "body-lg": ["Geist"],
+                  "mono": ["JetBrains Mono"],
+                  "h3": ["Geist"]
+          },
+          "fontSize": {
+                  "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                  "h1-mobile": ["24px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                  "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "600"}],
+                  "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                  "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                  "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                  "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                  "mono": ["13px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                  "h3": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary/30">
+<div class="grain-overlay"></div>
+<!-- TopNavBar (Fixed) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface-container/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-8">
+<span class="font-display text-h2 font-black tracking-tighter text-on-surface">Axiom</span>
+<nav class="hidden md:flex gap-6">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Projects</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Team</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant/50">
+<img class="h-full w-full object-cover" data-alt="A professional headshot of a software engineer in high-contrast cinematic lighting. The person has a neutral expression and is wearing a dark technical hoodie. The background is a blurred high-tech workspace with subtle blue and violet ambient lights, reflecting a premium dark-mode aesthetic consistent with Axiom's brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBcPWtA8FfjGBdUibhfK435bPZ_MansArQMtplfQ8v7s6ohWg2iIXopFH6z5fo_rF9vhXS4_h9rImg2iVrLHFlJuGl4stWMMTQjMymDxAL0nIvR7q8tNvK0x1BLFcWvWwXa4lUNhE4VKKA2aQ3lcAKsypJm7h3Cgg7PbNQV4t11ggsz7VgnH_nTUfbiVhVqHo6Y2d6R6KlbmTZGWsVSFxn1XMoRZjihLmlsVy6gvfOSxUw0CAaxan6GX9HeKJQzIxvlryIAYyKr5t3T"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Fixed) -->
+<aside class="fixed left-0 top-0 h-full w-[260px] flex flex-col py-6 bg-surface-dim border-r border-outline-variant/30 hidden md:flex z-40 mt-16">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3 p-3 rounded-lg bg-surface-container-high border border-outline-variant/10">
+<div class="w-10 h-10 rounded bg-primary/20 flex items-center justify-center text-primary font-bold">A</div>
+<div>
+<p class="font-display text-h3 font-bold text-on-surface leading-tight">Axiom HQ</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Engineering Team</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-bright/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined">grid_view</span> Overview
+      </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-bright/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined">check_circle</span> My Tasks
+      </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-bright/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined">group_work</span> Workspaces
+      </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-label-md text-label-md bg-primary/10 text-primary border-r-2 border-primary translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span> Billing
+      </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-bright/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined">auto_awesome</span> AI Insights
+      </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg font-label-md text-label-md text-on-surface-variant hover:bg-surface-bright/50 hover:text-on-surface transition-all" href="#">
+<span class="material-symbols-outlined">inventory_2</span> Archive
+      </a>
+</nav>
+<div class="px-4 mt-auto space-y-4">
+<div class="p-4 rounded-xl glass-card text-center">
+<p class="font-label-md text-label-md text-on-surface-variant mb-3">Upgrade Plan</p>
+<button class="w-full py-2 bg-primary text-on-primary font-label-md text-label-md rounded-lg glow-primary hover:scale-95 transition-transform">Get Pro</button>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span> <span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface" href="#">
+<span class="material-symbols-outlined text-[20px]">headset_mic</span> <span class="font-label-md text-label-md">Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-[260px] pt-24 pb-12 px-container-padding min-h-screen">
+<div class="max-w-5xl mx-auto">
+<!-- Header Area -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+<div>
+<h1 class="font-display text-h1 text-on-surface mb-2">Billing &amp; Subscription</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Your next invoice is scheduled for <span class="text-primary font-medium">Nov 1</span>.</p>
+</div>
+<button class="px-6 py-2.5 rounded-lg font-label-md text-label-md border border-outline-variant hover:border-primary transition-colors hover:bg-primary/5 flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">download</span> Download All Receipts
+        </button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+<!-- Current Plan Card -->
+<div class="md:col-span-2 glass-card rounded-2xl p-8 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-[120px] text-primary">verified_user</span>
+</div>
+<div class="relative z-10 h-full flex flex-col">
+<div class="flex items-center gap-3 mb-6">
+<span class="px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full font-label-md text-label-md">Current Plan</span>
+<h2 class="font-display text-h2 text-on-surface">Team Tier</h2>
+</div>
+<div class="grid grid-cols-2 gap-8 mb-8">
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-widest">Billing Period</p>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">Monthly</p>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1 uppercase tracking-widest">Next Charge</p>
+<p class="font-body-lg text-body-lg text-on-surface font-medium">$240.00 USD</p>
+</div>
+</div>
+<div class="mt-auto">
+<div class="flex justify-between items-center mb-2">
+<p class="font-label-md text-label-md text-on-surface-variant">Seats Used</p>
+<p class="font-label-md text-label-md text-on-surface font-medium">14/20</p>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 70%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Upgrade Action -->
+<div class="glass-card rounded-2xl p-8 flex flex-col justify-between ai-border">
+<div>
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-tertiary">auto_awesome</span>
+<span class="font-label-md text-label-md text-tertiary font-bold">Enterprise</span>
+</div>
+<p class="font-h3 text-h3 text-on-surface mb-3 leading-snug">Scale beyond team boundaries</p>
+<p class="font-body-md text-body-md text-on-surface-variant">Unlock dedicated infrastructure, SSO, and unlimited AI workspaces.</p>
+</div>
+<button class="w-full py-4 rounded-xl bg-surface-bright text-on-surface font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-all duration-300 glow-primary">
+            Upgrade to Enterprise
+          </button>
+</div>
+</div>
+<!-- Invoice History -->
+<section>
+<div class="flex items-center justify-between mb-6">
+<h3 class="font-display text-h3 text-on-surface">Invoice History</h3>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+</button>
+</div>
+</div>
+<div class="glass-card rounded-xl overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-high/50 border-b border-outline-variant/30">
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Date</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Amount</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Invoice</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 font-mono text-mono text-on-surface">Oct 01, 2024</td>
+<td class="px-6 py-5 font-body-md text-body-md text-on-surface">$240.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+<span class="w-1 h-1 rounded-full bg-primary animate-pulse"></span> Paid
+                  </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">file_download</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 font-mono text-mono text-on-surface">Sep 01, 2024</td>
+<td class="px-6 py-5 font-body-md text-body-md text-on-surface">$240.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+                    Paid
+                  </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">file_download</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 font-mono text-mono text-on-surface">Aug 01, 2024</td>
+<td class="px-6 py-5 font-body-md text-body-md text-on-surface">$240.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+                    Paid
+                  </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">file_download</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors group">
+<td class="px-6 py-5 font-mono text-mono text-on-surface">Jul 01, 2024</td>
+<td class="px-6 py-5 font-body-md text-body-md text-on-surface">$240.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[11px] font-bold uppercase tracking-wider">
+                    Paid
+                  </span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">file_download</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 px-container-padding flex flex-col md:flex-row justify-between items-center md:ml-[260px] bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex items-center gap-6 mb-4 md:mb-0">
+<span class="font-display text-h3 font-bold text-on-surface">Axiom</span>
+<p class="font-body-md text-body-md text-on-surface-variant opacity-80">© 2024 Axiom AI. All rights reserved.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-opacity" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-opacity" href="#">Terms of Service</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-opacity" href="#">Security</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-opacity" href="#">API Reference</a>
+</div>
+</footer>
+<script>
+    // Micro-interactions
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
+    // Subtle entrance animation
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.glass-card, h1, p, table tr');
+      cards.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(10px)';
+        setTimeout(() => {
+          el.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        }, index * 40);
+      });
+    });
+  </script>
+</body></html>
