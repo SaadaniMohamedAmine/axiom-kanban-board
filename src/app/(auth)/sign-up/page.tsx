@@ -4,13 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { signUpSchema, type SignUpInput } from "@/lib/validations/auth";
-import type { AuthConflictError } from "@/types/auth.types";
 
 export default function SignUpPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [conflictError, setConflictError] = useState<AuthConflictError | null>(null);
+  const [conflictError, setConflictError] = useState<{
+    message: string;
+    existingProvider?: string;
+  } | null>(null);
   const [formData, setFormData] = useState<SignUpInput>({
     name: "",
     email: "",
@@ -39,7 +41,10 @@ export default function SignUpPage() {
 
       if (error) {
         if (error.code === "EMAIL_ALREADY_LINKED") {
-          setConflictError(error as AuthConflictError);
+          setConflictError({
+            message: error.message || "This email is already registered",
+            existingProvider: undefined,
+          });
         } else {
           setError(error.message || "Sign up failed");
         }
@@ -66,7 +71,10 @@ export default function SignUpPage() {
 
       if (error) {
         if (error.code === "EMAIL_ALREADY_LINKED") {
-          setConflictError(error as AuthConflictError);
+          setConflictError({
+            message: error.message || "This email is already registered",
+            existingProvider: undefined,
+          });
         } else {
           setError(error.message || `${provider} sign up failed`);
         }
