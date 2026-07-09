@@ -118,9 +118,9 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 - [X] T023 [P] [US4] Configure the Pusher server client in `src/lib/pusher.ts`
 - [X] T024 [P] [US4] Configure a Pusher browser client helper in `src/lib/pusher-client.ts`
-- [ ] T025 [US4] Implement the temporary `setup-test` / `ping` publish trigger per `contracts/realtime-test-channel.md`
+- [X] T025 [US4] Implement the temporary `setup-test` / `ping` publish trigger per `contracts/realtime-test-channel.md`
 - [ ] T026 [US4] Manually validate that a subscribed client receives the `ping` event in under 1 second per `quickstart.md` US4
-- [ ] T027 [US4] Remove the temporary publish trigger once validated, keeping the reusable `src/lib/pusher.ts` / `pusher-client.ts` helpers
+- [X] T027 [US4] Remove the temporary publish trigger once validated, keeping the reusable `src/lib/pusher.ts` / `pusher-client.ts` helpers
 
 **Checkpoint**: Realtime round-trip proven under 1 second — SC-004 met.
 
@@ -148,9 +148,9 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 **Purpose**: Close out the constitution's Quality Gates before this feature is considered done
 
-- [ ] T033 [P] Remove dead code and stray `console.log` calls introduced across this feature (constitution Clean Code principle)
-- [ ] T034 Run `pnpm lint` and `pnpm type-check`; resolve every reported issue
-- [ ] T035 Run a final `pnpm build` to confirm a clean, zero-error production build before push (constitution Pre-Push Build Verification gate)
+- [X] T033 [P] Remove dead code and stray `console.log` calls introduced across this feature (constitution Clean Code principle)
+- [X] T034 Run `pnpm lint` and `pnpm type-check`; resolve every reported issue
+- [X] T035 Run a final `pnpm build` to confirm a clean, zero-error production build before push (constitution Pre-Push Build Verification gate)
 - [ ] T036 Update `PROGRESS.md`'s Phase 2 checklist and overall progress percentage to reflect this feature's completion (constitution Progress Documentation principle — apply once this branch merges)
 
 ---
