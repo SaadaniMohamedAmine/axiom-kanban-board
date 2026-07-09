@@ -1,9 +1,10 @@
 import Pusher from "pusher";
+import { requireEnv } from "./env";
 
 export const pusher = new Pusher({
-  appId: process.env.PUSHER_APP_ID || "",
-  key: process.env.PUSHER_KEY || "",
-  secret: process.env.PUSHER_SECRET || "",
+  appId: requireEnv("PUSHER_APP_ID"),
+  key: requireEnv("PUSHER_KEY"),
+  secret: requireEnv("PUSHER_SECRET"),
   cluster: process.env.PUSHER_CLUSTER || "us3",
   useTLS: true,
 });

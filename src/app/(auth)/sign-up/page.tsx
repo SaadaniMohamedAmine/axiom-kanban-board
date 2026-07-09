@@ -1,12 +1,21 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { signUpSchema, type SignUpInput } from "@/lib/validations/auth";
 
 export default function SignUpPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpForm />
+    </Suspense>
+  );
+}
+
+function SignUpForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [conflictError, setConflictError] = useState<{
@@ -18,6 +27,18 @@ export default function SignUpPage() {
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    // Better Auth redirects OAuth failures back here as `?error=...`
+    // (see errorCallbackURL below) instead of resolving the signIn.social() promise.
+    if (searchParams.get("error") === "account_not_linked") {
+      setConflictError({
+        message:
+          "This email is already registered with a different sign-in method. Try the method you used originally.",
+      });
+      router.replace("/sign-up");
+    }
+  }, [searchParams, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +88,7 @@ export default function SignUpPage() {
       const { error } = await authClient.signIn.social({
         provider,
         callbackURL: "/",
+        errorCallbackURL: "/sign-up",
       });
 
       if (error) {

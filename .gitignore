@@ -21,9 +21,6 @@ build/
 # Vercel
 .vercel
 
-# Prisma
-prisma/migrations/
-
 # IDE
 .vscode/
 .idea/
