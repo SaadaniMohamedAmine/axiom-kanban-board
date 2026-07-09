@@ -45,9 +45,9 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 **⚠️ CRITICAL**: T004–T008 must be complete before US2 or US3 work begins
 
-- [ ] T004 Provision a Vercel Postgres database and obtain its `DATABASE_URL`
+- [X] T004 Provision a Vercel Postgres database and obtain its `DATABASE_URL`
 - [X] T005 Initialize Prisma (`prisma init`) and author `prisma/schema.prisma` with every entity from `data-model.md` (User, Account, Session, Verification, Workspace, WorkspaceMember, Invitation, Board, Column, Task, TaskAssignee, Label, TaskLabel, Comment, ActivityEvent, Sprint, AILog, Notification) plus all enums (role, priority, template, status, etc.)
-- [ ] T006 Run the first migration locally (`prisma migrate dev --name init`) against `DATABASE_URL`
+- [X] T006 Run the first migration locally (`prisma migrate dev --name init`) against `DATABASE_URL`
 - [X] T007 [P] Create a Prisma client singleton in `src/lib/prisma.ts`
 - [X] T008 [P] Establish the shared-types convention required by the constitution's TypeScript Strict Mode principle: create `src/types/` and an initial `src/types/auth.types.ts`
 
@@ -79,7 +79,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Apply the migration to the production `DATABASE_URL` and confirm connectivity from a deployed (or deployed-equivalent) context
+- [X] T012 [US2] Apply the migration to the production `DATABASE_URL` and confirm connectivity from a deployed (or deployed-equivalent) context
 - [ ] T013 [US2] Verify via `prisma studio` (or an equivalent query) that every entity in `data-model.md` exists with none missing or extraneous; record the result per `quickstart.md` US2
 
 **Checkpoint**: Schema completeness and dual-environment connectivity confirmed — SC-002 met.
