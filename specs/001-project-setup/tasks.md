@@ -33,7 +33,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 - [X] T001 Scaffold a Next.js 16 project (App Router, TypeScript, Tailwind CSS) at the repository root
 - [X] T002 Install Prisma 7, Better Auth (+ its Prisma adapter), Pusher (`pusher` server SDK + `pusher-js` client), and Zod as dependencies; configure ESLint/Prettier per the constitution's Clean Code principle
-- [ ] T003 [P] Create `.env.example` documenting every required variable (`DATABASE_URL`, Better Auth provider secrets, Pusher app id/key/secret/cluster, `GROQ_API_KEY`, `GEMINI_API_KEY`) and confirm `.env.local` / `.env*.local` are listed in `.gitignore`
+- [X] T003 [P] Create `.env.example` documenting every required variable (`DATABASE_URL`, Better Auth provider secrets, Pusher app id/key/secret/cluster, `GROQ_API_KEY`, `GEMINI_API_KEY`) and confirm `.env.local` / `.env*.local` are listed in `.gitignore`
 
 **Checkpoint**: Project scaffold exists, dependencies installed, no secrets can accidentally be committed.
 
