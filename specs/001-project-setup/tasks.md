@@ -137,7 +137,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T028 [US5] Link the Vercel project to the Git repository
 - [X] T029 [US5] Mirror every variable from `.env.local` into Vercel's project environment settings
 - [ ] T030 [US5] Deploy to Vercel and confirm the production URL is publicly reachable, rendering at minimum the functional login/sign-up screen
-- [ ] T031 [US5] Run a secrets scan across the full repository history before the first public push, confirming zero secret values are committed (FR-007)
+- [X] T031 [US5] Run a secrets scan across the full repository history before the first public push, confirming zero secret values are committed (FR-007)
 - [ ] T032 [US5] Manually validate WCAG AA (full keyboard navigation, 4.5:1 text contrast) on the deployed sign-up screen per `quickstart.md`'s accessibility check
 
 **Checkpoint**: Public production URL live and secret-free — SC-005 and SC-006 met.
