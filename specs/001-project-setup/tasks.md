@@ -48,8 +48,8 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [ ] T004 Provision a Vercel Postgres database and obtain its `DATABASE_URL`
 - [X] T005 Initialize Prisma (`prisma init`) and author `prisma/schema.prisma` with every entity from `data-model.md` (User, Account, Session, Verification, Workspace, WorkspaceMember, Invitation, Board, Column, Task, TaskAssignee, Label, TaskLabel, Comment, ActivityEvent, Sprint, AILog, Notification) plus all enums (role, priority, template, status, etc.)
 - [ ] T006 Run the first migration locally (`prisma migrate dev --name init`) against `DATABASE_URL`
-- [ ] T007 [P] Create a Prisma client singleton in `src/lib/prisma.ts`
-- [ ] T008 [P] Establish the shared-types convention required by the constitution's TypeScript Strict Mode principle: create `src/types/` and an initial `src/types/auth.types.ts`
+- [X] T007 [P] Create a Prisma client singleton in `src/lib/prisma.ts`
+- [X] T008 [P] Establish the shared-types convention required by the constitution's TypeScript Strict Mode principle: create `src/types/` and an initial `src/types/auth.types.ts`
 
 **Checkpoint**: Schema exists and migrates cleanly; US2 and US3 can now proceed.
 
@@ -63,8 +63,8 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 1
 
-- [ ] T009 [US1] Create the root layout in `src/app/layout.tsx` (global styles import, base HTML structure)
-- [ ] T010 [P] [US1] Create a minimal home page in `src/app/page.tsx`
+- [X] T009 [US1] Create the root layout in `src/app/layout.tsx` (global styles import, base HTML structure)
+- [X] T010 [P] [US1] Create a minimal home page in `src/app/page.tsx`
 - [ ] T011 [US1] Run `pnpm dev` and `pnpm build`; resolve any error so both succeed per `quickstart.md` US1
 
 **Checkpoint**: Local dev and production build both succeed — SC-001 met.
