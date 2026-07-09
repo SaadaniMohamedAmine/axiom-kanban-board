@@ -80,7 +80,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 ### Implementation for User Story 2
 
 - [X] T012 [US2] Apply the migration to the production `DATABASE_URL` and confirm connectivity from a deployed (or deployed-equivalent) context
-- [ ] T013 [US2] Verify via `prisma studio` (or an equivalent query) that every entity in `data-model.md` exists with none missing or extraneous; record the result per `quickstart.md` US2
+- [X] T013 [US2] Verify via `prisma studio` (or an equivalent query) that every entity in `data-model.md` exists with none missing or extraneous; record the result per `quickstart.md` US2
 
 **Checkpoint**: Schema completeness and dual-environment connectivity confirmed — SC-002 met.
 
