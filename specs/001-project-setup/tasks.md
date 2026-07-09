@@ -134,7 +134,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 5
 
-- [ ] T028 [US5] Link the Vercel project to the Git repository
+- [X] T028 [US5] Link the Vercel project to the Git repository
 - [ ] T029 [US5] Mirror every variable from `.env.local` into Vercel's project environment settings
 - [ ] T030 [US5] Deploy to Vercel and confirm the production URL is publicly reachable, rendering at minimum the functional login/sign-up screen
 - [ ] T031 [US5] Run a secrets scan across the full repository history before the first public push, confirming zero secret values are committed (FR-007)
