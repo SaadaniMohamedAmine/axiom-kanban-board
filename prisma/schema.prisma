@@ -1,0 +1,333 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum MemberRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+}
+
+enum BoardTemplate {
+  SCRUM
+  KANBAN
+  BUG_TRACKING
+  CUSTOM
+}
+
+enum TaskPriority {
+  URGENT
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum SprintStatus {
+  PLANNED
+  ACTIVE
+  COMPLETED
+}
+
+enum ActivityType {
+  STATUS_CHANGE
+  ASSIGNED
+  COMMENTED
+  AI_SUGGESTION_APPLIED
+}
+
+enum AILogType {
+  PRIORITIZE
+  ESTIMATE
+  DESCRIBE
+  DETECT_BLOCKER
+  ASSIGN
+}
+
+enum AIFeedback {
+  USEFUL
+  NOT_USEFUL
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  workspaces  Workspace[]       @relation("WorkspaceOwner")
+  memberships WorkspaceMember[]
+  assignees   TaskAssignee[]
+  comments    Comment[]
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model Account {
+  id         String  @id @default(cuid())
+  userId     String
+  providerId String
+  accountId  String
+  password   String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  token     String   @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  token      String   @unique
+  identifier String
+  expiresAt  DateTime
+
+  @@map("verifications")
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  ownerId   String
+  createdAt DateTime @default(now())
+
+  owner   User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members WorkspaceMember[]
+  boards  Board[]
+  invitations Invitation[]
+
+  @@index([ownerId])
+  @@map("workspaces")
+}
+
+model WorkspaceMember {
+  id         String       @id @default(cuid())
+  workspaceId String
+  userId     String
+  role       MemberRole   @default(MEMBER)
+  invitedAt  DateTime     @default(now())
+  joinedAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+  @@map("workspace_members")
+}
+
+model Invitation {
+  id          String           @id @default(cuid())
+  workspaceId String
+  email       String
+  role        MemberRole       @default(MEMBER)
+  token       String           @unique
+  status      InvitationStatus @default(PENDING)
+  createdAt   DateTime         @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("invitations")
+}
+
+model Board {
+  id         String        @id @default(cuid())
+  workspaceId String
+  name       String
+  template   BoardTemplate @default(KANBAN)
+  createdAt  DateTime      @default(now())
+
+  workspace Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  columns   Column[]
+  tasks     Task[]
+  labels    Label[]
+  sprints   Sprint[]
+
+  @@index([workspaceId])
+  @@map("boards")
+}
+
+model Column {
+  id      String  @id @default(cuid())
+  boardId String
+  name    String
+  order   Int
+  color   String?
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks Task[]
+
+  @@index([boardId])
+  @@map("columns")
+}
+
+model Task {
+  id          String       @id @default(cuid())
+  boardId     String
+  columnId    String
+  code        String?
+  title       String
+  description String?
+  priority    TaskPriority @default(MEDIUM)
+  estimate    Int?
+  dueDate     DateTime?
+  order       Int
+
+  board     Board          @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  column    Column         @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  assignees TaskAssignee[]
+  labels    TaskLabel[]
+  comments  Comment[]
+  activity  ActivityEvent[]
+  aiLogs    AILog[]
+
+  @@unique([boardId, code])
+  @@index([boardId])
+  @@index([columnId])
+  @@map("tasks")
+}
+
+model TaskAssignee {
+  id     String @id @default(cuid())
+  taskId String
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+  @@index([taskId])
+  @@index([userId])
+  @@map("task_assignees")
+}
+
+model Label {
+  id      String @id @default(cuid())
+  boardId String
+  name    String
+  color   String
+
+  board Board      @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  tasks TaskLabel[]
+
+  @@index([boardId])
+  @@map("labels")
+}
+
+model TaskLabel {
+  id      String @id @default(cuid())
+  taskId  String
+  labelId String
+
+  task  Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  label Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, labelId])
+  @@index([taskId])
+  @@index([labelId])
+  @@map("task_labels")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  taskId    String
+  authorId  String
+  body      String
+  createdAt DateTime @default(now())
+
+  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([authorId])
+  @@map("comments")
+}
+
+model ActivityEvent {
+  id        String       @id @default(cuid())
+  taskId    String
+  type      ActivityType
+  payload   Json
+  createdAt DateTime     @default(now())
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@map("activity_events")
+}
+
+model Sprint {
+  id        String       @id @default(cuid())
+  boardId   String
+  name      String
+  startDate DateTime
+  endDate   DateTime
+  status    SprintStatus @default(PLANNED)
+
+  board Board @relation(fields: [boardId], references: [id], onDelete: Cascade)
+
+  @@index([boardId])
+  @@map("sprints")
+}
+
+model AILog {
+  id          String     @id @default(cuid())
+  taskId      String?
+  type        AILogType
+  input       Json
+  output      Json
+  confidence  Float
+  feedback    AIFeedback?
+  createdAt   DateTime   @default(now())
+
+  task Task? @relation(fields: [taskId], references: [id], onDelete: SetNull)
+
+  @@index([taskId])
+  @@map("ai_logs")
+}
+
+model Notification {
+  id        String    @id @default(cuid())
+  userId    String
+  type      String
+  payload   Json
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("notifications")
+}

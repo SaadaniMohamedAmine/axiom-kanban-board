@@ -46,7 +46,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 **⚠️ CRITICAL**: T004–T008 must be complete before US2 or US3 work begins
 
 - [ ] T004 Provision a Vercel Postgres database and obtain its `DATABASE_URL`
-- [ ] T005 Initialize Prisma (`prisma init`) and author `prisma/schema.prisma` with every entity from `data-model.md` (User, Account, Session, Verification, Workspace, WorkspaceMember, Invitation, Board, Column, Task, TaskAssignee, Label, TaskLabel, Comment, ActivityEvent, Sprint, AILog, Notification) plus all enums (role, priority, template, status, etc.)
+- [X] T005 Initialize Prisma (`prisma init`) and author `prisma/schema.prisma` with every entity from `data-model.md` (User, Account, Session, Verification, Workspace, WorkspaceMember, Invitation, Board, Column, Task, TaskAssignee, Label, TaskLabel, Comment, ActivityEvent, Sprint, AILog, Notification) plus all enums (role, priority, template, status, etc.)
 - [ ] T006 Run the first migration locally (`prisma migrate dev --name init`) against `DATABASE_URL`
 - [ ] T007 [P] Create a Prisma client singleton in `src/lib/prisma.ts`
 - [ ] T008 [P] Establish the shared-types convention required by the constitution's TypeScript Strict Mode principle: create `src/types/` and an initial `src/types/auth.types.ts`
