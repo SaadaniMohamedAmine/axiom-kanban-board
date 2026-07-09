@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Axiom | Workspace Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&amp;family=Geist:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0b0f19;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.02) 1px, transparent 0);
+            background-size: 32px 32px;
+            color: #dfe2f1;
+            font-family: 'Geist', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-panel {
+            background: rgba(19, 26, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(66, 71, 84, 0.3);
+        }
+        .sidebar-active {
+            background: rgba(173, 198, 255, 0.1);
+            color: #adc6ff;
+            border-right: 2px solid #adc6ff;
+        }
+        .noise-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .glow-hover:hover {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#0f131d",
+                      "surface-bright": "#353944",
+                      "primary-fixed-dim": "#adc6ff",
+                      "on-error": "#690005",
+                      "secondary-fixed-dim": "#d0bcff",
+                      "on-surface": "#dfe2f1",
+                      "on-primary-fixed-variant": "#004395",
+                      "surface-container": "#1c1f2a",
+                      "primary-container": "#4d8eff",
+                      "surface-container-highest": "#313540",
+                      "background": "#0f131d",
+                      "tertiary-fixed-dim": "#2fd9f4",
+                      "inverse-on-surface": "#2c303b",
+                      "tertiary-container": "#009fb4",
+                      "primary": "#adc6ff",
+                      "outline-variant": "#424754",
+                      "primary-fixed": "#d8e2ff",
+                      "inverse-surface": "#dfe2f1",
+                      "on-secondary-fixed-variant": "#5516be",
+                      "on-tertiary": "#00363e",
+                      "surface-dim": "#0f131d",
+                      "on-secondary-container": "#c4abff",
+                      "tertiary": "#2fd9f4",
+                      "secondary-container": "#571bc1",
+                      "on-tertiary-fixed-variant": "#004e5a",
+                      "outline": "#8c909f",
+                      "on-primary-fixed": "#001a42",
+                      "surface-container-high": "#262a35",
+                      "surface-tint": "#adc6ff",
+                      "on-tertiary-fixed": "#001f25",
+                      "surface-variant": "#313540",
+                      "secondary-fixed": "#e9ddff",
+                      "surface-container-lowest": "#0a0e18",
+                      "secondary": "#d0bcff",
+                      "tertiary-fixed": "#a2eeff",
+                      "on-secondary-fixed": "#23005c",
+                      "on-primary": "#002e6a",
+                      "on-tertiary-container": "#002f36",
+                      "inverse-primary": "#005ac2",
+                      "on-primary-container": "#00285d",
+                      "on-error-container": "#ffdad6",
+                      "on-surface-variant": "#c2c6d6",
+                      "on-secondary": "#3c0091",
+                      "error-container": "#93000a",
+                      "error": "#ffb4ab",
+                      "surface-container-low": "#171b26",
+                      "on-background": "#dfe2f1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "4px",
+                      "lg": "8px",
+                      "xl": "12px",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "container-padding": "24px",
+                      "unit": "8px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "label-md": ["Geist"],
+                      "h1-mobile": ["Geist"],
+                      "h1": ["Geist"],
+                      "body-md": ["Geist"],
+                      "display": ["Geist"],
+                      "h2": ["Geist"],
+                      "body-lg": ["Geist"],
+                      "mono": ["jetbrainsMono"],
+                      "h3": ["Geist"]
+              },
+              "fontSize": {
+                      "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "h1-mobile": ["24px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                      "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                      "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                      "mono": ["13px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                      "h3": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="dark bg-surface text-on-surface">
+<div class="noise-overlay"></div>
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface-container/80 backdrop-blur-md border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-8">
+<span class="font-display text-h2 font-black tracking-tighter text-on-surface">Axiom</span>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Projects</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Team</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<input class="bg-surface-container-low border border-outline-variant/30 rounded px-4 py-1.5 text-body-md focus:ring-1 focus:ring-primary focus:outline-none w-64 transition-all" placeholder="Search..." type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-2 text-on-surface-variant text-sm">search</span>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">settings</button>
+<div class="h-8 w-8 rounded bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a workspace administrator in a high-tech office environment. The subject is wearing a clean charcoal grey sweater. The background is softly blurred showing minimalist architectural details of a modern office space with cool blue and slate grey tones, matching the Axiom dark mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6jWHCU8uw_KRuL2fJA-w9Gmp6aEfNktNW2x2DLJ72HGViajDHa4gJV7boi0ud3NwB1wDq1NUaxlX495PXO7yaUhhczQWAYC62gj8Sb6EvFazBJO03GTL0M9cNxdAEfM23x2_arMkgQiDSGmuQpA90ljM5JcbfjbG9t2eMdp1NNjcVVeAirFebELcI4n9MEL9vSY1ZPRCpwC0vIL7Sdu4p_WK3i-E4duq5ZFjln8NmMOT0o8zT87jJpfpl3duZxi_o5kvIsC6PJdRt"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-[260px] flex flex-col py-6 bg-surface-dim border-r border-outline-variant/30 z-40">
+<div class="mt-16 px-6 mb-8 flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">hub</span>
+</div>
+<div>
+<p class="font-display text-h3 font-bold text-on-surface">Axiom HQ</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Engineering Team</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1 px-3">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-bright/50 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-bright/50 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span class="font-label-md text-label-md">My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 sidebar-active rounded transition-all duration-200 translate-x-1" href="#">
+<span class="material-symbols-outlined text-[20px]">group_work</span>
+<span class="font-label-md text-label-md">Workspaces</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-bright/50 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+<span class="font-label-md text-label-md">AI Insights</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-bright/50 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">inventory_2</span>
+<span class="font-label-md text-label-md">Archive</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:bg-surface-bright/50 rounded transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+<span class="font-label-md text-label-md">Trash</span>
+</a>
+</nav>
+<div class="px-6 space-y-4">
+<div class="p-4 rounded-xl glass-panel bg-primary/5 border border-primary/20">
+<p class="font-label-md text-label-md text-primary mb-2">Pro Plan</p>
+<p class="text-[11px] text-on-surface-variant mb-4">Unlock advanced AI analytics and unlimited workspaces.</p>
+<button class="w-full py-2 bg-primary text-on-primary font-label-md text-label-md rounded glow-hover transition-all">Upgrade Plan</button>
+</div>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">headset_mic</span>
+<span class="font-label-md text-label-md">Contact Support</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-[260px] pt-16 min-h-screen flex flex-col">
+<div class="flex-1 p-container-padding max-w-5xl mx-auto w-full">
+<!-- Header Section -->
+<div class="mb-10">
+<h1 class="font-h1 text-h1 text-on-surface mb-2">Workspace Settings</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your organization's core identity and global preferences. Workspace settings apply to all 12 members.</p>
+</div>
+<!-- Settings Tabs -->
+<div class="flex border-b border-outline-variant/30 mb-8 gap-8">
+<button class="pb-4 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">General</button>
+<button class="pb-4 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Members</button>
+<button class="pb-4 border-b-2 border-primary text-primary font-bold">Workspace</button>
+<button class="pb-4 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Security</button>
+<button class="pb-4 font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Billing</button>
+</div>
+<!-- Bento Layout Content -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Workspace Name Card -->
+<div class="col-span-12 md:col-span-8 glass-panel p-8 rounded-xl shadow-sm">
+<h3 class="font-h3 text-h3 mb-6">General Information</h3>
+<div class="space-y-6">
+<div class="group">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2 group-focus-within:text-primary transition-colors">Workspace Name</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded px-4 py-3 text-body-md focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all" type="text" value="Axiom HQ"/>
+</div>
+<div class="group">
+<label class="block font-label-md text-label-md text-on-surface-variant mb-2 group-focus-within:text-primary transition-colors">Display Name</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded px-4 py-3 text-body-md font-mono focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-all" type="text" value="axiom_engineering"/>
+<p class="mt-2 text-[11px] text-on-surface-variant opacity-60">This unique handle is used for deep links and API calls.</p>
+</div>
+</div>
+</div>
+<!-- Active Sessions / AI Panel (Right Side) -->
+<div class="col-span-12 md:col-span-4 glass-panel p-6 rounded-xl border-l-primary/30 relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-16 -mt-16"></div>
+<div class="relative z-10">
+<div class="flex items-center gap-2 mb-4">
+<span class="w-1 h-1 rounded-full bg-primary animate-pulse"></span>
+<h4 class="font-label-md text-label-md text-primary tracking-widest uppercase">AI Insight</h4>
+</div>
+<p class="font-body-md text-body-md text-on-surface mb-4 italic">"Consider standardizing naming conventions for your 12 team members to improve workspace searchability."</p>
+<div class="flex items-center gap-2">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface bg-surface-bright"></div>
+<div class="w-6 h-6 rounded-full border border-surface bg-primary/30"></div>
+<div class="w-6 h-6 rounded-full border border-surface bg-secondary/30"></div>
+</div>
+<span class="font-label-md text-[11px] text-on-surface-variant">Active now</span>
+</div>
+</div>
+</div>
+<!-- Branding Section -->
+<div class="col-span-12 glass-panel p-8 rounded-xl">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
+<div>
+<h3 class="font-h3 text-h3 mb-1">Workspace Branding</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Set the visual identity for Axiom HQ. This appears on invoices, emails, and the interface header.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-outline-variant text-on-surface font-label-md text-label-md rounded hover:bg-surface-bright transition-colors">Reset to Default</button>
+<button class="px-6 py-2 bg-primary text-on-primary font-label-md text-label-md rounded glow-hover transition-all">Save Changes</button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+<!-- Logo Upload Area -->
+<div class="space-y-4">
+<label class="block font-label-md text-label-md text-on-surface-variant">Workspace Logo</label>
+<div class="h-48 rounded-xl border-2 border-dashed border-outline-variant/30 bg-surface-container-low flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 transition-all group">
+<div class="mb-4 w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary-fixed-dim">
+<span class="font-display font-black text-h2 select-none">AX</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface mb-1 group-hover:text-primary transition-colors">Click to upload logo</p>
+<p class="font-label-md text-label-md text-on-surface-variant">PNG, SVG or JPEG (Max 2MB)</p>
+</div>
+</div>
+<!-- Brand Preview -->
+<div class="space-y-4">
+<label class="block font-label-md text-label-md text-on-surface-variant">Brand Identity Preview</label>
+<div class="h-48 rounded-xl bg-surface-container-lowest border border-outline-variant/20 p-6 flex items-center justify-center">
+<div class="text-center">
+<div class="font-display text-display font-black tracking-tighter text-on-surface mb-2">Axiom</div>
+<div class="flex items-center justify-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary/10 text-primary font-mono text-[10px] uppercase">Corporate Modern</span>
+<span class="w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(173,198,255,0.6)]"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Extra Options -->
+<div class="col-span-12 md:col-span-6 glass-panel p-8 rounded-xl">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h4 class="font-h3 text-h3 mb-1">Timezone &amp; Locale</h4>
+<p class="font-label-md text-label-md text-on-surface-variant">Set the default time for task schedules.</p>
+</div>
+</div>
+<select class="w-full bg-surface-container-lowest border border-outline-variant/30 rounded px-4 py-3 text-body-md focus:ring-1 focus:ring-primary focus:outline-none appearance-none">
+<option>UTC -08:00 (Pacific Time)</option>
+<option>UTC +00:00 (London Time)</option>
+<option>UTC +05:30 (IST)</option>
+</select>
+</div>
+<div class="col-span-12 md:col-span-6 border border-error/20 bg-error/5 p-8 rounded-xl">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h4 class="font-h3 text-h3 text-error mb-1">Danger Zone</h4>
+<p class="font-label-md text-label-md text-on-surface-variant">Permanently delete this workspace and all data.</p>
+</div>
+</div>
+<button class="px-4 py-2 bg-error-container text-on-error-container font-label-md text-label-md rounded hover:bg-error transition-colors">Delete Workspace</button>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full py-8 px-container-padding flex justify-between items-center bg-surface-container-lowest border-t border-outline-variant/20">
+<div class="flex items-center gap-6">
+<span class="font-display text-h3 font-bold text-on-surface">Axiom</span>
+<p class="font-label-md text-label-md text-on-surface-variant">© 2024 Axiom AI. All rights reserved.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Security</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">API Reference</a>
+</div>
+</footer>
+</main>
+<script>
+        // Micro-interaction: Active state feedback
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.classList.add('scale-95');
+                setTimeout(() => btn.classList.remove('scale-95'), 150);
+            });
+        });
+
+        // Search bar focus effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.classList.add('w-80');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.classList.remove('w-80');
+        });
+    </script>
+</body></html>

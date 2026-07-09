@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Axiom | Notification Center</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+        :root {
+            --font-geist: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-geist);
+            background-color: #0b0f19;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 128px 128px;
+            background-blend-mode: overlay;
+        }
+
+        .glass-panel {
+            background: rgba(26, 34, 54, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(66, 71, 84, 0.3);
+        }
+
+        .notification-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .ai-border {
+            position: relative;
+            border: 1px solid transparent;
+            background-clip: padding-box;
+        }
+        .ai-border::after {
+            position: absolute;
+            top: -1px; bottom: -1px;
+            left: -1px; right: -1px;
+            background: linear-gradient(to right, #8b5cf6, #06b6d4);
+            content: '';
+            z-index: -1;
+            border-radius: inherit;
+            opacity: 0.4;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#0f131d",
+                        "surface-bright": "#353944",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-error": "#690005",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-surface": "#dfe2f1",
+                        "on-primary-fixed-variant": "#004395",
+                        "surface-container": "#1c1f2a",
+                        "primary-container": "#4d8eff",
+                        "surface-container-highest": "#313540",
+                        "background": "#0f131d",
+                        "tertiary-fixed-dim": "#2fd9f4",
+                        "inverse-on-surface": "#2c303b",
+                        "tertiary-container": "#009fb4",
+                        "primary": "#adc6ff",
+                        "outline-variant": "#424754",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-surface": "#dfe2f1",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-tertiary": "#00363e",
+                        "surface-dim": "#0f131d",
+                        "on-secondary-container": "#c4abff",
+                        "tertiary": "#2fd9f4",
+                        "secondary-container": "#571bc1",
+                        "on-tertiary-fixed-variant": "#004e5a",
+                        "outline": "#8c909f",
+                        "on-primary-fixed": "#001a42",
+                        "surface-container-high": "#262a35",
+                        "surface-tint": "#adc6ff",
+                        "on-tertiary-fixed": "#001f25",
+                        "surface-variant": "#313540",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-container-lowest": "#0a0e18",
+                        "secondary": "#d0bcff",
+                        "tertiary-fixed": "#a2eeff",
+                        "on-secondary-fixed": "#23005c",
+                        "on-primary": "#002e6a",
+                        "on-tertiary-container": "#002f36",
+                        "inverse-primary": "#005ac2",
+                        "on-primary-container": "#00285d",
+                        "on-error-container": "#ffdad6",
+                        "on-surface-variant": "#c2c6d6",
+                        "on-secondary": "#3c0091",
+                        "error-container": "#93000a",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#171b26",
+                        "on-background": "#dfe2f1"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar-width": "260px",
+                        "container-padding": "24px",
+                        "unit": "8px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "h1": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display": ["Inter"],
+                        "h2": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "mono": ["JetBrains Mono"],
+                        "h3": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["12px", { "lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "h1": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "600" }],
+                        "body-md": ["14px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "display": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600" }],
+                        "h2": ["24px", { "lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "1.6", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+                        "mono": ["13px", { "lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400" }],
+                        "h3": ["18px", { "lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500" }]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="text-on-surface overflow-hidden">
+<!-- Sidebar Navigation -->
+<aside class="fixed left-0 top-0 h-full w-[260px] flex flex-col py-6 bg-surface-dim border-r border-outline-variant/30 z-[60]">
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">hexagon</span>
+</div>
+<div>
+<h1 class="font-display text-h3 font-bold text-on-surface leading-none">Axiom HQ</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Engineering Team</p>
+</div>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<!-- Active State Logic: Dashboard/Overview is likely active -->
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary border-r-2 border-primary transition-all translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="grid_view">grid_view</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="check_circle">check_circle</span>
+<span class="font-label-md text-label-md">My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="group_work">group_work</span>
+<span class="font-label-md text-label-md">Workspaces</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="auto_awesome">auto_awesome</span>
+<span class="font-label-md text-label-md">AI Insights</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-bright/50 transition-colors" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-md text-label-md">Archive</span>
+</a>
+</nav>
+<div class="px-3 mt-auto space-y-1 pt-6 border-t border-outline-variant/10">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant hover:text-on-surface transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="help">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<div class="mx-3 mt-4 p-4 rounded-xl bg-surface-container-highest border border-outline-variant/20">
+<p class="font-label-md text-[11px] uppercase tracking-wider text-on-surface-variant mb-2">Current Plan</p>
+<p class="font-body-md text-body-md font-semibold text-on-surface mb-3">Enterprise Pro</p>
+<button class="w-full py-2 px-4 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-bold hover:opacity-90 active:scale-95 transition-all">Upgrade Plan</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="ml-[260px] min-h-screen relative">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 right-0 left-[260px] h-16 flex justify-between items-center px-container-padding bg-surface-container/80 backdrop-blur-md border-b border-outline-variant/30 z-50">
+<div class="flex items-center gap-8">
+<h2 class="font-display text-h2 font-black tracking-tighter text-on-surface">Axiom</h2>
+<nav class="hidden md:flex items-center gap-6">
+<a class="font-label-md text-label-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Dashboard</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Projects</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Team</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<button class="p-2 rounded-full hover:bg-surface-bright/50 transition-colors relative" id="notification-trigger">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+<span class="absolute top-2 right-2.5 w-2 h-2 bg-primary-container rounded-full border-2 border-surface-container"></span>
+</button>
+<!-- NOTIFICATION CENTER DROP-DOWN -->
+<div class="absolute right-0 mt-4 w-96 glass-panel rounded-xl shadow-2xl overflow-hidden border border-outline-variant/40 notification-glow opacity-0 translate-y-2 pointer-events-none transition-all duration-300 z-[100]" id="notification-panel">
+<div class="p-4 border-b border-outline-variant/30 flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface">Notifications</h3>
+<button class="text-primary font-label-md text-label-md hover:underline">Mark all as read</button>
+</div>
+<div class="max-h-[480px] overflow-y-auto no-scrollbar">
+<!-- Notification Item 1: AI Blocker -->
+<div class="p-4 flex gap-4 hover:bg-surface-bright/20 transition-colors cursor-pointer border-b border-outline-variant/10 relative group">
+<div class="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-full"></div>
+<div class="w-10 h-10 shrink-0 rounded-full bg-secondary-container/30 flex items-center justify-center ai-border">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<p class="font-body-md text-body-md text-on-surface font-semibold leading-snug">
+                                            Axiom flagged a blocker in <span class="text-primary">Sprint 4</span>
+</p>
+<span class="font-label-md text-[11px] text-on-surface-variant/60 whitespace-nowrap">2m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs line-clamp-2">
+                                        Potential circular dependency detected in 'AuthModule' and 'PaymentGateway'.
+                                    </p>
+</div>
+</div>
+<!-- Notification Item 2: Assignment -->
+<div class="p-4 flex gap-4 hover:bg-surface-bright/20 transition-colors cursor-pointer border-b border-outline-variant/10 relative">
+<div class="absolute left-1 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-full"></div>
+<div class="w-10 h-10 shrink-0 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="assignment_ind">assignment_ind</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<p class="font-body-md text-body-md text-on-surface font-semibold leading-snug">
+                                            You were assigned 2 tasks
+                                        </p>
+<span class="font-label-md text-[11px] text-on-surface-variant/60">45m ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs">
+                                        Refactor API endpoints and update documentation.
+                                    </p>
+</div>
+</div>
+<!-- Notification Item 3: Project Update -->
+<div class="p-4 flex gap-4 hover:bg-surface-bright/20 transition-colors cursor-pointer border-b border-outline-variant/10 opacity-70">
+<div class="w-10 h-10 shrink-0 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="forum">forum</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<p class="font-body-md text-body-md text-on-surface font-medium leading-snug">
+                                            Sarah commented on <span class="text-on-surface">Design System</span>
+</p>
+<span class="font-label-md text-[11px] text-on-surface-variant/60">3h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs italic">
+                                        "Let's stick with the glassmorphic style for the modals."
+                                    </p>
+</div>
+</div>
+<!-- Notification Item 4: System -->
+<div class="p-4 flex gap-4 hover:bg-surface-bright/20 transition-colors cursor-pointer opacity-70">
+<div class="w-10 h-10 shrink-0 rounded-full bg-surface-container-highest flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" data-icon="terminal">terminal</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<p class="font-body-md text-body-md text-on-surface font-medium leading-snug">
+                                            Deployment successful
+                                        </p>
+<span class="font-label-md text-[11px] text-on-surface-variant/60">5h ago</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant text-xs">
+                                        Production build v2.4.1 is now live.
+                                    </p>
+</div>
+</div>
+</div>
+<div class="p-3 bg-surface-container-low/50 border-t border-outline-variant/30 text-center">
+<button class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">See all activity</button>
+</div>
+</div>
+</div>
+<button class="p-2 rounded-full hover:bg-surface-bright/50 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-8 rounded-full bg-surface-bright overflow-hidden border border-outline-variant/30">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a software engineer in their late 20s with a focused expression. The lighting is moody and cinematic, with cool blue ambient tones reflecting off a glass surface in the background. The style is sharp and high-contrast, fitting the discreet premium advisor persona of the Axiom platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5nfX3w42TmKuCosu7rch6oY182J-RzdVbC2QN86eHeLxTnpUoNC_-8kBui28lpeSbNH4GuKOEImjs2TnXSObAMJq8rfih0fLxWfIzd2U8vDF9P4vWgROGbGQHIHOGhId5ZOftQBp1LeqEg7GxLRz0IhLawC8-oNx2qH_I1cBn8uKgteQJU4A13ttgok6qkUOcLW0VuLzqUe92j1Cr-iVYhZTcktUYo5xxDJkb7uy9_RucNWhENy_P6nBzlwrD_R7uhyY-SKhSny6P"/>
+</div>
+</div>
+</header>
+<!-- Background Content (Board State - Slightly Dimmed) -->
+<div class="pt-24 px-container-padding transition-all duration-500 opacity-60 grayscale-[0.2]" id="content-canvas">
+<div class="flex justify-between items-end mb-8">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-primary/20 text-primary border border-primary/30 uppercase tracking-widest">Active Sprint</span>
+<span class="text-on-surface-variant font-label-md text-label-md">/ Sprint 4</span>
+</div>
+<h1 class="font-display text-h1 text-on-surface">Core Infrastructure Refactor</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="px-4 py-2 rounded-lg bg-surface-container-highest border border-outline-variant/30 flex items-center gap-2 text-on-surface font-label-md text-label-md hover:bg-surface-bright/50 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                        Filters
+                    </button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="add">add</span>
+                        Create Task
+                    </button>
+</div>
+</div>
+<!-- Kanban Board -->
+<div class="flex gap-gutter overflow-x-auto pb-12 no-scrollbar">
+<!-- Column: To Do -->
+<div class="w-[320px] shrink-0">
+<div class="flex items-center justify-between mb-4 px-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<h4 class="font-h3 text-h3 text-on-surface">To Do</h4>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">4</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20 hover:border-primary/50 transition-all cursor-grab active:cursor-grabbing group">
+<p class="font-body-md text-body-md text-on-surface mb-4 group-hover:text-primary transition-colors">Implement Redis caching for session management</p>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface-container bg-surface-bright"></div>
+<div class="w-6 h-6 rounded-full border border-surface-container bg-surface-bright"></div>
+</div>
+<span class="font-label-md text-[11px] text-on-surface-variant px-2 py-0.5 rounded bg-surface-container-highest">Backend</span>
+</div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant/20 hover:border-primary/50 transition-all cursor-grab group">
+<p class="font-body-md text-body-md text-on-surface mb-4">Schema migration for user analytics table</p>
+<div class="flex justify-between items-center">
+<div class="flex -space-x-2">
+<div class="w-6 h-6 rounded-full border border-surface-container bg-surface-bright"></div>
+</div>
+<span class="font-label-md text-[11px] text-on-surface-variant px-2 py-0.5 rounded bg-surface-container-highest">Database</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: In Progress -->
+<div class="w-[320px] shrink-0">
+<div class="flex items-center justify-between mb-4 px-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<h4 class="font-h3 text-h3 text-on-surface">In Progress</h4>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">2</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="space-y-4">
+<!-- Task with AI Blocker -->
+<div class="p-4 rounded-xl bg-surface-container border-2 border-primary/20 bg-primary/5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-1">
+<span class="material-symbols-outlined text-primary text-[16px] animate-pulse" data-icon="warning" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface font-semibold mb-2">AuthModule Refactor</p>
+<p class="font-label-md text-[12px] text-primary/80 mb-4 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="auto_awesome">auto_awesome</span>
+                                Circular dependency flagged
+                            </p>
+<div class="flex justify-between items-center">
+<div class="w-6 h-6 rounded-full border border-surface-container bg-primary-container flex items-center justify-center text-[10px] font-bold">ME</div>
+<span class="font-label-md text-[11px] text-primary px-2 py-0.5 rounded bg-primary/10 border border-primary/20">Critical</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: Done -->
+<div class="w-[320px] shrink-0">
+<div class="flex items-center justify-between mb-4 px-2">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<h4 class="font-h3 text-h3 text-on-surface">Done</h4>
+<span class="font-label-md text-label-md text-on-surface-variant ml-1">12</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_horiz">more_horiz</span>
+</div>
+<div class="space-y-4">
+<div class="p-4 rounded-xl bg-surface-container border border-outline-variant/10 opacity-60">
+<p class="font-body-md text-body-md text-on-surface mb-4 line-through decoration-outline-variant">Update environment variables for staging</p>
+<div class="flex justify-between items-center">
+<div class="w-6 h-6 rounded-full border border-surface-container bg-surface-bright"></div>
+<span class="material-symbols-outlined text-tertiary text-[18px]" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="w-full py-8 px-container-padding flex justify-between items-center border-t border-outline-variant/20 bg-surface-container-lowest mt-12">
+<p class="font-label-md text-label-md text-on-surface-variant">© 2024 Axiom AI. All rights reserved.</p>
+<div class="flex gap-6">
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Terms of Service</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">Security</a>
+<a class="font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors" href="#">API Reference</a>
+</div>
+</footer>
+</main>
+<script>
+        // Interactive Logic for the Notification Center
+        const trigger = document.getElementById('notification-trigger');
+        const panel = document.getElementById('notification-panel');
+        const canvas = document.getElementById('content-canvas');
+
+        let isOpen = false;
+
+        function toggleNotifications(e) {
+            e.stopPropagation();
+            isOpen = !isOpen;
+            
+            if (isOpen) {
+                panel.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+                panel.classList.add('opacity-100', 'translate-y-0');
+                canvas.classList.remove('opacity-60', 'grayscale-[0.2]');
+                canvas.classList.add('opacity-30', 'grayscale');
+            } else {
+                panel.classList.add('opacity-0', 'translate-y-2', 'pointer-events-none');
+                panel.classList.remove('opacity-100', 'translate-y-0');
+                canvas.classList.add('opacity-60', 'grayscale-[0.2]');
+                canvas.classList.remove('opacity-30', 'grayscale');
+            }
+        }
+
+        // Initialize state on load for demonstration
+        window.addEventListener('DOMContentLoaded', () => {
+            // Start with notifications open to satisfy the prompt's main focus
+            setTimeout(() => {
+                isOpen = true;
+                panel.classList.remove('opacity-0', 'translate-y-2', 'pointer-events-none');
+                panel.classList.add('opacity-100', 'translate-y-0');
+            }, 500);
+        });
+
+        trigger.addEventListener('click', toggleNotifications);
+
+        document.addEventListener('click', (e) => {
+            if (isOpen && !panel.contains(e.target) && !trigger.contains(e.target)) {
+                toggleNotifications(e);
+            }
+        });
+
+        // Hover micro-interactions for items
+        const navItems = document.querySelectorAll('aside nav a');
+        navItems.forEach(item => {
+            item.addEventListener('mousedown', () => {
+                item.style.transform = 'scale(0.98) translateX(4px)';
+            });
+            item.addEventListener('mouseup', () => {
+                item.style.transform = 'translateX(4px)';
+            });
+        });
+    </script>
+</body></html>

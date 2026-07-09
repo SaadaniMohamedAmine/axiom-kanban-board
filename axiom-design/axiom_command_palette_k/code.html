@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/style.css" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/jetbrains-mono@1.0.6/css/jetbrains-mono.min.css" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0b0f19;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3C%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+            font-family: 'Geist', sans-serif;
+            overflow: hidden;
+        }
+
+        .glass-morphism {
+            backdrop-filter: blur(12px);
+            background: rgba(26, 34, 54, 0.85);
+            border: 1px solid rgba(66, 71, 84, 0.3);
+        }
+
+        .violet-glow {
+            filter: blur(40px);
+            background: rgba(139, 92, 246, 0.15);
+        }
+
+        .ai-border {
+            position: relative;
+        }
+        .ai-border::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            padding: 1px;
+            border-radius: inherit;
+            background: linear-gradient(to right, #8b5cf6, #06b6d4);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+
+        .keyboard-hint {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary": "#3c0091",
+                    "on-tertiary-fixed": "#001f25",
+                    "error": "#ffb4ab",
+                    "surface-container": "#1c1f2a",
+                    "on-surface-variant": "#c2c6d6",
+                    "error-container": "#93000a",
+                    "on-primary-fixed-variant": "#004395",
+                    "on-tertiary-container": "#002f36",
+                    "surface-bright": "#353944",
+                    "surface-tint": "#adc6ff",
+                    "outline": "#8c909f",
+                    "tertiary-fixed": "#a2eeff",
+                    "surface-dim": "#0f131d",
+                    "surface-container-low": "#171b26",
+                    "outline-variant": "#424754",
+                    "on-tertiary": "#00363e",
+                    "secondary": "#d0bcff",
+                    "surface": "#0f131d",
+                    "on-background": "#dfe2f1",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "on-primary-container": "#00285d",
+                    "surface-container-lowest": "#0a0e18",
+                    "on-primary": "#002e6a",
+                    "tertiary-fixed-dim": "#2fd9f4",
+                    "surface-container-high": "#262a35",
+                    "on-error-container": "#ffdad6",
+                    "primary-container": "#4d8eff",
+                    "inverse-surface": "#dfe2f1",
+                    "on-tertiary-fixed-variant": "#004e5a",
+                    "on-error": "#690005",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "background": "#0f131d",
+                    "tertiary-container": "#009fb4",
+                    "primary": "#adc6ff",
+                    "primary-fixed": "#d8e2ff",
+                    "on-primary-fixed": "#001a42",
+                    "secondary-fixed": "#e9ddff",
+                    "on-surface": "#dfe2f1",
+                    "surface-variant": "#313540",
+                    "surface-container-highest": "#313540",
+                    "tertiary": "#2fd9f4",
+                    "secondary-container": "#571bc1",
+                    "on-secondary-container": "#c4abff",
+                    "inverse-on-surface": "#2c303b",
+                    "primary-fixed-dim": "#adc6ff",
+                    "on-secondary-fixed": "#23005c",
+                    "inverse-primary": "#005ac2"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "container-padding": "24px",
+                    "unit": "8px",
+                    "sidebar-width": "260px",
+                    "gutter": "16px"
+            },
+            "fontFamily": {
+                    "label-md": ["Geist"],
+                    "body-md": ["Geist"],
+                    "h3": ["Geist"],
+                    "h1-mobile": ["Geist"],
+                    "display": ["Geist"],
+                    "body-lg": ["Geist"],
+                    "h2": ["Geist"],
+                    "h1": ["Geist"],
+                    "mono": ["jetbrainsMono"]
+            },
+            "fontSize": {
+                    "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                    "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                    "h3": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                    "h1-mobile": ["24px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "1.6", "letterSpacing": "-0.01em", "fontWeight": "400"}],
+                    "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "600"}],
+                    "mono": ["13px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- Mock Background Page to provide context -->
+<main class="flex-1 overflow-hidden relative">
+<div class="fixed inset-0 z-0">
+
+</div>
+<!-- Sidebar Anchor -->
+<aside class="fixed left-0 top-0 h-full flex flex-col p-4 z-40 bg-surface-container border-r border-outline-variant/10 w-sidebar-width">
+<div class="mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+<span class="text-on-primary font-display font-semibold text-h3">A</span>
+</div>
+<div class="flex flex-col">
+<h2 class="font-display text-h3 text-primary leading-none">Axiom</h2>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-60">Elite Tier</p>
+</div>
+</div>
+<nav class="space-y-1">
+<div class="flex items-center gap-3 p-3 text-on-primary bg-primary-container/20 rounded-lg transition-all duration-200">
+<span class="material-symbols-outlined text-[20px]" data-icon="grid_view">grid_view</span>
+<span class="font-body-md text-body-md">Workspace</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/50 rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-[20px]" data-icon="developer_board">developer_board</span>
+<span class="font-body-md text-body-md">Boards</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/50 rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-[20px]" data-icon="assignment_turned_in">assignment_turned_in</span>
+<span class="font-body-md text-body-md">My Tasks</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/50 rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-[20px]" data-icon="monitoring">monitoring</span>
+<span class="font-body-md text-body-md">Analytics</span>
+</div>
+</nav>
+<div class="mt-auto space-y-1">
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/50 rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-[20px]" data-icon="help">help</span>
+<span class="font-body-md text-body-md">Help</span>
+</div>
+<div class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-bright/50 rounded-lg transition-all duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-[20px]" data-icon="keyboard_command_key">keyboard_command_key</span>
+<span class="font-body-md text-body-md">Command Palette</span>
+<span class="ml-auto keyboard-hint px-1.5 py-0.5 rounded text-[10px] font-mono opacity-60">⌘K</span>
+</div>
+</div>
+</aside>
+<!-- Command Palette Overlay -->
+<div class="fixed inset-0 z-[100] flex items-start justify-center pt-24 bg-surface-container-lowest/60 backdrop-blur-sm transition-opacity duration-300" id="command-palette-overlay">
+<div class="relative w-full max-w-[600px] mx-4">
+<!-- Violet Ambient Glow -->
+<div class="absolute -top-12 left-1/2 -translate-x-1/2 w-3/4 h-32 violet-glow rounded-full pointer-events-none"></div>
+<div class="glass-morphism rounded-xl shadow-2xl overflow-hidden flex flex-col relative z-10 transition-transform duration-300 transform scale-100">
+<!-- Search Header -->
+<div class="relative flex items-center px-5 h-16 border-b border-outline-variant/20">
+<div class="flex items-center justify-center w-6 h-6 rounded bg-primary/20 mr-4">
+<span class="text-primary font-display font-bold text-[12px]">A</span>
+</div>
+<input autofocus="" class="flex-1 bg-transparent border-none text-on-surface placeholder:text-on-surface-variant/50 focus:ring-0 font-body-lg text-body-lg" id="palette-search" placeholder="Search tasks, boards, or people..." type="text"/>
+<div class="flex items-center gap-2">
+<div class="keyboard-hint px-2 py-1 rounded-md flex items-center gap-1">
+<span class="font-mono text-[11px] text-on-surface-variant">Esc</span>
+</div>
+</div>
+</div>
+<!-- Scrollable Results -->
+<div class="max-h-[440px] overflow-y-auto py-2 custom-scrollbar">
+<!-- AI Suggestion Prompt (styled as suggested) -->
+<div class="mx-3 my-2 px-4 py-3 rounded-lg ai-border bg-surface-container/40 flex flex-col gap-2 group cursor-pointer hover:bg-surface-container/60 transition-colors">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary" data-icon="bolt">bolt</span>
+<span class="font-label-md text-label-md text-on-surface-variant tracking-wider uppercase">AI Suggestions</span>
+</div>
+<div class="flex items-center gap-1.5 bg-tertiary/10 px-2 py-0.5 rounded-full">
+<div class="w-1 h-1 rounded-full bg-tertiary animate-pulse-soft"></div>
+<span class="font-label-md text-[10px] text-tertiary">98% Match</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface">Generate a status report for the <span class="text-primary">Q3 Engineering sprint</span> based on current Jira velocity?</p>
+</div>
+<!-- Recent Section -->
+<div class="mt-4 px-4 pb-2">
+<h3 class="font-label-md text-label-md text-on-surface-variant/40 uppercase tracking-widest px-1">Recent</h3>
+</div>
+<!-- Result Items -->
+<div class="px-2 space-y-0.5">
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-bright/50 group cursor-pointer transition-colors">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="developer_board">developer_board</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface">Core Infrastructure Board</span>
+<span class="font-label-md text-label-md text-on-surface-variant/60">Boards › Platform Engineering</span>
+</div>
+<div class="ml-auto opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+<span class="font-mono text-[10px] text-on-surface-variant/60">Enter to open</span>
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant/60" data-icon="keyboard_return">keyboard_return</span>
+</div>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-bright/50 group cursor-pointer transition-colors">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]" data-icon="assignment_turned_in">assignment_turned_in</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface">Migrate Auth Service to v2</span>
+<span class="font-label-md text-label-md text-on-surface-variant/60">In Progress › Priority 1</span>
+</div>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-bright/50 group cursor-pointer transition-colors">
+<div class="w-9 h-9 rounded-full overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a software engineer with glasses, looking thoughtful, set against a dark, minimalist technical office background with soft violet and blue lighting accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDFYEOcfn5NR6aaKgBPg5au-sxS-XMB4NUFo-QCuCIWQSGk_TbdRx5O-ZejykH1cSVVrmM2sFJrtLU5dFBnnANURsCtm0UQaTxzqixV9fXe_weN-7s-cvQGzrdMrN1z1Qt4PeFVn25BzcnhbyttYreRQqR3h4GnCRe_Briby486VZTlNWmWc-kjXaX_x2IKS2FpfFMnzEBZWWwXsWqOgUh9nwyOEVMp7U2j2zLsRBnnsFdy8rdiIBR6AhjWW8Rkx9I5v8k4BZvmdNA"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface">Sarah Drasner</span>
+<span class="font-label-md text-label-md text-on-surface-variant/60">Staff Engineer · Available</span>
+</div>
+</div>
+</div>
+<!-- Actions Section -->
+<div class="mt-4 px-4 pb-2">
+<h3 class="font-label-md text-label-md text-on-surface-variant/40 uppercase tracking-widest px-1">Actions</h3>
+</div>
+<div class="px-2 space-y-0.5 pb-2">
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-bright/50 group cursor-pointer transition-colors">
+<div class="w-9 h-9 rounded bg-primary-container/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Create New Task...</span>
+<span class="ml-auto keyboard-hint px-1.5 py-0.5 rounded text-[10px] font-mono opacity-40">N</span>
+</div>
+<div class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-bright/50 group cursor-pointer transition-colors">
+<div class="w-9 h-9 rounded bg-surface-container flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<span class="font-body-md text-body-md text-on-surface">Quick Release...</span>
+<span class="ml-auto keyboard-hint px-1.5 py-0.5 rounded text-[10px] font-mono opacity-40">R</span>
+</div>
+</div>
+</div>
+<!-- Footer Info -->
+<div class="h-10 px-4 bg-surface-container-low/50 flex items-center justify-between border-t border-outline-variant/10">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant/60" data-icon="keyboard_return">keyboard_return</span>
+<span class="font-label-md text-[10px] text-on-surface-variant/60">Select</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant/60" data-icon="unfold_more">unfold_more</span>
+<span class="font-label-md text-[10px] text-on-surface-variant/60">Navigate</span>
+</div>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-[10px] text-on-surface-variant/60">Search powered by Axiom AI</span>
+<div class="w-1 h-1 rounded-full bg-tertiary"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Help Info (Background Layer) -->
+<div class="absolute bottom-12 right-12 flex flex-col items-end gap-2 text-on-surface-variant/40">
+<p class="font-body-md">Awaiting instructions...</p>
+<div class="flex gap-2">
+<span class="keyboard-hint px-2 py-1 rounded text-xs font-mono">⌘</span>
+<span class="keyboard-hint px-2 py-1 rounded text-xs font-mono">K</span>
+</div>
+</div>
+</main>
+<script>
+        document.addEventListener('keydown', function(event) {
+            const overlay = document.getElementById('command-palette-overlay');
+            const searchInput = document.getElementById('palette-search');
+            
+            // Toggle with Cmd+K or Ctrl+K
+            if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+                event.preventDefault();
+                overlay.classList.toggle('hidden');
+                overlay.classList.toggle('flex');
+                if (overlay.classList.contains('flex')) {
+                    searchInput.focus();
+                }
+            }
+
+            // Close with Escape
+            if (event.key === 'Escape') {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+        });
+
+        // Click outside to close
+        document.getElementById('command-palette-overlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.add('hidden');
+                this.classList.remove('flex');
+            }
+        });
+
+        // Hover animation logic for items
+        const items = document.querySelectorAll('.hover\\:bg-surface-bright\\/50');
+        items.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                // Subtle feedback handled by CSS
+            });
+        });
+
+        // Focus search input on load
+        window.onload = () => {
+            document.getElementById('palette-search').focus();
+        };
+    </script>
+</body></html>

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Axiom Settings | Notifications</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        :root {
+            --noise-bg: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3C%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        body {
+            background-color: #0b0f19;
+            color: #dfe2f1;
+            font-family: 'Geist', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .noise-overlay::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--noise-bg);
+            opacity: 0.02;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .glass-panel {
+            background: rgba(26, 34, 54, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(66, 71, 84, 0.3);
+        }
+
+        .glow-primary {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .ai-border {
+            border: 1px solid transparent;
+            background: linear-gradient(#1a2236, #1a2236) padding-box,
+                        linear-gradient(to right, #8b5cf6, #06b6d4) border-box;
+        }
+
+        /* Custom Toggle Styling */
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #3b82f6;
+        }
+        .toggle-checkbox:checked + .toggle-label .toggle-dot {
+            transform: translateX(100%);
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface": "#0f131d",
+                      "surface-bright": "#353944",
+                      "primary-fixed-dim": "#adc6ff",
+                      "on-error": "#690005",
+                      "secondary-fixed-dim": "#d0bcff",
+                      "on-surface": "#dfe2f1",
+                      "on-primary-fixed-variant": "#004395",
+                      "surface-container": "#1c1f2a",
+                      "primary-container": "#4d8eff",
+                      "surface-container-highest": "#313540",
+                      "background": "#0f131d",
+                      "tertiary-fixed-dim": "#2fd9f4",
+                      "inverse-on-surface": "#2c303b",
+                      "tertiary-container": "#009fb4",
+                      "primary": "#adc6ff",
+                      "outline-variant": "#424754",
+                      "primary-fixed": "#d8e2ff",
+                      "inverse-surface": "#dfe2f1",
+                      "on-secondary-fixed-variant": "#5516be",
+                      "on-tertiary": "#00363e",
+                      "surface-dim": "#0f131d",
+                      "on-secondary-container": "#c4abff",
+                      "tertiary": "#2fd9f4",
+                      "secondary-container": "#571bc1",
+                      "on-tertiary-fixed-variant": "#004e5a",
+                      "outline": "#8c909f",
+                      "on-primary-fixed": "#001a42",
+                      "surface-container-high": "#262a35",
+                      "surface-tint": "#adc6ff",
+                      "on-tertiary-fixed": "#001f25",
+                      "surface-variant": "#313540",
+                      "secondary-fixed": "#e9ddff",
+                      "surface-container-lowest": "#0a0e18",
+                      "secondary": "#d0bcff",
+                      "tertiary-fixed": "#a2eeff",
+                      "on-secondary-fixed": "#23005c",
+                      "on-primary": "#002e6a",
+                      "on-tertiary-container": "#002f36",
+                      "inverse-primary": "#005ac2",
+                      "on-primary-container": "#00285d",
+                      "on-error-container": "#ffdad6",
+                      "on-surface-variant": "#c2c6d6",
+                      "on-secondary": "#3c0091",
+                      "error-container": "#93000a",
+                      "error": "#ffb4ab",
+                      "surface-container-low": "#171b26",
+                      "on-background": "#dfe2f1"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sidebar-width": "260px",
+                      "container-padding": "24px",
+                      "unit": "8px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "label-md": ["Geist"],
+                      "h1": ["Geist"],
+                      "body-md": ["Geist"],
+                      "display": ["Geist"],
+                      "h2": ["Geist"],
+                      "h3": ["Geist"],
+                      "mono": ["JetBrains Mono"]
+              },
+              "fontSize": {
+                      "label-md": ["12px", {"lineHeight": "1", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "h1": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.03em", "fontWeight": "600"}],
+                      "body-md": ["14px", {"lineHeight": "1.5", "letterSpacing": "0", "fontWeight": "400"}],
+                      "display": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "600"}],
+                      "h2": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                      "h3": ["18px", {"lineHeight": "1.4", "letterSpacing": "-0.01em", "fontWeight": "500"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="noise-overlay">
+<!-- SideNavBar Integration -->
+<aside class="fixed left-0 top-0 h-full w-[260px] flex flex-col py-6 bg-surface-dim border-r border-outline-variant/30 z-50">
+<div class="px-6 mb-8">
+<h1 class="font-display text-h3 font-bold text-on-surface">Axiom HQ</h1>
+<p class="text-on-surface-variant font-label-md text-label-md">Engineering Team</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px]">grid_view</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px]">check_circle</span>
+<span class="font-label-md text-label-md">My Tasks</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px]">group_work</span>
+<span class="font-label-md text-label-md">Workspaces</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px]">auto_awesome</span>
+<span class="font-label-md text-label-md">AI Insights</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary/10 text-primary border-r-2 border-primary translate-x-1 transition-all duration-200" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-bright/50 transition-all duration-200 group" href="#">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+<span class="font-label-md text-label-md">Trash</span>
+</a>
+</nav>
+<div class="px-4 mt-auto pt-6 border-t border-outline-variant/20">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-3 rounded-lg hover:brightness-110 transition-all mb-6">
+                Upgrade Plan
+            </button>
+<div class="space-y-1">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+                    Help Center
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:text-on-surface font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-[18px]">headset_mic</span>
+                    Contact Support
+                </a>
+</div>
+</div>
+</aside>
+<!-- Main Content Shell -->
+<main class="ml-[260px] min-h-screen flex flex-col">
+<!-- TopNavBar Integration -->
+<header class="fixed top-0 right-0 left-[260px] h-16 bg-surface-container/80 backdrop-blur-md border-b border-outline-variant/30 flex justify-between items-center px-8 z-40">
+<div class="flex items-center gap-8">
+<span class="font-display text-h3 font-black tracking-tighter text-on-surface">Axiom</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Dashboard</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Projects</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Team</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-label-md text-label-md" href="#">Analytics</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">search</span>
+<input class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg pl-10 pr-4 py-1.5 text-body-md font-body-md focus:ring-1 focus:ring-primary focus:border-primary outline-none transition-all w-64" placeholder="Search resources..." type="text"/>
+</div>
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">notifications</button>
+<div class="w-8 h-8 rounded-full bg-surface-bright border border-outline-variant/50 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a software engineer in a high-tech studio environment with soft blue rim lighting. The style is clean and modern, representing a premium digital advisor persona. The background features a subtle out-of-focus digital dashboard to emphasize technical proficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBysw1CLcMIN-H25oAfRlgoyMwaczPkLQxbPtqZwULPxFrqcLHtoNLPOwSgEKY5fTmIwm5jFbSg3Z7-Cl88x-QmhmU--o8OyZEAfdvbQGxsYG-rJ6N713-NXD2mMuoDQpVL7O22TvkhPVxSV_oVue0x02Ai6re725pKvhyItzoDxwB46Tr5pxxR8MW2TnE0Y8pej-oZOwBymMhKOnmXIg_3yhOQ01lOCyvQ7XUYP1XVq2FgovtLJpzAe1gZFM3IimZw2Q0Cmb2CiB2P"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="mt-16 p-8 flex-1">
+<div class="max-w-4xl mx-auto">
+<header class="mb-10">
+<h2 class="font-h1 text-h1 text-on-surface mb-2">Settings</h2>
+<div class="flex gap-6 border-b border-outline-variant/30">
+<button class="pb-4 text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors">General</button>
+<button class="pb-4 text-primary border-b-2 border-primary font-bold font-label-md text-label-md">Notifications</button>
+<button class="pb-4 text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors">Security</button>
+<button class="pb-4 text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-colors">Billing</button>
+</div>
+</header>
+<!-- Bento Grid Layout for Settings -->
+<div class="grid grid-cols-12 gap-6">
+<!-- AI Insight Panel -->
+<div class="col-span-12 ai-border rounded-xl p-6 relative overflow-hidden group">
+<div class="flex items-start justify-between relative z-10">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-tertiary shadow-[0_0_8px_#2fd9f4]"></span>
+<span class="font-label-md text-label-md text-tertiary uppercase tracking-widest">Axiom Intelligence</span>
+</div>
+<h3 class="font-h3 text-h3 text-on-surface mb-2">Smart Notification Orchestration</h3>
+<p class="text-body-md font-body-md text-on-surface-variant max-w-2xl">
+                                    I am currently suppressing 14 low-signal alerts based on your current focus block. Would you like me to adjust your urgency threshold for the "Phoenix Project" repository?
+                                </p>
+</div>
+<button class="bg-tertiary-container/20 text-tertiary border border-tertiary/30 px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-tertiary-container/40 transition-all">
+                                Adjust Threshold
+                            </button>
+</div>
+<!-- Decorative background element -->
+<div class="absolute -right-20 -bottom-20 w-64 h-64 bg-tertiary/5 blur-[80px] rounded-full pointer-events-none"></div>
+</div>
+<!-- Notification Controls List -->
+<div class="col-span-12 glass-panel rounded-xl overflow-hidden">
+<div class="p-6 border-b border-outline-variant/30 flex justify-between items-center">
+<h3 class="font-h3 text-h3 text-on-surface">System Alerts</h3>
+<span class="text-on-surface-variant font-label-md text-label-md">Real-time status tracking</span>
+</div>
+<div class="divide-y divide-outline-variant/20">
+<!-- Blocker Alerts -->
+<div class="p-6 flex items-center justify-between hover:bg-surface-bright/20 transition-colors group">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-error-container/20 flex items-center justify-center text-error">
+<span class="material-symbols-outlined">report_problem</span>
+</div>
+<div>
+<h4 class="font-h3 text-h3 text-on-surface mb-1">Blocker Alerts</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">Axiom will notify you when a dependency stalls or a critical path is compromised.</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-md bg-surface-bright border-4 border-surface-container appearance-none cursor-pointer checked:right-0 right-6 transition-all duration-300" id="toggle-blocker" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-md bg-surface-container cursor-pointer transition-colors duration-300" for="toggle-blocker"></label>
+</div>
+</div>
+<!-- Direct Assignments -->
+<div class="p-6 flex items-center justify-between hover:bg-surface-bright/20 transition-colors group">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-primary-container/20 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person_pin_circle</span>
+</div>
+<div>
+<h4 class="font-h3 text-h3 text-on-surface mb-1">Direct Assignments</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">I will message you directly when a task is moved to your queue or requires review.</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-md bg-surface-bright border-4 border-surface-container appearance-none cursor-pointer checked:right-0 right-6 transition-all duration-300" id="toggle-assignments" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-md bg-surface-container cursor-pointer transition-colors duration-300" for="toggle-assignments"></label>
+</div>
+</div>
+<!-- PR Approvals -->
+<div class="p-6 flex items-center justify-between hover:bg-surface-bright/20 transition-colors group">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">rule</span>
+</div>
+<div>
+<h4 class="font-h3 text-h3 text-on-surface mb-1">PR Approvals</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">Instant confirmation when your code passes review or requires tactical changes.</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-6 h-6 rounded-md bg-surface-bright border-4 border-surface-container appearance-none cursor-pointer checked:right-0 right-6 transition-all duration-300" id="toggle-pr" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-md bg-surface-container cursor-pointer transition-colors duration-300" for="toggle-pr"></label>
+</div>
+</div>
+<!-- Build Status -->
+<div class="p-6 flex items-center justify-between hover:bg-surface-bright/20 transition-colors group">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-lg bg-surface-bright/20 flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">deployed_code</span>
+</div>
+<div>
+<h4 class="font-h3 text-h3 text-on-surface mb-1">Build &amp; Deployment</h4>
+<p class="text-body-md font-body-md text-on-surface-variant">Status updates for automated CI/CD pipelines across all production environments.</p>
+</div>
+</div>
+<div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-6 h-6 rounded-md bg-surface-bright border-4 border-surface-container appearance-none cursor-pointer checked:right-0 right-6 transition-all duration-300" id="toggle-build" name="toggle" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-md bg-surface-container cursor-pointer transition-colors duration-300" for="toggle-build"></label>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Settings Area -->
+<div class="col-span-12 lg:col-span-8 glass-panel rounded-xl p-6">
+<h4 class="font-h3 text-h3 text-on-surface mb-4">Quiet Hours</h4>
+<p class="text-body-md font-body-md text-on-surface-variant mb-6">Specify the intervals when Axiom should buffer all non-critical notifications to preserve deep work state.</p>
+<div class="flex gap-4">
+<div class="flex-1">
+<label class="block font-label-md text-label-md text-outline mb-2">Start Time</label>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-2.5 font-mono text-body-md flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+                                    20:00
+                                </div>
+</div>
+<div class="flex-1">
+<label class="block font-label-md text-label-md text-outline mb-2">End Time</label>
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-2.5 font-mono text-body-md flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">wb_sunny</span>
+                                    08:00
+                                </div>
+</div>
+</div>
+</div>
+<div class="col-span-12 lg:col-span-4 glass-panel rounded-xl p-6 flex flex-col justify-between">
+<div>
+<h4 class="font-h3 text-h3 text-on-surface mb-2">Notification Channel</h4>
+<p class="text-body-md font-body-md text-on-surface-variant mb-4">Where should I send high-priority alerts?</p>
+</div>
+<div class="space-y-3">
+<button class="w-full flex items-center justify-between p-3 rounded-lg bg-surface-container-high border border-primary/50 text-primary">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">desktop_windows</span>
+<span class="font-label-md text-label-md">Browser Desktop</span>
+</div>
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 rounded-lg bg-surface-container border border-outline-variant/30 text-on-surface-variant hover:border-primary/30 transition-all">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">stack</span>
+<span class="font-label-md text-label-md">Slack Workspace</span>
+</div>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer Integration -->
+<footer class="w-full py-8 px-8 border-t border-outline-variant/20 flex justify-between items-center mt-auto">
+<div class="flex flex-col gap-1">
+<span class="font-display text-h3 font-bold text-on-surface">Axiom</span>
+<p class="text-on-surface-variant font-body-md text-body-md">© 2024 Axiom AI. All rights reserved.</p>
+</div>
+<div class="flex gap-6">
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-opacity opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-opacity opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-opacity opacity-80 hover:opacity-100" href="#">Security</a>
+<a class="text-on-surface-variant font-label-md text-label-md hover:text-on-surface transition-opacity opacity-80 hover:opacity-100" href="#">API Reference</a>
+</div>
+</footer>
+</main>
+<script>
+        // Micro-interaction for toggles
+        document.querySelectorAll('.toggle-checkbox').forEach(toggle => {
+            toggle.addEventListener('change', (e) => {
+                const parent = e.target.closest('.group');
+                if(e.target.checked) {
+                    parent.classList.add('glow-primary');
+                    setTimeout(() => parent.classList.remove('glow-primary'), 1000);
+                }
+            });
+        });
+
+        // Hover atmosphere effect
+        document.addEventListener('mousemove', (e) => {
+            const panels = document.querySelectorAll('.glass-panel');
+            panels.forEach(panel => {
+                const rect = panel.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                if (x > 0 && x < rect.width && y > 0 && y < rect.height) {
+                    panel.style.setProperty('--mouse-x', `${x}px`);
+                    panel.style.setProperty('--mouse-y', `${y}px`);
+                }
+            });
+        });
+    </script>
+</body></html>
