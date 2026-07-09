@@ -94,14 +94,14 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 3
 
-- [ ] T014 [US3] Configure the Better Auth server instance in `src/lib/auth.ts` (Prisma adapter; Google, GitHub, and credentials providers; email verification explicitly disabled)
-- [ ] T015 [P] [US3] Create the Better Auth client in `src/lib/auth-client.ts`
-- [ ] T016 [US3] Create the Better Auth route handler at `src/app/api/auth/[...all]/route.ts`
-- [ ] T017 [US3] Implement the duplicate-email conflict check from `contracts/auth-conflict.md` (query for an existing `Account` by email across providers before creation; return the `409 EMAIL_ALREADY_LINKED` contract when found)
-- [ ] T018 [P] [US3] Create Zod validation schemas for the credentials sign-up/sign-in forms in `src/lib/validations/auth.ts`
-- [ ] T019 [US3] Build the login screen in `src/app/(auth)/login/page.tsx` reusing the approved design
-- [ ] T020 [US3] Build the sign-up screen in `src/app/(auth)/sign-up/page.tsx`, reusing the exported design from `axiom-design/axiom_sign_up/code.html`, including the inline conflict-error state defined in `contracts/auth-conflict.md`
-- [ ] T021 [US3] Wire the Google/GitHub OAuth buttons and the credentials form on both screens to the Better Auth client
+- [X] T014 [US3] Configure the Better Auth server instance in `src/lib/auth.ts` (Prisma adapter; Google, GitHub, and credentials providers; email verification explicitly disabled)
+- [X] T015 [P] [US3] Create the Better Auth client in `src/lib/auth-client.ts`
+- [X] T016 [US3] Create the Better Auth route handler at `src/app/api/auth/[...all]/route.ts`
+- [X] T017 [US3] Implement the duplicate-email conflict check from `contracts/auth-conflict.md` (query for an existing `Account` by email across providers before creation; return the `409 EMAIL_ALREADY_LINKED` contract when found)
+- [X] T018 [P] [US3] Create Zod validation schemas for the credentials sign-up/sign-in forms in `src/lib/validations/auth.ts`
+- [X] T019 [US3] Build the login screen in `src/app/(auth)/login/page.tsx` reusing the approved design
+- [X] T020 [US3] Build the sign-up screen in `src/app/(auth)/sign-up/page.tsx`, reusing the exported design from `axiom-design/axiom_sign_up/code.html`, including the inline conflict-error state defined in `contracts/auth-conflict.md`
+- [X] T021 [US3] Wire the Google/GitHub OAuth buttons and the credentials form on both screens to the Better Auth client
 - [ ] T022 [US3] Manually validate all four acceptance scenarios (Google, GitHub, credentials, duplicate-email block) per `quickstart.md` US3
 
 **Checkpoint**: Account creation works frictionlessly through all three methods, and the security-critical duplicate-email block from FR-011 is enforced — SC-003 met.
@@ -116,8 +116,8 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 4
 
-- [ ] T023 [P] [US4] Configure the Pusher server client in `src/lib/pusher.ts`
-- [ ] T024 [P] [US4] Configure a Pusher browser client helper in `src/lib/pusher-client.ts`
+- [X] T023 [P] [US4] Configure the Pusher server client in `src/lib/pusher.ts`
+- [X] T024 [P] [US4] Configure a Pusher browser client helper in `src/lib/pusher-client.ts`
 - [ ] T025 [US4] Implement the temporary `setup-test` / `ping` publish trigger per `contracts/realtime-test-channel.md`
 - [ ] T026 [US4] Manually validate that a subscribed client receives the `ping` event in under 1 second per `quickstart.md` US4
 - [ ] T027 [US4] Remove the temporary publish trigger once validated, keeping the reusable `src/lib/pusher.ts` / `pusher-client.ts` helpers
