@@ -1,17 +1,46 @@
-export default function MembersPage({
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { MemberList } from "@/components/workspace/member-list";
+
+export default async function MembersPage({
   params,
 }: {
   params: { workspaceSlug: string };
 }) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { slug: params.workspaceSlug },
+    include: {
+      members: true,
+      invitations: true,
+    },
+  });
+
+  if (!workspace) {
+    redirect("/");
+  }
+
+  const currentMember = workspace.members.find((m) => m.userId === session.user.id);
+  if (!currentMember) {
+    redirect("/");
+  }
+
   return (
-    <div className="p-8">
-      <h1 className="text-h2 text-on-surface mb-4">Team Members</h1>
-      <p className="text-body-md text-on-surface-variant">
-        Member management will be implemented in T035.
-      </p>
-      <p className="text-body-md text-on-surface-variant mt-2">
-        Workspace: {params.workspaceSlug}
-      </p>
-    </div>
+    <MemberList
+      workspaceId={workspace.id}
+      members={workspace.members}
+      invitations={workspace.invitations}
+      currentUserId={session.user.id}
+      currentUserRole={currentMember.role}
+    />
   );
 }
