@@ -22,14 +22,14 @@
 
 **Phase 1 : 1/5 — 20%**
 
-## Phase 2 — Setup (0%)
-- [ ] Init Next.js + TypeScript + Tailwind
-- [ ] Prisma 7 + PostgreSQL (schema selon DATA-MODEL.md)
-- [ ] Better Auth configuré (Google/GitHub + credentials)
-- [ ] Pusher configuré
-- [ ] Déploiement Vercel initial (projet live dès le setup, déploiements continus ensuite)
+## Phase 2 — Setup — ✅ COMPLETE (100%)
+- [x] Init Next.js + TypeScript + Tailwind
+- [x] Prisma 7 + PostgreSQL (schema selon DATA-MODEL.md)
+- [x] Better Auth configuré (Google/GitHub + credentials)
+- [x] Pusher configuré
+- [x] Déploiement Vercel initial (projet live dès le setup, déploiements continus ensuite)
 
-**Phase 2 : 0/5 — 0%**
+**Phase 2 : 5/5 — 100%**
 
 ## Phase 3 — Core Kanban (0%)
 *(détail à reprendre du draft initial, ajusté à l'architecture Next.js)*
@@ -74,4 +74,4 @@
 
 ---
 
-**Progression globale du projet : 7/~60 tâches estimées — ~12%** *(estimation grossière, à raffiner une fois Speckit aura généré le détail des phases 3-10)*
+**Progression globale du projet : 12/~60 tâches estimées — ~20%** *(estimation grossière, à raffiner une fois Speckit aura généré le détail des phases 3-10)*

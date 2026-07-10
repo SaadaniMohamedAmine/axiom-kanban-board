@@ -45,9 +45,9 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 **⚠️ CRITICAL**: T004–T008 must be complete before US2 or US3 work begins
 
-- [ ] T004 Provision a Vercel Postgres database and obtain its `DATABASE_URL`
+- [X] T004 Provision a Vercel Postgres database and obtain its `DATABASE_URL`
 - [X] T005 Initialize Prisma (`prisma init`) and author `prisma/schema.prisma` with every entity from `data-model.md` (User, Account, Session, Verification, Workspace, WorkspaceMember, Invitation, Board, Column, Task, TaskAssignee, Label, TaskLabel, Comment, ActivityEvent, Sprint, AILog, Notification) plus all enums (role, priority, template, status, etc.)
-- [ ] T006 Run the first migration locally (`prisma migrate dev --name init`) against `DATABASE_URL`
+- [X] T006 Run the first migration locally (`prisma migrate dev --name init`) against `DATABASE_URL`
 - [X] T007 [P] Create a Prisma client singleton in `src/lib/prisma.ts`
 - [X] T008 [P] Establish the shared-types convention required by the constitution's TypeScript Strict Mode principle: create `src/types/` and an initial `src/types/auth.types.ts`
 
@@ -79,8 +79,8 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 2
 
-- [ ] T012 [US2] Apply the migration to the production `DATABASE_URL` and confirm connectivity from a deployed (or deployed-equivalent) context
-- [ ] T013 [US2] Verify via `prisma studio` (or an equivalent query) that every entity in `data-model.md` exists with none missing or extraneous; record the result per `quickstart.md` US2
+- [X] T012 [US2] Apply the migration to the production `DATABASE_URL` and confirm connectivity from a deployed (or deployed-equivalent) context
+- [X] T013 [US2] Verify via `prisma studio` (or an equivalent query) that every entity in `data-model.md` exists with none missing or extraneous; record the result per `quickstart.md` US2
 
 **Checkpoint**: Schema completeness and dual-environment connectivity confirmed — SC-002 met.
 
@@ -102,7 +102,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T019 [US3] Build the login screen in `src/app/(auth)/login/page.tsx` reusing the approved design
 - [X] T020 [US3] Build the sign-up screen in `src/app/(auth)/sign-up/page.tsx`, reusing the exported design from `axiom-design/axiom_sign_up/code.html`, including the inline conflict-error state defined in `contracts/auth-conflict.md`
 - [X] T021 [US3] Wire the Google/GitHub OAuth buttons and the credentials form on both screens to the Better Auth client
-- [ ] T022 [US3] Manually validate all four acceptance scenarios (Google, GitHub, credentials, duplicate-email block) per `quickstart.md` US3
+- [X] T022 [US3] Manually validate all four acceptance scenarios (Google, GitHub, credentials, duplicate-email block) per `quickstart.md` US3
 
 **Checkpoint**: Account creation works frictionlessly through all three methods, and the security-critical duplicate-email block from FR-011 is enforced — SC-003 met.
 
@@ -119,7 +119,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T023 [P] [US4] Configure the Pusher server client in `src/lib/pusher.ts`
 - [X] T024 [P] [US4] Configure a Pusher browser client helper in `src/lib/pusher-client.ts`
 - [X] T025 [US4] Implement the temporary `setup-test` / `ping` publish trigger per `contracts/realtime-test-channel.md`
-- [ ] T026 [US4] Manually validate that a subscribed client receives the `ping` event in under 1 second per `quickstart.md` US4
+- [X] T026 [US4] Manually validate that a subscribed client receives the `ping` event in under 1 second per `quickstart.md` US4
 - [X] T027 [US4] Remove the temporary publish trigger once validated, keeping the reusable `src/lib/pusher.ts` / `pusher-client.ts` helpers
 
 **Checkpoint**: Realtime round-trip proven under 1 second — SC-004 met.
@@ -134,11 +134,11 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 
 ### Implementation for User Story 5
 
-- [ ] T028 [US5] Link the Vercel project to the Git repository
-- [ ] T029 [US5] Mirror every variable from `.env.local` into Vercel's project environment settings
-- [ ] T030 [US5] Deploy to Vercel and confirm the production URL is publicly reachable, rendering at minimum the functional login/sign-up screen
-- [ ] T031 [US5] Run a secrets scan across the full repository history before the first public push, confirming zero secret values are committed (FR-007)
-- [ ] T032 [US5] Manually validate WCAG AA (full keyboard navigation, 4.5:1 text contrast) on the deployed sign-up screen per `quickstart.md`'s accessibility check
+- [X] T028 [US5] Link the Vercel project to the Git repository
+- [X] T029 [US5] Mirror every variable from `.env.local` into Vercel's project environment settings
+- [X] T030 [US5] Deploy to Vercel and confirm the production URL is publicly reachable, rendering at minimum the functional login/sign-up screen
+- [X] T031 [US5] Run a secrets scan across the full repository history before the first public push, confirming zero secret values are committed (FR-007)
+- [X] T032 [US5] Manually validate WCAG AA (full keyboard navigation, 4.5:1 text contrast) on the deployed sign-up screen per `quickstart.md`'s accessibility check
 
 **Checkpoint**: Public production URL live and secret-free — SC-005 and SC-006 met.
 
@@ -151,7 +151,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T033 [P] Remove dead code and stray `console.log` calls introduced across this feature (constitution Clean Code principle)
 - [X] T034 Run `pnpm lint` and `pnpm type-check`; resolve every reported issue
 - [X] T035 Run a final `pnpm build` to confirm a clean, zero-error production build before push (constitution Pre-Push Build Verification gate)
-- [ ] T036 Update `PROGRESS.md`'s Phase 2 checklist and overall progress percentage to reflect this feature's completion (constitution Progress Documentation principle — apply once this branch merges)
+- [X] T036 Update `PROGRESS.md`'s Phase 2 checklist and overall progress percentage to reflect this feature's completion (constitution Progress Documentation principle — apply once this branch merges)
 
 ---
 

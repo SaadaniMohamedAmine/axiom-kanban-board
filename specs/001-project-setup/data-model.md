@@ -31,6 +31,10 @@ Relations: `accounts` (Account[]), `sessions` (Session[]), `workspaces` (Workspa
 | providerId | enum-like string | `google` \| `github` \| `credential` |
 | accountId | string | provider-side identifier |
 | password | string? | only set for the `credential` provider, hashed |
+| accessToken / refreshToken / idToken | string? | OAuth tokens, set for Google/GitHub only |
+| accessTokenExpiresAt / refreshTokenExpiresAt | datetime? | OAuth token expiry, set for Google/GitHub only |
+| scope | string? | OAuth scope, set for Google/GitHub only |
+| createdAt / updatedAt | datetime | |
 
 **Validation rule (FR-011)**: before creating a new `User`+`Account` pair, check whether
 any existing `Account` across *any* provider already has a `User.email` matching the
@@ -44,10 +48,13 @@ incoming email. If so, reject — do not create the account, do not link it. See
 | userId | string | FK → User |
 | expiresAt | datetime | standard default duration (no custom policy specified) |
 | token | string | unique |
+| ipAddress / userAgent | string? | captured from the request when available |
+| createdAt / updatedAt | datetime | |
 
 ### Verification
-Standard Better Auth adapter table (token, identifier, expiresAt). Present because the
-adapter requires it, not because the email-verification flow is exercised.
+Standard Better Auth adapter table (identifier, value, expiresAt, createdAt, updatedAt).
+Present because the adapter requires it, not because the email-verification flow is
+exercised.
 
 ## Product entities
 
