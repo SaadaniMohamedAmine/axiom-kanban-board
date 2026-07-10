@@ -22,7 +22,7 @@ export function TaskPropertiesPanel({ task, canEdit }: TaskPropertiesPanelProps)
     if (!canEdit) return;
     setPriority(newPriority);
     try {
-      await updateTaskFields({ taskId: task.id, priority: newPriority }, getPusherClient().connection.socket_id ?? undefined);
+      await updateTaskFields({ taskId: task.id, priority: newPriority, expectedUpdatedAt: task.updatedAt.toISOString() }, getPusherClient().connection.socket_id ?? undefined);
     } catch {
       setPriority(task.priority);
     }
@@ -34,7 +34,7 @@ export function TaskPropertiesPanel({ task, canEdit }: TaskPropertiesPanelProps)
     const newValue = isNaN(num) ? null : num;
     if (newValue !== task.estimate) {
       try {
-        await updateTaskFields({ taskId: task.id, estimate: newValue }, getPusherClient().connection.socket_id ?? undefined);
+        await updateTaskFields({ taskId: task.id, estimate: newValue, expectedUpdatedAt: task.updatedAt.toISOString() }, getPusherClient().connection.socket_id ?? undefined);
       } catch {
         setEstimate(task.estimate?.toString() ?? "");
       }
@@ -46,7 +46,7 @@ export function TaskPropertiesPanel({ task, canEdit }: TaskPropertiesPanelProps)
     setDueDate(newDate);
     const newValue = newDate ? new Date(newDate).toISOString() : null;
     try {
-      await updateTaskFields({ taskId: task.id, dueDate: newValue }, getPusherClient().connection.socket_id ?? undefined);
+      await updateTaskFields({ taskId: task.id, dueDate: newValue, expectedUpdatedAt: task.updatedAt.toISOString() }, getPusherClient().connection.socket_id ?? undefined);
     } catch {
       setDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
     }
@@ -68,7 +68,7 @@ export function TaskPropertiesPanel({ task, canEdit }: TaskPropertiesPanelProps)
   async function handleDescriptionBlur() {
     if (canEdit && description !== task.description) {
       try {
-        await updateTaskFields({ taskId: task.id, description: description || null }, getPusherClient().connection.socket_id ?? undefined);
+        await updateTaskFields({ taskId: task.id, description: description || null, expectedUpdatedAt: task.updatedAt.toISOString() }, getPusherClient().connection.socket_id ?? undefined);
       } catch {
         setDescription(task.description ?? "");
       }
