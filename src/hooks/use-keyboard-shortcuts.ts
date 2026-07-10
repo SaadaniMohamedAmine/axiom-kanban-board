@@ -31,7 +31,7 @@ export function useKeyboardShortcuts(shortcuts: Shortcut[]) {
         const shiftMatch = shortcut.shift ? e.shiftKey : true;
         const keyMatch = e.key.toLowerCase() === shortcut.key.toLowerCase();
 
-        if (keyMatch && metaMatch && shiftMatch) {
+        if (keyMatch && metaMatch && ctrlMatch && shiftMatch) {
           e.preventDefault();
           shortcut.handler();
           return;

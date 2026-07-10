@@ -26,16 +26,13 @@ export function CommandPalette() {
   ];
 
   useEffect(() => {
-    if (isOpen) {
-      setQuery("");
-      setResults({ tasks: [], boards: [] });
-      setSelectedIndex(0);
-      setTimeout(() => inputRef.current?.focus(), 50);
-    }
+    if (!isOpen) return;
+    inputRef.current?.focus();
   }, [isOpen]);
 
   useEffect(() => {
     if (!query || query.length < 2) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setResults({ tasks: [], boards: [] });
       return;
     }
