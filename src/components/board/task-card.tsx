@@ -39,7 +39,7 @@ export function TaskCard({ task, onClick, canEdit, showConflict }: TaskCardProps
       {...(canEdit ? attributes : {})}
       {...(canEdit ? listeners : {})}
       onClick={onClick}
-      className="bg-surface-container border border-outline-variant p-4 rounded-lg hover:border-primary/50 transition-colors cursor-pointer group"
+      className="bg-surface-container border border-outline-variant p-4 md:p-4 rounded-lg hover:border-primary/50 transition-colors cursor-pointer group min-h-[80px] md:min-h-0"
       data-id={task.code}
     >
       <div className="flex gap-2 mb-3">

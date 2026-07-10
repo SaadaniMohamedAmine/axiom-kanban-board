@@ -5,14 +5,19 @@ import type { TaskWithRelations } from "@/types/task.types";
 import { TaskPropertiesPanel } from "./task-properties-panel";
 import { ActivityList } from "./activity-list";
 import { CommentThread } from "./comment-thread";
+import { AxiomIntelligencePanel } from "@/components/ai/axiom-intelligence-panel";
+import { MoveToMenu } from "@/components/board/move-to-menu";
 
 interface TaskDetailModalProps {
   task: TaskWithRelations;
   onClose: () => void;
   canEdit: boolean;
+  columnName: string;
+  boardMembers: { userId: string; name: string; taskCount: number }[];
+  columns: { id: string; name: string }[];
 }
 
-export function TaskDetailModal({ task, onClose, canEdit }: TaskDetailModalProps) {
+export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembers, columns }: TaskDetailModalProps) {
   const [now] = useState(() => Date.now());
 
   useEffect(() => {
@@ -26,7 +31,7 @@ export function TaskDetailModal({ task, onClose, canEdit }: TaskDetailModalProps
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <main className="relative z-10 w-full max-w-5xl bg-surface-container-high/85 backdrop-blur-xl border border-outline-variant rounded-2xl overflow-hidden flex flex-col h-[85vh] max-h-[800px] shadow-2xl">
+      <main className="relative z-10 w-full md:max-w-5xl bg-surface-container-high md:bg-surface-container-high/85 backdrop-blur-xl border-0 md:border border-outline-variant rounded-none md:rounded-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[85vh] md:max-h-[800px] shadow-2xl">
         {/* Header */}
         <header className="p-8 flex justify-between items-start">
           <div className="space-y-1">
@@ -51,9 +56,20 @@ export function TaskDetailModal({ task, onClose, canEdit }: TaskDetailModalProps
           </div>
         </header>
 
-        <div className="flex-1 flex overflow-hidden">
+        {canEdit && (
+          <div className="md:hidden px-8 pb-4">
+            <MoveToMenu
+              taskId={task.id}
+              currentColumnId={task.columnId}
+              columns={columns}
+              onMoved={onClose}
+            />
+          </div>
+        )}
+
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Left Column (Details) */}
-          <section className="flex-1 overflow-y-auto p-8 pt-0 border-r border-outline-variant/20">
+          <section className="flex-1 overflow-y-auto p-6 md:p-8 pt-0 border-b md:border-b-0 border-r-0 md:border-r border-outline-variant/20">
             {/* Description */}
             <div className="mb-10">
               <div className="flex items-center gap-2 text-on-surface-variant mb-4 text-sm font-medium">
@@ -97,8 +113,9 @@ export function TaskDetailModal({ task, onClose, canEdit }: TaskDetailModalProps
           </section>
 
           {/* Right Column (Properties) */}
-          <aside className="w-[340px] bg-black/20 p-6">
+          <aside className="w-full md:w-[340px] bg-black/20 p-5 md:p-6 overflow-y-auto">
             <TaskPropertiesPanel task={task} canEdit={canEdit} />
+            <AxiomIntelligencePanel task={task} columnName={columnName} boardMembers={boardMembers} />
           </aside>
         </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useOptimistic, startTransition, useCallback } from "react";
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Column } from "./column";
 import { TaskCard } from "./task-card";
@@ -133,6 +133,9 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
         distance: 8,
       },
     }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -222,9 +225,11 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
           <PresenceAvatars members={members} currentUserId={currentUser.id} />
         </div>
       </div>
-      <div className="flex-1 overflow-x-auto flex gap-6 p-8">
+      <div className="flex gap-3 p-6 overflow-x-auto snap-x snap-mandatory md:overflow-x-visible min-h-0 flex-1">
         {optimisticColumns.map((column) => (
-          <Column key={column.id} column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} />
+          <div key={column.id} className="snap-center shrink-0 w-[300px] md:w-auto md:shrink md:flex-1">
+            <Column column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} />
+          </div>
         ))}
       </div>
       <DragOverlay>
