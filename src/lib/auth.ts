@@ -1,13 +1,15 @@
 import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
 import { APIError, createAuthMiddleware } from "better-auth/api";
 import { prisma } from "./prisma";
 import { requireEnv } from "./env";
 
+requireEnv("DATABASE_URL");
+
 export const auth = betterAuth({
-  database: {
+  database: prismaAdapter(prisma, {
     provider: "postgresql",
-    url: requireEnv("DATABASE_URL"),
-  },
+  }),
   account: {
     // Auto-linking is disabled so a sign-up with an email already tied to a
     // different provider is rejected (FR-011) instead of silently merged.
