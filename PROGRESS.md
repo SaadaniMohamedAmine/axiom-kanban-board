@@ -46,8 +46,10 @@
 - [x] US4: Role-based permission enforcement (server-side guards on all mutations)
 - [x] US5: Sprint planning (create sprints, attach tasks, status transitions)
 - [x] Build verification passed (pnpm build, type-check)
+- [x] Security/correctness review: fixed stored XSS in task description, broken drag&drop optimistic update, task-order duplicate collisions, cross-tenant assignee/label IDOR, weak invitation token
+- [x] Quality gate repair: `pnpm lint` (broken by Next 16's flat-config migration) fixed and enforced clean — build, lint, and type-check all pass per Constitution Gate IV
 
-**Phase 3 : 14/14 — 100%**
+**Phase 3 : 16/16 — 100%**
 
 ## Phase 4 — Realtime (0%)
 ## Phase 5 — AI Features / Axiom Intelligence (0%)
