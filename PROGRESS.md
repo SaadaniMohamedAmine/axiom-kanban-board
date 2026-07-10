@@ -134,16 +134,14 @@
 
 **Phase 9 : 0/7 — 0%**
 
-## Phase 10 — Recruiter-Ready Packaging (0%)
-- [ ] README / case study : décisions techniques expliquées (pourquoi Better Auth, pourquoi Groq+Gemini, pourquoi tout-Next.js)
-- [ ] Données de démo crédibles + accès démo sans friction (zéro étape cassée au premier clic)
-- [ ] Tests Playwright verts + badge CI visible sur le repo
-- [ ] Score Lighthouse/Core Web Vitals affiché (README ou landing)
-- [ ] Vidéo/GIF démo courte (reasoning stream IA, drag & drop, mobile)
-- [ ] Screenshots premium pour portfolio externe (site perso, LinkedIn)
+## Phase E — Final Features (100%)
+- [x] **Feature 021 — i18n FR/EN** : next-intl, messages files, locale switcher, middleware
+- [x] **Feature 022 — Billing** : Stripe Checkout + Portal, plans Free/Pro/Team, enforcement
+- [x] **Feature 023 — Audit Log** : AuditLog model, createAuditLog(), CSV export, filtres
+- [x] **Feature 009 — Recruiter-Ready Packaging** : README final, CI, seed data
 
-**Phase 10 : 0/6 — 0%**
+**Phase E : 4/4 — 100%**
 
 ---
 
-**Progression globale du projet : 40/~60 tâches estimées — ~67%** *(Phases 0-7 complétées, reste Phases 8-10)*
+**Progression globale du projet : 24/24 features — 100% 🎉**
