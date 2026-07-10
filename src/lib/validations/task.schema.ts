@@ -23,6 +23,7 @@ export const updateTaskFieldsSchema = z.object({
   priority: z.enum(["URGENT", "HIGH", "MEDIUM", "LOW"]).optional(),
   estimate: z.number().int().nonnegative().nullable().optional(),
   dueDate: z.string().datetime().nullable().optional(),
+  expectedUpdatedAt: z.string().datetime().optional(),
 });
 
 export const setTaskAssigneesSchema = z.object({
