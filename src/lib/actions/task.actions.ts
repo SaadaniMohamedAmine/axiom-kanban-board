@@ -7,10 +7,18 @@ import { calculateOrderAtEnd, calculateOrderBetween } from "../task-order";
 import {
   createTaskSchema,
   moveTaskSchema,
+  updateTaskFieldsSchema,
+  setTaskAssigneesSchema,
+  setTaskLabelsSchema,
   type CreateTaskInput,
   type MoveTaskInput,
+  type UpdateTaskFieldsInput,
+  type SetTaskAssigneesInput,
+  type SetTaskLabelsInput,
 } from "../validations/task.schema";
 import { revalidatePath } from "next/cache";
+import { auth } from "../auth";
+import { headers } from "next/headers";
 
 export async function createTask(input: CreateTaskInput) {
   const validated = createTaskSchema.parse(input);
@@ -145,6 +153,169 @@ export async function deleteTask(taskId: string) {
   await prisma.task.delete({
     where: { id: taskId },
   });
+
+  revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
+  return { success: true };
+}
+
+export async function updateTaskFields(input: UpdateTaskFieldsInput) {
+  const validated = updateTaskFieldsSchema.parse(input);
+  const { taskId, title, description, priority, estimate, dueDate } = validated;
+
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { board: true },
+  });
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  await requireRole(task.board.workspaceId, "MEMBER");
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Not authenticated");
+
+  const updates: Record<string, unknown> = {};
+  const activityPayloads: { field: string; from: unknown; to: unknown }[] = [];
+
+  if (title !== undefined && title !== task.title) {
+    updates.title = title;
+    activityPayloads.push({ field: "title", from: task.title, to: title });
+  }
+  if (description !== undefined && description !== task.description) {
+    updates.description = description;
+    activityPayloads.push({ field: "description", from: task.description, to: description });
+  }
+  if (priority !== undefined && priority !== task.priority) {
+    updates.priority = priority;
+    activityPayloads.push({ field: "priority", from: task.priority, to: priority });
+  }
+  if (estimate !== undefined && estimate !== task.estimate) {
+    updates.estimate = estimate;
+    activityPayloads.push({ field: "estimate", from: task.estimate, to: estimate });
+  }
+  if (dueDate !== undefined && dueDate !== task.dueDate?.toISOString()) {
+    updates.dueDate = dueDate ? new Date(dueDate) : null;
+    activityPayloads.push({ field: "dueDate", from: task.dueDate, to: dueDate });
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return { success: true };
+  }
+
+  await prisma.$transaction([
+    prisma.task.update({
+      where: { id: taskId },
+      data: updates,
+    }),
+    ...activityPayloads.map((payload) =>
+      prisma.activityEvent.create({
+        data: {
+          taskId,
+          actorId: session.user.id,
+          type: "STATUS_CHANGE",
+          payload,
+        },
+      })
+    ),
+  ]);
+
+  revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
+  return { success: true };
+}
+
+export async function setTaskAssignees(input: SetTaskAssigneesInput) {
+  const validated = setTaskAssigneesSchema.parse(input);
+  const { taskId, userIds } = validated;
+
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: {
+      board: true,
+      assignees: true,
+    },
+  });
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  await requireRole(task.board.workspaceId, "MEMBER");
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Not authenticated");
+
+  const currentAssigneeIds = task.assignees.map((a) => a.userId);
+  const added = userIds.filter((id) => !currentAssigneeIds.includes(id));
+  const removed = currentAssigneeIds.filter((id) => !userIds.includes(id));
+
+  await prisma.$transaction([
+    prisma.taskAssignee.deleteMany({
+      where: { taskId, userId: { in: removed } },
+    }),
+    ...added.map((userId) =>
+      prisma.taskAssignee.create({
+        data: { taskId, userId },
+      })
+    ),
+    prisma.activityEvent.create({
+      data: {
+        taskId,
+        actorId: session.user.id,
+        type: "ASSIGNED",
+        payload: { added, removed },
+      },
+    }),
+  ]);
+
+  revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
+  return { success: true };
+}
+
+export async function setTaskLabels(input: SetTaskLabelsInput) {
+  const validated = setTaskLabelsSchema.parse(input);
+  const { taskId, labelIds } = validated;
+
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: {
+      board: true,
+      labels: true,
+    },
+  });
+
+  if (!task) {
+    throw new Error("Task not found");
+  }
+
+  await requireRole(task.board.workspaceId, "MEMBER");
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Not authenticated");
+
+  const currentLabelIds = task.labels.map((l) => l.labelId);
+  const added = labelIds.filter((id) => !currentLabelIds.includes(id));
+  const removed = currentLabelIds.filter((id) => !labelIds.includes(id));
+
+  await prisma.$transaction([
+    prisma.taskLabel.deleteMany({
+      where: { taskId, labelId: { in: removed } },
+    }),
+    ...added.map((labelId) =>
+      prisma.taskLabel.create({
+        data: { taskId, labelId },
+      })
+    ),
+    prisma.activityEvent.create({
+      data: {
+        taskId,
+        actorId: session.user.id,
+        type: "STATUS_CHANGE",
+        payload: { field: "labels", from: currentLabelIds, to: labelIds },
+      },
+    }),
+  ]);
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
