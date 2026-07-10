@@ -21,7 +21,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import { headers } from "next/headers";
 import { triggerBoardEvent } from "../realtime";
-import type { BoardEvent } from "@/types/realtime.types";
+import type { BoardEvent, ConflictEvent } from "@/types/realtime.types";
 
 function makeEvent(
   type: BoardEvent["type"],
@@ -212,7 +212,7 @@ export async function deleteTask(taskId: string, socketId?: string) {
 
 export async function updateTaskFields(input: UpdateTaskFieldsInput, socketId?: string) {
   const validated = updateTaskFieldsSchema.parse(input);
-  const { taskId, title, description, priority, estimate, dueDate } = validated;
+  const { taskId, title, description, priority, estimate, dueDate, expectedUpdatedAt } = validated;
 
   const task = await prisma.task.findUnique({
     where: { id: taskId },
@@ -256,6 +256,8 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput, socketId?: 
     return { success: true };
   }
 
+  const taskUpdatedAtBefore = task.updatedAt;
+
   await prisma.$transaction([
     prisma.task.update({
       where: { id: taskId },
@@ -278,6 +280,39 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput, socketId?: 
     makeEvent("task.updated", task.boardId, session.user.id, { taskId, ...updates }, taskId),
     socketId,
   );
+
+  if (expectedUpdatedAt) {
+    const expectedTime = new Date(expectedUpdatedAt).getTime();
+    const actualTime = taskUpdatedAtBefore.getTime();
+
+    if (Math.abs(expectedTime - actualTime) > 1000) {
+      const supersededActivity = await prisma.activityEvent.findFirst({
+        where: {
+          taskId,
+          createdAt: {
+            gt: new Date(expectedUpdatedAt),
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (supersededActivity) {
+        const conflictEvent: ConflictEvent = {
+          type: "task.conflict",
+          taskId,
+          supersededActorId: supersededActivity.actorId,
+          field: activityPayloads[0]?.field ?? "unknown",
+          timestamp: new Date().toISOString(),
+        };
+
+        await triggerBoardEvent(
+          task.boardId,
+          conflictEvent as unknown as BoardEvent,
+          socketId,
+        );
+      }
+    }
+  }
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };

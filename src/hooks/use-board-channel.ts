@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { getPusherClient } from "@/lib/pusher-client";
 import { getBoardSnapshot } from "@/lib/actions/task.actions";
-import type { PresenceMember, ConnectionState, BoardEvent } from "@/types/realtime.types";
+import type { PresenceMember, ConnectionState, BoardEvent, ConflictEvent } from "@/types/realtime.types";
 import type { PresenceChannel } from "pusher-js";
 import type { Column } from "@/types/board.types";
 import type { Task } from "@/types/task.types";
@@ -14,6 +14,7 @@ const POLL_INTERVAL_MS = 5_000;
 
 interface UseBoardChannelOptions {
   onEvent?: (event: BoardEvent) => void;
+  onConflict?: (event: ConflictEvent) => void;
   onColumnsUpdate?: (columns: (Column & { tasks: Task[] })[]) => void;
 }
 
@@ -31,12 +32,14 @@ export function useBoardChannel(
   const [connectionState, setConnectionState] = useState<ConnectionState>("live");
   const [members, setMembers] = useState<PresenceMember[]>([]);
   const onEventRef = useRef(options?.onEvent);
+  const onConflictRef = useRef(options?.onConflict);
   const onColumnsUpdateRef = useRef(options?.onColumnsUpdate);
   const channelRef = useRef<PresenceChannel | null>(null);
   const degradedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   onEventRef.current = options?.onEvent;
+  onConflictRef.current = options?.onConflict;
   onColumnsUpdateRef.current = options?.onColumnsUpdate;
 
   const stopPolling = useCallback(() => {
@@ -118,11 +121,16 @@ export function useBoardChannel(
       });
     }
 
+    channel.bind("task.conflict", (data: ConflictEvent) => {
+      onConflictRef.current?.(data);
+    });
+
     return () => {
       pusher.connection.unbind("state_change", onStateChange);
       for (const eventType of eventTypes) {
         channel.unbind(eventType);
       }
+      channel.unbind("task.conflict");
       channel.unbind("pusher:subscription_succeeded");
       channel.unbind("pusher:member_added");
       channel.unbind("pusher:member_removed");
