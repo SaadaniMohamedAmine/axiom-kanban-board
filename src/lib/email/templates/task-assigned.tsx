@@ -12,7 +12,6 @@ interface TaskAssignedEmailProps {
 }
 
 export function TaskAssignedEmail({
-  recipientName,
   assignerName,
   taskCode,
   taskTitle,

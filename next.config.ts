@@ -7,7 +7,6 @@ const withPWA = withPWAInit({
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
-  swMinify: true,
   fallbacks: {
     document: "/offline",
   },
