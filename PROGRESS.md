@@ -31,8 +31,23 @@
 
 **Phase 2 : 5/5 — 100%**
 
-## Phase 3 — Core Kanban (0%)
-*(détail à reprendre du draft initial, ajusté à l'architecture Next.js)*
+## Phase 3 — Core Kanban — ✅ COMPLETE (100%)
+- [x] Schema additions (Board.taskCounter, Task.code required, Task.sprintId, Invitation.expiresAt, ActivityEvent.actorId)
+- [x] Tailwind theme normalized to DESIGN.md tokens
+- [x] Authenticated route group shell with sidebar/topnav
+- [x] requireRole permission guard
+- [x] Task order helper (gap-stepped)
+- [x] Atomic task code generation
+- [x] Shared types and Zod validation schemas
+- [x] Prisma seed script
+- [x] US1: Fluid task board interaction (create, drag&drop, delete tasks with optimistic UI)
+- [x] US2: Rich task detail (description, assignees, labels, comments, activity history)
+- [x] US3: Workspace and board setup (create workspace, invite members, create board from template)
+- [x] US4: Role-based permission enforcement (server-side guards on all mutations)
+- [x] US5: Sprint planning (create sprints, attach tasks, status transitions)
+- [x] Build verification passed (pnpm build, type-check)
+
+**Phase 3 : 14/14 — 100%**
 
 ## Phase 4 — Realtime (0%)
 ## Phase 5 — AI Features / Axiom Intelligence (0%)
