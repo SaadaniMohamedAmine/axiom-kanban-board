@@ -9,15 +9,17 @@ import { EmptyBoardState } from "./empty-board-state";
 import { moveTask } from "@/lib/actions/task.actions";
 import type { Board, Column as ColumnType } from "@/types/board.types";
 import type { Task } from "@/types/task.types";
+import type { PresenceMember } from "@/types/realtime.types";
 
 interface BoardViewProps {
   board: Board;
   columns: (ColumnType & { tasks: Task[] })[];
   onTaskClick?: (task: Task) => void;
   canEdit: boolean;
+  currentUser: PresenceMember;
 }
 
-export function BoardView({ columns: initialColumns, onTaskClick, canEdit }: BoardViewProps) {
+export function BoardView({ columns: initialColumns, onTaskClick, canEdit, currentUser }: BoardViewProps) {
   const [columns, setColumns] = useState(initialColumns);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [moveError, setMoveError] = useState<string | null>(null);
