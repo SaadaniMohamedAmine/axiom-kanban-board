@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createTask } from "@/lib/actions/task.actions";
+import { getPusherClient } from "@/lib/pusher-client";
 import type { Column } from "@/types/board.types";
 
 interface CreateTaskFormProps {
@@ -25,7 +26,7 @@ export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
         boardId,
         columnId,
         title: title.trim(),
-      });
+      }, getPusherClient().connection.socket_id ?? undefined);
       setTitle("");
       setIsOpen(false);
     } catch (error) {

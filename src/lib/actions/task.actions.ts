@@ -20,8 +20,21 @@ import {
 import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import { headers } from "next/headers";
+import { triggerBoardEvent } from "../realtime";
+import type { BoardEvent, ConflictEvent } from "@/types/realtime.types";
 
-export async function createTask(input: CreateTaskInput) {
+function makeEvent(
+  type: BoardEvent["type"],
+  boardId: string,
+  actorId: string,
+  data: Record<string, unknown>,
+  taskId: string | null = null,
+  columnId: string | null = null,
+): BoardEvent {
+  return { type, boardId, taskId, columnId, actorId, data, timestamp: new Date().toISOString() };
+}
+
+export async function createTask(input: CreateTaskInput, socketId?: string) {
   const validated = createTaskSchema.parse(input);
   const { boardId, columnId, title, description, priority, estimate, dueDate } = validated;
 
@@ -69,11 +82,20 @@ export async function createTask(input: CreateTaskInput) {
     },
   });
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      boardId,
+      makeEvent("task.created", boardId, session.user.id, task as unknown as Record<string, unknown>, task.id, columnId),
+      socketId,
+    );
+  }
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return task;
 }
 
-export async function moveTask(input: MoveTaskInput) {
+export async function moveTask(input: MoveTaskInput, socketId?: string) {
   const validated = moveTaskSchema.parse(input);
   const { taskId, targetColumnId, targetIndex } = validated;
 
@@ -148,11 +170,17 @@ export async function moveTask(input: MoveTaskInput) {
     });
   }
 
+  await triggerBoardEvent(
+    task.boardId,
+    makeEvent("task.moved", task.boardId, session.user.id, { taskId, columnId: targetColumnId, order }, taskId, targetColumnId),
+    socketId,
+  );
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
 
-export async function deleteTask(taskId: string) {
+export async function deleteTask(taskId: string, socketId?: string) {
   const task = await prisma.task.findUnique({
     where: { id: taskId },
     include: { board: true },
@@ -164,17 +192,27 @@ export async function deleteTask(taskId: string) {
 
   await requireRole(task.board.workspaceId, "MEMBER");
 
+  const session = await auth.api.getSession({ headers: await headers() });
+
   await prisma.task.delete({
     where: { id: taskId },
   });
+
+  if (session) {
+    await triggerBoardEvent(
+      task.boardId,
+      makeEvent("task.deleted", task.boardId, session.user.id, { taskId }, taskId),
+      socketId,
+    );
+  }
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
 
-export async function updateTaskFields(input: UpdateTaskFieldsInput) {
+export async function updateTaskFields(input: UpdateTaskFieldsInput, socketId?: string) {
   const validated = updateTaskFieldsSchema.parse(input);
-  const { taskId, title, description, priority, estimate, dueDate } = validated;
+  const { taskId, title, description, priority, estimate, dueDate, expectedUpdatedAt } = validated;
 
   const task = await prisma.task.findUnique({
     where: { id: taskId },
@@ -218,6 +256,40 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput) {
     return { success: true };
   }
 
+  const taskUpdatedAtBefore = task.updatedAt;
+
+  // Conflict detection must run BEFORE this update's own activity rows are
+  // inserted below — otherwise the "most recent activity" query always finds
+  // the row this same request is about to create and falsely reports the
+  // acting user as having superseded themselves.
+  let conflictEvent: ConflictEvent | null = null;
+  if (expectedUpdatedAt) {
+    const expectedTime = new Date(expectedUpdatedAt).getTime();
+    const actualTime = taskUpdatedAtBefore.getTime();
+
+    if (Math.abs(expectedTime - actualTime) > 1000) {
+      const supersedingActivity = await prisma.activityEvent.findFirst({
+        where: {
+          taskId,
+          createdAt: {
+            gt: new Date(expectedUpdatedAt),
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (supersedingActivity) {
+        conflictEvent = {
+          type: "task.conflict",
+          taskId,
+          supersededActorId: supersedingActivity.actorId,
+          field: activityPayloads[0]?.field ?? "unknown",
+          timestamp: new Date().toISOString(),
+        };
+      }
+    }
+  }
+
   await prisma.$transaction([
     prisma.task.update({
       where: { id: taskId },
@@ -235,11 +307,25 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput) {
     ),
   ]);
 
+  await triggerBoardEvent(
+    task.boardId,
+    makeEvent("task.updated", task.boardId, session.user.id, { taskId, ...updates }, taskId),
+    socketId,
+  );
+
+  if (conflictEvent) {
+    await triggerBoardEvent(
+      task.boardId,
+      conflictEvent as unknown as BoardEvent,
+      socketId,
+    );
+  }
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
 
-export async function setTaskAssignees(input: SetTaskAssigneesInput) {
+export async function setTaskAssignees(input: SetTaskAssigneesInput, socketId?: string) {
   const validated = setTaskAssigneesSchema.parse(input);
   const { taskId, userIds } = validated;
 
@@ -291,11 +377,17 @@ export async function setTaskAssignees(input: SetTaskAssigneesInput) {
     }),
   ]);
 
+  await triggerBoardEvent(
+    task.boardId,
+    makeEvent("task.updated", task.boardId, session.user.id, { taskId, assigneeIds: userIds }, taskId),
+    socketId,
+  );
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
 
-export async function setTaskLabels(input: SetTaskLabelsInput) {
+export async function setTaskLabels(input: SetTaskLabelsInput, socketId?: string) {
   const validated = setTaskLabelsSchema.parse(input);
   const { taskId, labelIds } = validated;
 
@@ -347,6 +439,40 @@ export async function setTaskLabels(input: SetTaskLabelsInput) {
     }),
   ]);
 
+  await triggerBoardEvent(
+    task.boardId,
+    makeEvent("task.updated", task.boardId, session.user.id, { taskId, labelIds }, taskId),
+    socketId,
+  );
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
+}
+
+export async function getBoardSnapshot(boardId: string) {
+  const board = await prisma.board.findUnique({
+    where: { id: boardId },
+    include: {
+      columns: {
+        orderBy: { order: "asc" },
+        include: {
+          tasks: {
+            orderBy: { order: "asc" },
+            include: {
+              assignees: true,
+              labels: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!board) {
+    throw new Error("Board not found");
+  }
+
+  await requireRole(board.workspaceId, "VIEWER");
+
+  return { columns: board.columns };
 }

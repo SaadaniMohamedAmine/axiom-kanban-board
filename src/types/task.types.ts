@@ -18,7 +18,8 @@ export interface Task {
   dueDate: Date | null;
   order: number;
   sprintId: string | null;
-  createdAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface TaskAssignee {

@@ -11,9 +11,10 @@ interface ColumnProps {
   tasks: Task[];
   onTaskClick?: (task: Task) => void;
   canEdit: boolean;
+  conflictedTaskIds?: Set<string>;
 }
 
-export function Column({ column, tasks, onTaskClick, canEdit }: ColumnProps) {
+export function Column({ column, tasks, onTaskClick, canEdit, conflictedTaskIds }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
@@ -42,7 +43,7 @@ export function Column({ column, tasks, onTaskClick, canEdit }: ColumnProps) {
       <div ref={setNodeRef} className="space-y-4 min-h-[200px]">
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onClick={() => onTaskClick?.(task)} canEdit={canEdit} />
+            <TaskCard key={task.id} task={task} onClick={() => onTaskClick?.(task)} canEdit={canEdit} showConflict={conflictedTaskIds?.has(task.id)} />
           ))}
         </SortableContext>
       </div>

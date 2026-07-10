@@ -71,7 +71,12 @@ export default async function BoardPage({
       </div>
       <div className="flex-1 overflow-hidden flex">
         <div className="flex-1 flex flex-col overflow-hidden">
-          <BoardViewWithModal board={board} columns={board.columns} canEdit={canEdit} />
+          <BoardViewWithModal
+            board={board}
+            columns={board.columns}
+            canEdit={canEdit}
+            currentUser={{ id: session.user.id, name: session.user.name, image: session.user.image ?? null }}
+          />
           {canEdit && <CreateTaskForm boardId={board.id} columns={board.columns} />}
         </div>
         {board.template === "SCRUM" && (

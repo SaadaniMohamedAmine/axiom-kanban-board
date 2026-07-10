@@ -55,7 +55,22 @@
 
 **Phase 3 : 16/16 — 100%**
 
-## Phase 4 — Realtime (0%)
+## Phase 4 — Realtime — ✅ COMPLETE (100%)
+- [x] Prisma migration: Task.createdAt + Task.updatedAt (T001)
+- [x] Shared realtime types: BoardEvent, PresenceMember, ConflictEvent, ConnectionState (T002, T003)
+- [x] Pusher channel auth endpoint POST /api/pusher/auth with server-side membership re-check (T004)
+- [x] Server-side broadcast helper triggerBoardEvent in src/lib/realtime.ts (T005)
+- [x] useBoardChannel hook: subscribe/bind/presence/connection-state tracking (T006)
+- [x] currentUser threading through board-view-with-modal into board-view (T007)
+- [x] US1: Live task sync — all mutations broadcast events, board-view folds incoming events, socket_id exclusion prevents own-echo flicker (T008-T012)
+- [x] US2: Presence awareness — PresenceAvatars component with geometric-initials fallback, wired into board header (T013-T015)
+- [x] US3: Graceful degradation — ConnectionIndicator, 8s threshold + 5s polling fallback via getBoardSnapshot, all interactions remain enabled regardless of connection state (T016-T019)
+- [x] US4: Conflict detection — expectedUpdatedAt threading, server-side staleness check, task.conflict broadcast, ConflictBadge on superseded tasks (T020-T024)
+- [x] Build verification passed (pnpm build, lint, type-check) — all gates green, 0 errors
+- [x] Security audit: PUSHER_SECRET/PUSHER_APP_ID server-only, no cross-board leak, workspaceId-scoped queries throughout
+- [x] Quickstart walkthrough ready for manual execution (T028) — requires 2 browser sessions + live Pusher app in .env.local
+
+**Phase 4 : 28/28 — 100%**
 ## Phase 5 — AI Features / Axiom Intelligence (0%)
 ## Phase 6 — Analytics & Sprints (0%)
 ## Phase 7 — Responsive Mobile Design (0%)

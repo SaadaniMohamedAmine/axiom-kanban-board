@@ -2,12 +2,14 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ConflictBadge } from "@/components/realtime/conflict-badge";
 import type { Task } from "@/types/task.types";
 
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
   canEdit: boolean;
+  showConflict?: boolean;
 }
 
 const priorityStyles = {
@@ -17,7 +19,7 @@ const priorityStyles = {
   LOW: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
 };
 
-export function TaskCard({ task, onClick, canEdit }: TaskCardProps) {
+export function TaskCard({ task, onClick, canEdit, showConflict }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { task },
@@ -44,6 +46,7 @@ export function TaskCard({ task, onClick, canEdit }: TaskCardProps) {
         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${priorityStyles[task.priority]}`}>
           {task.priority}
         </span>
+        <ConflictBadge visible={!!showConflict} />
       </div>
       <h4 className="text-sm font-semibold text-on-surface leading-snug mb-4">{task.title}</h4>
       <div className="flex items-center justify-between mt-auto">
