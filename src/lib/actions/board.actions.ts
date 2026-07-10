@@ -62,7 +62,7 @@ export async function createBoard(input: CreateBoardInput) {
     },
   });
 
-  revalidatePath(`/${workspaceId}/boards`, "page");
+  revalidatePath(`/[workspaceSlug]`, "page");
   return board;
 }
 

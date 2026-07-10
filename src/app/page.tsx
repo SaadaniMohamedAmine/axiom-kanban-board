@@ -1,8 +1,24 @@
-export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <h1 className="text-4xl font-bold">Axiom Kanban Board</h1>
-      <p className="mt-4 text-lg text-gray-600">Welcome to your project</p>
-    </main>
-  );
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+
+export default async function Home() {
+  const session = await auth.api.getSession({ headers: await headers() });
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const membership = await prisma.workspaceMember.findFirst({
+    where: { userId: session.user.id },
+    orderBy: { invitedAt: "asc" },
+    include: { workspace: { select: { slug: true } } },
+  });
+
+  if (!membership) {
+    redirect("/workspaces/new");
+  }
+
+  redirect(`/${membership.workspace.slug}`);
 }

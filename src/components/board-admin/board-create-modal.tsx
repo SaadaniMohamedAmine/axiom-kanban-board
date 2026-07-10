@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createBoard } from "@/lib/actions/board.actions";
 
 interface BoardCreateModalProps {
@@ -9,20 +10,24 @@ interface BoardCreateModalProps {
 }
 
 export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps) {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [template, setTemplate] = useState<"SCRUM" | "KANBAN" | "BUG_TRACKING" | "CUSTOM">("KANBAN");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!name.trim()) return;
 
     setIsSubmitting(true);
+    setError(null);
     try {
       await createBoard({ workspaceId, name: name.trim(), template });
+      router.refresh();
       onClose();
-    } catch (error) {
-      console.error("Failed to create board:", error);
+    } catch {
+      setError("Failed to create board");
     } finally {
       setIsSubmitting(false);
     }
@@ -33,6 +38,11 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
       <div className="absolute inset-0 bg-black/60" onClick={onClose} />
       <div className="relative z-10 w-full max-w-md bg-surface-container-high border border-outline-variant rounded-xl p-8 shadow-2xl">
         <h2 className="text-h2 text-on-surface mb-6">Create Board</h2>
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="text-label-md text-on-surface-variant mb-2 block">Board Name</label>
