@@ -17,7 +17,7 @@ const NOTIFICATION_ICONS: Record<string, string> = {
 };
 
 export default async function NotificationsPage({ params }: Props) {
-  const { workspaceSlug } = await params;
+  await params;
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
