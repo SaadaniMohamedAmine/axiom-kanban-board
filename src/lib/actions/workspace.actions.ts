@@ -134,7 +134,7 @@ export async function inviteMember(input: InviteMemberInput) {
     },
   });
 
-  revalidatePath(`/${workspaceId}/settings/members`, "page");
+  revalidatePath(`/[workspaceSlug]/settings/members`, "page");
   return { success: true };
 }
 
