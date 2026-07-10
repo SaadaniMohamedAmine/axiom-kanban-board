@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 
 export default async function AppLayout({
   children,
@@ -32,7 +33,7 @@ export default async function AppLayout({
 
   return (
     <div className="flex h-screen bg-background">
-      <aside className="w-[260px] bg-surface-container border-r border-outline-variant flex flex-col">
+      <aside className="hidden md:flex w-[260px] bg-surface-container border-r border-outline-variant flex flex-col">
         <div className="p-6 border-b border-outline-variant">
           <h1 className="text-h3 font-semibold text-on-surface">Axiom</h1>
         </div>
@@ -109,8 +110,11 @@ export default async function AppLayout({
           </Link>
         </div>
       </aside>
+
+      <MobileSidebar memberships={memberships} userName={session.user.name} />
+
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 bg-surface-container border-b border-outline-variant flex items-center px-6">
+        <header className="hidden md:flex h-16 bg-surface-container border-b border-outline-variant items-center px-6">
           <div className="flex-1" />
           <div className="flex items-center gap-4">
             <span className="text-body-md text-on-surface-variant">
