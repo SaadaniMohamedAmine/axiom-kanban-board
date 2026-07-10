@@ -95,7 +95,7 @@ export default async function BoardPage({
         <h1 className="text-h2 text-on-surface">{board.name}</h1>
       </div>
       <div className="flex-1 overflow-hidden flex">
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div id="board-columns" className="flex-1 flex flex-col overflow-hidden">
           <BoardViewWithModal
             board={board}
             columns={board.columns}

@@ -8,6 +8,7 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ToastProvider } from "@/contexts/toast-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
 import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
+import { OnboardingTour } from "@/components/onboarding/onboarding-tour";
 
 export default async function AppLayout({
   children,
@@ -34,6 +35,13 @@ export default async function AppLayout({
       },
     },
   });
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { onboardingCompleted: true },
+  });
+
+  const firstBoard = memberships[0]?.workspace?.boards?.[0];
 
   return (
     <ToastProvider>
@@ -105,6 +113,7 @@ export default async function AppLayout({
         </nav>
         <div className="p-4 border-t border-outline-variant">
           <Link
+            id="invite-team-link"
             href="/settings"
             className="flex items-center gap-2 px-3 py-2 text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
           >
@@ -133,6 +142,9 @@ export default async function AppLayout({
       </main>
     </div>
     <ShortcutsPanel />
+    {!user?.onboardingCompleted && (
+      <OnboardingTour boardId={firstBoard?.id} />
+    )}
     </ShortcutsProvider>
     </ToastProvider>
   );
