@@ -8,12 +8,13 @@ import { TaskCard } from "./task-card";
 import { EmptyBoardState } from "./empty-board-state";
 import { PresenceAvatars } from "@/components/realtime/presence-avatars";
 import { ConnectionIndicator } from "@/components/realtime/connection-indicator";
+import { ConflictBadge } from "@/components/realtime/conflict-badge";
 import { moveTask } from "@/lib/actions/task.actions";
 import { useBoardChannel } from "@/hooks/use-board-channel";
 import { getPusherClient } from "@/lib/pusher-client";
 import type { Board, Column as ColumnType } from "@/types/board.types";
 import type { Task } from "@/types/task.types";
-import type { PresenceMember, BoardEvent } from "@/types/realtime.types";
+import type { PresenceMember, BoardEvent, ConflictEvent } from "@/types/realtime.types";
 
 interface BoardViewProps {
   board: Board;
@@ -27,6 +28,7 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
   const [columns, setColumns] = useState(initialColumns);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [moveError, setMoveError] = useState<string | null>(null);
+  const [conflictedTaskIds, setConflictedTaskIds] = useState<Set<string>>(new Set());
   const [optimisticColumns, setOptimisticColumns] = useOptimistic(
     columns,
     (state, newColumns: (ColumnType & { tasks: Task[] })[]) => newColumns
@@ -105,8 +107,15 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
     });
   }, []);
 
+  const handleConflict = useCallback((event: ConflictEvent) => {
+    if (event.supersededActorId === currentUser.id) {
+      setConflictedTaskIds((prev) => new Set(prev).add(event.taskId));
+    }
+  }, [currentUser.id]);
+
   const { connectionState, members } = useBoardChannel(board.id, {
     onEvent: handleBoardEvent,
+    onConflict: handleConflict,
     onColumnsUpdate: (polledColumns) => setColumns(polledColumns),
   });
 
@@ -207,7 +216,7 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
       </div>
       <div className="flex-1 overflow-x-auto flex gap-6 p-8">
         {optimisticColumns.map((column) => (
-          <Column key={column.id} column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} />
+          <Column key={column.id} column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} />
         ))}
       </div>
       <DragOverlay>
