@@ -66,6 +66,7 @@ model User {
   email         String    @unique
   emailVerified Boolean   @default(false)
   image         String?
+  emailPreferences Json?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -130,19 +131,54 @@ model Verification {
 }
 
 model Workspace {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  ownerId   String
-  createdAt DateTime @default(now())
+  id              String           @id @default(cuid())
+  name            String
+  slug            String           @unique
+  ownerId         String
+  aiRequestsToday Int              @default(0)
+  aiRequestsResetAt DateTime?
+  createdAt       DateTime         @default(now())
 
-  owner   User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  members WorkspaceMember[]
-  boards  Board[]
-  invitations Invitation[]
+  owner        User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members      WorkspaceMember[]
+  boards       Board[]
+  invitations  Invitation[]
+  apiKeys      APIKey[]
+  webhookConfigs WebhookConfig[]
 
   @@index([ownerId])
   @@map("workspaces")
+}
+
+model APIKey {
+  id          String    @id @default(cuid())
+  workspaceId String
+  name        String
+  keyHash     String    @unique
+  prefix      String
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("api_keys")
+}
+
+model WebhookConfig {
+  id          String   @id @default(cuid())
+  workspaceId String
+  url         String
+  events      String[]
+  secret      String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("webhook_configs")
 }
 
 model WorkspaceMember {
