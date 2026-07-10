@@ -1,16 +1,12 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
+import nextTypescript from "eslint-config-next/typescript";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-export default [
+const eslintConfig = [
   {
-    ignores: ["node_modules/", ".next/", "out/", "dist/", "build/"],
+    ignores: ["node_modules/", ".next/", "out/", "dist/", "build/", ".remember/"],
   },
-  {
-    extends: [
-      "next/core-web-vitals",
-      "next/typescript",
-    ],
-  },
+  ...nextCoreWebVitals,
+  ...nextTypescript,
 ];
+
+export default eslintConfig;

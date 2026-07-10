@@ -1,5 +1,6 @@
 "use server";
 
+import type { Prisma } from "@prisma/client";
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import { generateTaskCode } from "../task-code";
@@ -228,7 +229,7 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput) {
           taskId,
           actorId: session.user.id,
           type: "STATUS_CHANGE",
-          payload: payload as any,
+          payload: payload as Prisma.InputJsonValue,
         },
       })
     ),

@@ -16,7 +16,7 @@ interface BoardViewProps {
   onTaskClick?: (task: Task) => void;
 }
 
-export function BoardView({ board, columns: initialColumns, onTaskClick }: BoardViewProps) {
+export function BoardView({ columns: initialColumns, onTaskClick }: BoardViewProps) {
   const [columns, setColumns] = useState(initialColumns);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [optimisticColumns, setOptimisticColumns] = useOptimistic(
@@ -93,7 +93,7 @@ export function BoardView({ board, columns: initialColumns, onTaskClick }: Board
           targetIndex,
         });
         setColumns(newColumns);
-      } catch (error) {
+      } catch {
         setColumns(columns);
       }
     });

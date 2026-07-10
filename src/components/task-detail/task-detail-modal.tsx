@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { TaskWithRelations } from "@/types/task.types";
 import { TaskPropertiesPanel } from "./task-properties-panel";
 import { ActivityList } from "./activity-list";
@@ -12,6 +12,8 @@ interface TaskDetailModalProps {
 }
 
 export function TaskDetailModal({ task, onClose }: TaskDetailModalProps) {
+  const [now] = useState(() => Date.now());
+
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
@@ -107,7 +109,7 @@ export function TaskDetailModal({ task, onClose }: TaskDetailModalProps) {
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
-              Created {new Date(task.createdAt ?? Date.now()).toLocaleDateString()}
+              Created {new Date(task.createdAt ?? now).toLocaleDateString()}
             </div>
           </div>
           <div className="flex items-center gap-4">

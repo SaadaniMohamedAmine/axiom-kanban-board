@@ -98,7 +98,7 @@ export function EmptyBoardState({ onCreateTask }: EmptyBoardStateProps) {
           </div>
           <div className="text-center space-y-4 pointer-events-auto">
             <h3 className="text-h2 text-on-surface font-semibold tracking-tight">
-              Nothing here yet — let's start your first sprint.
+              Nothing here yet — let&apos;s start your first sprint.
             </h3>
             <p className="text-body-md text-on-surface-variant max-w-sm mx-auto">
               Create tasks to track progress, collaborate with your team, and ship faster with Axiom.

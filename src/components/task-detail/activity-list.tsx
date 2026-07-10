@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import type { ActivityEvent } from "@/types/task.types";
 
 interface ActivityListProps {
@@ -7,6 +8,8 @@ interface ActivityListProps {
 }
 
 export function ActivityList({ activities }: ActivityListProps) {
+  const [now] = useState(() => Date.now());
+
   if (activities.length === 0) {
     return <p className="text-sm text-on-surface-variant italic opacity-60">No activity yet</p>;
   }
@@ -39,7 +42,7 @@ export function ActivityList({ activities }: ActivityListProps) {
   }
 
   function timeAgo(date: Date): string {
-    const seconds = Math.floor((Date.now() - new Date(date).getTime()) / 1000);
+    const seconds = Math.floor((now - new Date(date).getTime()) / 1000);
     if (seconds < 60) return "just now";
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m ago`;

@@ -20,7 +20,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
     setPriority(newPriority);
     try {
       await updateTaskFields({ taskId: task.id, priority: newPriority });
-    } catch (error) {
+    } catch {
       setPriority(task.priority);
     }
   }
@@ -31,7 +31,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
     if (newValue !== task.estimate) {
       try {
         await updateTaskFields({ taskId: task.id, estimate: newValue });
-      } catch (error) {
+      } catch {
         setEstimate(task.estimate?.toString() ?? "");
       }
     }
@@ -42,7 +42,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
     const newValue = newDate ? new Date(newDate).toISOString() : null;
     try {
       await updateTaskFields({ taskId: task.id, dueDate: newValue });
-    } catch (error) {
+    } catch {
       setDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
     }
   }
@@ -64,7 +64,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
     if (description !== task.description) {
       try {
         await updateTaskFields({ taskId: task.id, description: description || null });
-      } catch (error) {
+      } catch {
         setDescription(task.description ?? "");
       }
     }
