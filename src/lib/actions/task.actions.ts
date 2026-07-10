@@ -406,3 +406,31 @@ export async function setTaskLabels(input: SetTaskLabelsInput, socketId?: string
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
+
+export async function getBoardSnapshot(boardId: string) {
+  const board = await prisma.board.findUnique({
+    where: { id: boardId },
+    include: {
+      columns: {
+        orderBy: { order: "asc" },
+        include: {
+          tasks: {
+            orderBy: { order: "asc" },
+            include: {
+              assignees: true,
+              labels: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!board) {
+    throw new Error("Board not found");
+  }
+
+  await requireRole(board.workspaceId, "VIEWER");
+
+  return { columns: board.columns };
+}
