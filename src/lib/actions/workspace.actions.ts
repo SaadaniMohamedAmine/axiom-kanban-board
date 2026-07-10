@@ -1,5 +1,6 @@
 "use server";
 
+import { randomBytes } from "crypto";
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import {
@@ -118,7 +119,7 @@ export async function inviteMember(input: InviteMemberInput) {
     throw new Error("An invitation is already pending for this email");
   }
 
-  const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+  const token = randomBytes(32).toString("hex");
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
 
@@ -155,6 +156,10 @@ export async function acceptInvitation(input: AcceptInvitationInput) {
 
   if (invitation.status !== "PENDING") {
     throw new Error("Invitation is no longer pending");
+  }
+
+  if (invitation.email !== session.user.email) {
+    throw new Error("This invitation was sent to a different email address");
   }
 
   if (invitation.expiresAt < new Date()) {

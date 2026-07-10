@@ -3,7 +3,7 @@
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import { generateTaskCode } from "../task-code";
-import { calculateOrderAtEnd, calculateOrderBetween } from "../task-order";
+import { calculateOrderAtEnd, calculateOrderBetween, renumberOrders } from "../task-order";
 import {
   createTaskSchema,
   moveTaskSchema,
@@ -87,6 +87,9 @@ export async function moveTask(input: MoveTaskInput) {
 
   await requireRole(task.board.workspaceId, "MEMBER");
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Not authenticated");
+
   const targetColumn = await prisma.column.findUnique({
     where: { id: targetColumnId },
     include: {
@@ -100,14 +103,24 @@ export async function moveTask(input: MoveTaskInput) {
     throw new Error("Target column not found");
   }
 
-  const tasksInColumn = targetColumn.tasks.filter((t) => t.id !== taskId);
-  const previousTask = targetIndex > 0 ? tasksInColumn[targetIndex - 1] : null;
-  const nextTask = targetIndex < tasksInColumn.length ? tasksInColumn[targetIndex] : null;
+  let tasksInColumn = targetColumn.tasks.filter((t) => t.id !== taskId);
+  let previousOrder = targetIndex > 0 ? tasksInColumn[targetIndex - 1]?.order ?? null : null;
+  let nextOrder = targetIndex < tasksInColumn.length ? tasksInColumn[targetIndex]?.order ?? null : null;
 
-  const previousOrder = previousTask?.order ?? null;
-  const nextOrder = nextTask?.order ?? null;
+  let order = calculateOrderBetween(previousOrder, nextOrder);
 
-  const order = calculateOrderBetween(previousOrder, nextOrder);
+  if (previousOrder !== null && order <= previousOrder) {
+    const renumbered = renumberOrders(tasksInColumn.length);
+    await prisma.$transaction(
+      tasksInColumn.map((t, i) =>
+        prisma.task.update({ where: { id: t.id }, data: { order: renumbered[i] } })
+      )
+    );
+    tasksInColumn = tasksInColumn.map((t, i) => ({ ...t, order: renumbered[i] }));
+    previousOrder = targetIndex > 0 ? tasksInColumn[targetIndex - 1]?.order ?? null : null;
+    nextOrder = targetIndex < tasksInColumn.length ? tasksInColumn[targetIndex]?.order ?? null : null;
+    order = calculateOrderBetween(previousOrder, nextOrder);
+  }
 
   const columnChanged = task.columnId !== targetColumnId;
 
@@ -123,7 +136,7 @@ export async function moveTask(input: MoveTaskInput) {
     await prisma.activityEvent.create({
       data: {
         taskId,
-        actorId: (await (await import("../auth")).auth.api.getSession({ headers: await (await import("next/headers")).headers() }))?.user.id ?? "",
+        actorId: session.user.id,
         type: "STATUS_CHANGE",
         payload: {
           field: "column",
@@ -246,6 +259,14 @@ export async function setTaskAssignees(input: SetTaskAssigneesInput) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Not authenticated");
 
+  const validMembers = await prisma.workspaceMember.findMany({
+    where: { workspaceId: task.board.workspaceId, userId: { in: userIds } },
+    select: { userId: true },
+  });
+  if (validMembers.length !== userIds.length) {
+    throw new Error("One or more assignees are not members of this workspace");
+  }
+
   const currentAssigneeIds = task.assignees.map((a) => a.userId);
   const added = userIds.filter((id) => !currentAssigneeIds.includes(id));
   const removed = currentAssigneeIds.filter((id) => !userIds.includes(id));
@@ -293,6 +314,14 @@ export async function setTaskLabels(input: SetTaskLabelsInput) {
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Not authenticated");
+
+  const validLabels = await prisma.label.findMany({
+    where: { boardId: task.boardId, id: { in: labelIds } },
+    select: { id: true },
+  });
+  if (validLabels.length !== labelIds.length) {
+    throw new Error("One or more labels do not belong to this board");
+  }
 
   const currentLabelIds = task.labels.map((l) => l.labelId);
   const added = labelIds.filter((id) => !currentLabelIds.includes(id));

@@ -128,7 +128,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
             className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface cursor-pointer hover:border-primary/50 transition-colors min-h-[60px]"
           >
             {description ? (
-              <div dangerouslySetInnerHTML={{ __html: description }} />
+              <div className="whitespace-pre-wrap">{description}</div>
             ) : (
               <p className="italic opacity-60">Click to add description...</p>
             )}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useOptimistic } from "react";
+import { useState, useOptimistic, startTransition } from "react";
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { Column } from "./column";
@@ -83,18 +83,20 @@ export function BoardView({ board, columns: initialColumns, onTaskClick }: Board
       return col;
     });
 
-    setOptimisticColumns(newColumns);
+    startTransition(async () => {
+      setOptimisticColumns(newColumns);
 
-    try {
-      await moveTask({
-        taskId: activeTask.id,
-        targetColumnId: targetColumn.id,
-        targetIndex,
-      });
-      setColumns(newColumns);
-    } catch (error) {
-      setColumns(columns);
-    }
+      try {
+        await moveTask({
+          taskId: activeTask.id,
+          targetColumnId: targetColumn.id,
+          targetIndex,
+        });
+        setColumns(newColumns);
+      } catch (error) {
+        setColumns(columns);
+      }
+    });
   }
 
   return (

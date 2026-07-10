@@ -62,7 +62,7 @@ export function TaskDetailModal({ task, onClose }: TaskDetailModalProps) {
               </div>
               <div className="text-[14px] leading-relaxed text-on-surface-variant">
                 {task.description ? (
-                  <div dangerouslySetInnerHTML={{ __html: task.description }} />
+                  <div className="whitespace-pre-wrap">{task.description}</div>
                 ) : (
                   <p className="italic opacity-60">No description yet</p>
                 )}
