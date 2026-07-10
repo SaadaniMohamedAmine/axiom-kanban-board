@@ -58,7 +58,7 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
   });
 
   revalidatePath("/", "layout");
-  redirect(`/${workspace.slug}/boards`);
+  redirect(`/${workspace.slug}`);
 }
 
 export async function renameWorkspace(input: RenameWorkspaceInput) {

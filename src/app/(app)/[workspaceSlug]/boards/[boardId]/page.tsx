@@ -9,8 +9,9 @@ import { SprintPanel } from "@/components/sprint/sprint-panel";
 export default async function BoardPage({
   params,
 }: {
-  params: { workspaceSlug: string; boardId: string };
+  params: Promise<{ workspaceSlug: string; boardId: string }>;
 }) {
+  const { workspaceSlug, boardId } = await params;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -20,7 +21,7 @@ export default async function BoardPage({
   }
 
   const workspace = await prisma.workspace.findUnique({
-    where: { slug: params.workspaceSlug },
+    where: { slug: workspaceSlug },
     include: {
       members: {
         where: { userId: session.user.id },
@@ -33,7 +34,7 @@ export default async function BoardPage({
   }
 
   const board = await prisma.board.findUnique({
-    where: { id: params.boardId },
+    where: { id: boardId },
     include: {
       columns: {
         orderBy: { order: "asc" },
@@ -56,7 +57,7 @@ export default async function BoardPage({
   });
 
   if (!board || board.workspaceId !== workspace.id) {
-    redirect(`/${params.workspaceSlug}/boards`);
+    redirect(`/${workspaceSlug}`);
   }
 
   const allTasks = board.columns.flatMap((col) => col.tasks);

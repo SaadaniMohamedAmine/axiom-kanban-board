@@ -7,8 +7,9 @@ import { WorkspaceBoardsWithModal } from "./workspace-boards-with-modal";
 export default async function WorkspacePage({
   params,
 }: {
-  params: { workspaceSlug: string };
+  params: Promise<{ workspaceSlug: string }>;
 }) {
+  const { workspaceSlug } = await params;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -18,7 +19,7 @@ export default async function WorkspacePage({
   }
 
   const workspace = await prisma.workspace.findUnique({
-    where: { slug: params.workspaceSlug },
+    where: { slug: workspaceSlug },
     include: {
       members: {
         where: { userId: session.user.id },

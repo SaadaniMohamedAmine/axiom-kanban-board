@@ -7,8 +7,9 @@ import { MemberList } from "@/components/workspace/member-list";
 export default async function MembersPage({
   params,
 }: {
-  params: { workspaceSlug: string };
+  params: Promise<{ workspaceSlug: string }>;
 }) {
+  const { workspaceSlug } = await params;
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -18,7 +19,7 @@ export default async function MembersPage({
   }
 
   const workspace = await prisma.workspace.findUnique({
-    where: { slug: params.workspaceSlug },
+    where: { slug: workspaceSlug },
     include: {
       members: true,
       invitations: true,
