@@ -6,6 +6,7 @@ import { TaskPropertiesPanel } from "./task-properties-panel";
 import { ActivityList } from "./activity-list";
 import { CommentThread } from "./comment-thread";
 import { AxiomIntelligencePanel } from "@/components/ai/axiom-intelligence-panel";
+import { MoveToMenu } from "@/components/board/move-to-menu";
 
 interface TaskDetailModalProps {
   task: TaskWithRelations;
@@ -13,9 +14,10 @@ interface TaskDetailModalProps {
   canEdit: boolean;
   columnName: string;
   boardMembers: { userId: string; name: string; taskCount: number }[];
+  columns: { id: string; name: string }[];
 }
 
-export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembers }: TaskDetailModalProps) {
+export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembers, columns }: TaskDetailModalProps) {
   const [now] = useState(() => Date.now());
 
   useEffect(() => {
@@ -53,6 +55,17 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
             </button>
           </div>
         </header>
+
+        {canEdit && (
+          <div className="md:hidden px-8 pb-4">
+            <MoveToMenu
+              taskId={task.id}
+              currentColumnId={task.columnId}
+              columns={columns}
+              onMoved={onClose}
+            />
+          </div>
+        )}
 
         <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
           {/* Left Column (Details) */}

@@ -1,12 +1,17 @@
 import { z } from "zod";
 
-export const prioritizeInputSchema = z.object({
-  taskId: z.string().cuid(),
-  title: z.string().min(1).max(500),
-  description: z.string().max(2000).optional(),
-  columnName: z.string().max(100),
-  dueDate: z.string().datetime().optional(),
-});
+export const prioritizeInputSchema = z
+  .object({
+    taskId: z.string().cuid().optional(),
+    sprintId: z.string().cuid().optional(),
+    title: z.string().min(1).max(500),
+    description: z.string().max(2000).optional(),
+    columnName: z.string().max(100),
+    dueDate: z.string().datetime().optional(),
+  })
+  .refine((data) => Boolean(data.taskId) !== Boolean(data.sprintId), {
+    message: "Exactly one of taskId or sprintId is required",
+  });
 
 export const estimateInputSchema = z.object({
   taskId: z.string().cuid(),

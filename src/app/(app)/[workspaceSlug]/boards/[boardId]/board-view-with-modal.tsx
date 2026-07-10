@@ -43,6 +43,7 @@ export function BoardViewWithModal({ board, columns, canEdit, currentUser, board
           canEdit={canEdit}
           columnName={selectedColumn.name}
           boardMembers={boardMembers}
+          columns={columns.map((col) => ({ id: col.id, name: col.name }))}
         />
       )}
     </>

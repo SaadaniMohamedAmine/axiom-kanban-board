@@ -36,22 +36,40 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const { taskId, title, description, columnName, dueDate } = parsed.data;
+  const { taskId, sprintId, title, description, columnName, dueDate } = parsed.data;
 
-  const task = await prisma.task.findFirst({
-    where: {
-      id: taskId,
-      board: {
-        workspace: {
-          members: { some: { userId: session.user.id } },
+  if (taskId) {
+    const task = await prisma.task.findFirst({
+      where: {
+        id: taskId,
+        board: {
+          workspace: {
+            members: { some: { userId: session.user.id } },
+          },
         },
       },
-    },
-  });
-  if (!task) {
-    return new Response(JSON.stringify({ error: "Task not found" }), {
-      status: 404,
     });
+    if (!task) {
+      return new Response(JSON.stringify({ error: "Task not found" }), {
+        status: 404,
+      });
+    }
+  } else {
+    const sprint = await prisma.sprint.findFirst({
+      where: {
+        id: sprintId,
+        board: {
+          workspace: {
+            members: { some: { userId: session.user.id } },
+          },
+        },
+      },
+    });
+    if (!sprint) {
+      return new Response(JSON.stringify({ error: "Sprint not found" }), {
+        status: 404,
+      });
+    }
   }
 
   let fullOutput = "";
@@ -74,9 +92,9 @@ export async function POST(req: NextRequest) {
 
         const log = await prisma.aILog.create({
           data: {
-            taskId,
+            taskId: taskId ?? null,
             type: "PRIORITIZE",
-            input: { title, description, columnName, dueDate },
+            input: { taskId, sprintId, title, description, columnName, dueDate },
             output: { reasoning: fullOutput, result: priority },
             confidence: 0.8,
           },

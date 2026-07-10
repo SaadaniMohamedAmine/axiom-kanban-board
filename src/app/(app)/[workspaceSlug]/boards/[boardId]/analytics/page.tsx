@@ -91,6 +91,15 @@ export default async function AnalyticsPage({ params }: Props) {
     ? tasksWithActivity.filter((t) => t.columnId === doneColumnId).length
     : 0;
 
+  const BLOCKED_THRESHOLD_MS = 3 * 24 * 60 * 60 * 1000;
+  const blockedTasks = activeSprint
+    ? tasksWithActivity.filter((t) => {
+        if (t.columnId === doneColumnId) return false;
+        const lastActivityAt = t.activity[0]?.createdAt ?? t.createdAt;
+        return now.getTime() - new Date(lastActivityAt).getTime() >= BLOCKED_THRESHOLD_MS;
+      }).length
+    : 0;
+
   return (
     <div className="p-8 max-w-5xl mx-auto">
       <div className="mb-8">
@@ -109,7 +118,7 @@ export default async function AnalyticsPage({ params }: Props) {
               sprintId={activeSprint.id}
               sprintName={activeSprint.name}
               overdueTasks={overdueTasks}
-              blockedTasks={0}
+              blockedTasks={blockedTasks}
               totalTasks={tasksWithActivity.length}
               completedTasks={completedTasks}
             />

@@ -68,7 +68,7 @@ export function SprintHealthSummary({
             key={sprintId}
             endpoint="/api/ai/prioritize"
             payload={{
-              taskId: "sprint-health",
+              sprintId,
               title: `Sprint ${sprintName} health check`,
               description: `${completedTasks}/${totalTasks} tasks done, ${overdueTasks} overdue, ${blockedTasks} blocked.`,
               columnName: "Sprint",
