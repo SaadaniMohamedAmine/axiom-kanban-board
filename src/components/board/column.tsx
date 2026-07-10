@@ -2,6 +2,8 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { AnimatePresence, motion } from "framer-motion";
+import { MOTION } from "@/lib/motion";
 import { TaskCard } from "./task-card";
 import type { Column as ColumnType } from "@/types/board.types";
 import type { Task } from "@/types/task.types";
@@ -42,9 +44,20 @@ export function Column({ column, tasks, onTaskClick, canEdit, conflictedTaskIds 
       </div>
       <div ref={setNodeRef} className="space-y-4 min-h-[200px]">
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-          {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onClick={() => onTaskClick?.(task)} canEdit={canEdit} showConflict={conflictedTaskIds?.has(task.id)} />
-          ))}
+          <AnimatePresence>
+            {tasks.map((task) => (
+              <motion.div
+                key={task.id}
+                variants={MOTION.variants.listItem}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                layout
+              >
+                <TaskCard task={task} onClick={() => onTaskClick?.(task)} canEdit={canEdit} showConflict={conflictedTaskIds?.has(task.id)} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </SortableContext>
       </div>
     </section>
