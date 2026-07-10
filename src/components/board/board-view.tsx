@@ -7,6 +7,7 @@ import { Column } from "./column";
 import { TaskCard } from "./task-card";
 import { EmptyBoardState } from "./empty-board-state";
 import { PresenceAvatars } from "@/components/realtime/presence-avatars";
+import { ConnectionIndicator } from "@/components/realtime/connection-indicator";
 import { moveTask } from "@/lib/actions/task.actions";
 import { useBoardChannel } from "@/hooks/use-board-channel";
 import { getPusherClient } from "@/lib/pusher-client";
@@ -104,7 +105,10 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
     });
   }, []);
 
-  const { connectionState, members } = useBoardChannel(board.id, { onEvent: handleBoardEvent });
+  const { connectionState, members } = useBoardChannel(board.id, {
+    onEvent: handleBoardEvent,
+    onColumnsUpdate: (polledColumns) => setColumns(polledColumns),
+  });
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -196,7 +200,10 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
             {moveError}
           </div>
         )}
-        <PresenceAvatars members={members} currentUserId={currentUser.id} />
+        <div className="flex items-center gap-3 ml-auto">
+          <ConnectionIndicator state={connectionState} />
+          <PresenceAvatars members={members} currentUserId={currentUser.id} />
+        </div>
       </div>
       <div className="flex-1 overflow-x-auto flex gap-6 p-8">
         {optimisticColumns.map((column) => (
