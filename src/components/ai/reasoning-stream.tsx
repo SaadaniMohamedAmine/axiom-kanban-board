@@ -21,7 +21,6 @@ export function ReasoningStream({
   const [status, setStatus] = useState<"idle" | "streaming" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const abortRef = useRef<AbortController | null>(null);
-  const startedRef = useRef(false);
 
   async function startStream() {
     if (status === "streaming") return;
@@ -114,8 +113,12 @@ export function ReasoningStream({
   }, []);
 
   useEffect(() => {
-    if (autoStart && !startedRef.current) {
-      startedRef.current = true;
+    if (autoStart) {
+      // Must fire synchronously (not deferred to a microtask/timeout) so that
+      // abortRef is set before React Strict Mode's simulated unmount runs its
+      // cleanup — that's what cancels the throwaway first invocation instead
+      // of leaving two real requests in flight.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       void startStream();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
