@@ -3,7 +3,8 @@
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { TaskCard } from "./task-card";
-import type { Column as ColumnType, Task } from "@/types/board.types";
+import type { Column as ColumnType } from "@/types/board.types";
+import type { Task } from "@/types/task.types";
 
 interface ColumnProps {
   column: ColumnType;

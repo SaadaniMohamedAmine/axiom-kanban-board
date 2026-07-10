@@ -23,7 +23,7 @@ export default async function AppLayout({
       workspace: {
         include: {
           boards: {
-            select: { id: true, name: true, slug: false },
+            select: { id: true, name: true },
           },
         },
       },

@@ -215,7 +215,7 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput) {
           taskId,
           actorId: session.user.id,
           type: "STATUS_CHANGE",
-          payload,
+          payload: payload as any,
         },
       })
     ),

@@ -18,6 +18,7 @@ export interface Task {
   dueDate: Date | null;
   order: number;
   sprintId: string | null;
+  createdAt?: Date;
 }
 
 export interface TaskAssignee {
@@ -45,7 +46,7 @@ export interface ActivityEvent {
   taskId: string;
   actorId: string;
   type: ActivityType;
-  payload: Record<string, unknown>;
+  payload: unknown;
   createdAt: Date;
 }
 
