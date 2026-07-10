@@ -1,15 +1,17 @@
 "use client";
 
-import { useState, useOptimistic, startTransition } from "react";
+import { useState, useOptimistic, startTransition, useCallback } from "react";
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Column } from "./column";
 import { TaskCard } from "./task-card";
 import { EmptyBoardState } from "./empty-board-state";
 import { moveTask } from "@/lib/actions/task.actions";
+import { useBoardChannel } from "@/hooks/use-board-channel";
+import { getPusherClient } from "@/lib/pusher-client";
 import type { Board, Column as ColumnType } from "@/types/board.types";
 import type { Task } from "@/types/task.types";
-import type { PresenceMember } from "@/types/realtime.types";
+import type { PresenceMember, BoardEvent } from "@/types/realtime.types";
 
 interface BoardViewProps {
   board: Board;
@@ -19,7 +21,7 @@ interface BoardViewProps {
   currentUser: PresenceMember;
 }
 
-export function BoardView({ columns: initialColumns, onTaskClick, canEdit, currentUser }: BoardViewProps) {
+export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board, currentUser }: BoardViewProps) {
   const [columns, setColumns] = useState(initialColumns);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [moveError, setMoveError] = useState<string | null>(null);
@@ -27,6 +29,81 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, curre
     columns,
     (state, newColumns: (ColumnType & { tasks: Task[] })[]) => newColumns
   );
+
+  const handleBoardEvent = useCallback((event: BoardEvent) => {
+    setColumns((prev) => {
+      switch (event.type) {
+        case "task.created": {
+          const task = event.data as unknown as Task;
+          if (!task?.id || !task.columnId) return prev;
+          return prev.map((col) => {
+            if (col.id !== task.columnId) return col;
+            if (col.tasks.some((t) => t.id === task.id)) return col;
+            return { ...col, tasks: [...col.tasks, task] };
+          });
+        }
+        case "task.updated": {
+          const { taskId, ...fields } = event.data as Record<string, unknown>;
+          if (!taskId) return prev;
+          return prev.map((col) => ({
+            ...col,
+            tasks: col.tasks.map((t) =>
+              t.id === taskId ? { ...t, ...fields } : t,
+            ),
+          }));
+        }
+        case "task.moved": {
+          const { taskId: movedTaskId, columnId: targetColId, order } = event.data as { taskId: string; columnId: string; order: number };
+          if (!movedTaskId || !targetColId) return prev;
+          let movedTask: Task | null = null;
+          const withoutTask = prev.map((col) => {
+            const found = col.tasks.find((t) => t.id === movedTaskId);
+            if (found) {
+              movedTask = found;
+              return { ...col, tasks: col.tasks.filter((t) => t.id !== movedTaskId) };
+            }
+            return col;
+          });
+          if (!movedTask) return prev;
+          return withoutTask.map((col) => {
+            if (col.id !== targetColId) return col;
+            const newTasks = [...col.tasks];
+            const insertIndex = newTasks.findIndex((t) => t.order > order);
+            if (insertIndex === -1) {
+              newTasks.push(movedTask as Task);
+            } else {
+              newTasks.splice(insertIndex, 0, movedTask as Task);
+            }
+            return { ...col, tasks: newTasks };
+          });
+        }
+        case "task.deleted": {
+          const { taskId: deletedTaskId } = event.data as { taskId: string };
+          if (!deletedTaskId) return prev;
+          return prev.map((col) => ({
+            ...col,
+            tasks: col.tasks.filter((t) => t.id !== deletedTaskId),
+          }));
+        }
+        case "column.updated": {
+          const data = event.data as Record<string, unknown>;
+          const colId = (data.columnId ?? event.columnId) as string;
+          if (!colId) return prev;
+          if (data.deleted === true) {
+            return prev.filter((col) => col.id !== colId);
+          }
+          return prev.map((col) => {
+            if (col.id !== colId) return col;
+            return { ...col, ...data } as ColumnType & { tasks: Task[] };
+          });
+        }
+        default:
+          return prev;
+      }
+    });
+  }, []);
+
+  const { connectionState } = useBoardChannel(board.id, { onEvent: handleBoardEvent });
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -96,11 +173,12 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, curre
       setMoveError(null);
 
       try {
+        const socketId = getPusherClient().connection.socket_id;
         await moveTask({
           taskId: activeTask.id,
           targetColumnId: targetColumn.id,
           targetIndex,
-        });
+        }, socketId ?? undefined);
         setColumns(newColumns);
       } catch (error) {
         setColumns(columns);
