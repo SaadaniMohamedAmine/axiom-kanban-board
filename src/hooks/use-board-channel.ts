@@ -2,12 +2,19 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { getPusherClient } from "@/lib/pusher-client";
+import { getBoardSnapshot } from "@/lib/actions/task.actions";
 import type { PresenceMember, ConnectionState, BoardEvent } from "@/types/realtime.types";
-import type PusherClient from "pusher-js";
 import type { PresenceChannel } from "pusher-js";
+import type { Column } from "@/types/board.types";
+import type { Task } from "@/types/task.types";
+
+const DEGRADED_PUSHER_STATES = new Set(["unavailable", "disconnected", "failed"]);
+const DEGRADATION_THRESHOLD_MS = 8_000;
+const POLL_INTERVAL_MS = 5_000;
 
 interface UseBoardChannelOptions {
   onEvent?: (event: BoardEvent) => void;
+  onColumnsUpdate?: (columns: (Column & { tasks: Task[] })[]) => void;
 }
 
 interface UseBoardChannelReturn {
@@ -15,8 +22,6 @@ interface UseBoardChannelReturn {
   connectionState: ConnectionState;
   members: PresenceMember[];
 }
-
-const DEGRADED_PUSHER_STATES = new Set(["unavailable", "disconnected", "failed"]);
 
 export function useBoardChannel(
   boardId: string,
@@ -26,9 +31,36 @@ export function useBoardChannel(
   const [connectionState, setConnectionState] = useState<ConnectionState>("live");
   const [members, setMembers] = useState<PresenceMember[]>([]);
   const onEventRef = useRef(options?.onEvent);
+  const onColumnsUpdateRef = useRef(options?.onColumnsUpdate);
   const channelRef = useRef<PresenceChannel | null>(null);
+  const degradedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   onEventRef.current = options?.onEvent;
+  onColumnsUpdateRef.current = options?.onColumnsUpdate;
+
+  const stopPolling = useCallback(() => {
+    if (pollingIntervalRef.current) {
+      clearInterval(pollingIntervalRef.current);
+      pollingIntervalRef.current = null;
+    }
+  }, []);
+
+  const startPolling = useCallback(() => {
+    if (pollingIntervalRef.current) return;
+
+    const poll = async () => {
+      try {
+        const snapshot = await getBoardSnapshot(boardId);
+        onColumnsUpdateRef.current?.(snapshot.columns as (Column & { tasks: Task[] })[]);
+      } catch {
+        // Polling failure is non-fatal — next interval will retry
+      }
+    };
+
+    poll();
+    pollingIntervalRef.current = setInterval(poll, POLL_INTERVAL_MS);
+  }, [boardId]);
 
   useEffect(() => {
     const pusher = getPusherClient();
@@ -37,7 +69,22 @@ export function useBoardChannel(
 
     const onStateChange = ({ current }: { current: string }) => {
       setSocketId(pusher.connection.socket_id ?? undefined);
-      setConnectionState(DEGRADED_PUSHER_STATES.has(current) ? "degraded" : "live");
+      const isDegraded = DEGRADED_PUSHER_STATES.has(current);
+      setConnectionState(isDegraded ? "degraded" : "live");
+
+      if (isDegraded) {
+        if (!degradedTimerRef.current) {
+          degradedTimerRef.current = setTimeout(() => {
+            startPolling();
+          }, DEGRADATION_THRESHOLD_MS);
+        }
+      } else {
+        if (degradedTimerRef.current) {
+          clearTimeout(degradedTimerRef.current);
+          degradedTimerRef.current = null;
+        }
+        stopPolling();
+      }
     };
 
     pusher.connection.bind("state_change", onStateChange);
@@ -82,8 +129,13 @@ export function useBoardChannel(
       pusher.unsubscribe(`presence-board-${boardId}`);
       channelRef.current = null;
       setMembers([]);
+      if (degradedTimerRef.current) {
+        clearTimeout(degradedTimerRef.current);
+        degradedTimerRef.current = null;
+      }
+      stopPolling();
     };
-  }, [boardId]);
+  }, [boardId, startPolling, stopPolling]);
 
   return { socketId, connectionState, members };
 }
