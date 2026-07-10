@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default async function AppLayout({
   children,
@@ -38,7 +39,7 @@ export default async function AppLayout({
           <h1 className="text-h3 font-semibold text-on-surface">Axiom</h1>
         </div>
         <nav className="flex-1 p-4 overflow-y-auto">
-          <div className="text-label-md text-on-surface-variant uppercase tracking-wider mb-2">
+          <div id="sidebar-workspaces" className="text-label-md text-on-surface-variant uppercase tracking-wider mb-2">
             Workspaces
           </div>
           {memberships.map((membership) => (
@@ -116,7 +117,8 @@ export default async function AppLayout({
       <main className="flex-1 flex flex-col overflow-hidden">
         <header className="hidden md:flex h-16 bg-surface-container border-b border-outline-variant items-center px-6">
           <div className="flex-1" />
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
             <span className="text-body-md text-on-surface-variant">
               {session.user.name}
             </span>
