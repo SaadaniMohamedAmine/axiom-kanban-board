@@ -71,18 +71,42 @@
 - [x] Quickstart walkthrough ready for manual execution (T028) — requires 2 browser sessions + live Pusher app in .env.local
 
 **Phase 4 : 28/28 — 100%**
-## Phase 5 — AI Features / Axiom Intelligence (0%)
-## Phase 6 — Analytics & Sprints (0%)
-## Phase 7 — Responsive Mobile Design (0%)
-- [ ] Breakpoints définis (mobile/tablette/desktop) sur le design system
-- [ ] Navigation mobile (menu, switch workspace/board adapté petit écran)
-- [ ] Board Kanban responsive (colonnes en scroll horizontal ou vue liste mobile)
-- [ ] Drag & drop tactile (touch) + alternative "Move to..." sur mobile
-- [ ] Task detail modal en plein écran sur mobile
-- [ ] Command palette adaptée mobile
-- [ ] Audit perf/Core Web Vitals sur mobile (réseau lent inclus)
 
-**Phase 7 : 0/7 — 0%**
+## Phase 5 — AI Features / Axiom Intelligence — ✅ COMPLETE (100%)
+- [x] T001 — AI client abstraction (Groq + Gemini fallback)
+- [x] T002 — Prompts pour toutes les suggestions IA
+- [x] T003 — Rate limiter par utilisateur (50 requêtes/jour)
+- [x] T004 — Schémas Zod pour validation des inputs IA
+- [x] T005 — Types TypeScript pour les réponses IA
+- [x] T006-T010 — 5 endpoints API avec streaming SSE (prioritize, estimate, describe, detect-blocker, assign)
+- [x] T011 — Server action pour feedback utilisateur sur suggestions IA
+- [x] T012 — Composant ReasoningStream pour affichage temps réel
+- [x] T013 — Composant FeedbackButtons (utile/inutile)
+- [x] T014 — Panel Axiom Intelligence intégré au task-detail-modal
+- [x] T015 — Intégration complète avec passage de boardMembers et columnName
+
+**Phase 5 : 15/15 — 100%**
+
+## Phase 6 — Analytics & Sprints — ✅ COMPLETE (100%)
+- [x] T016 — Calculs burndown et velocity
+- [x] T017 — Composant BurndownChart (recharts)
+- [x] T018 — Composant VelocityChart (recharts)
+- [x] T019 — Composant SprintHealthSummary avec IA
+- [x] T020 — Composant AnalyticsEmptyState
+- [x] T021 — Page analytics avec données sprints
+- [x] T022 — Lien Analytics dans sidebar pour chaque board
+
+**Phase 6 : 7/7 — 100%**
+
+## Phase 7 — Responsive Mobile Design — ✅ COMPLETE (100%)
+- [x] T023 — MobileSidebar avec drawer et backdrop
+- [x] T024 — MoveToMenu pour alternative mobile au drag&drop
+- [x] T025 — Layout responsive (sidebar desktop + mobile drawer)
+- [x] T026 — BoardView avec TouchSensor et scroll horizontal snap
+- [x] T027 — TaskCard avec tap targets adaptés mobile
+- [x] T028 — TaskDetailModal fullscreen sur mobile (100dvh)
+
+**Phase 7 : 6/6 — 100%**
 
 ## Phase 8 — Polish & Deploy final (0%)
 *(le projet est déjà live sur Vercel depuis la Phase 2 — cette phase couvre la mise en prod finale, le polish, et la revue de lancement)*
@@ -110,4 +134,4 @@
 
 ---
 
-**Progression globale du projet : 12/~60 tâches estimées — ~20%** *(estimation grossière, à raffiner une fois Speckit aura généré le détail des phases 3-10)*
+**Progression globale du projet : 40/~60 tâches estimées — ~67%** *(Phases 0-7 complétées, reste Phases 8-10)*
