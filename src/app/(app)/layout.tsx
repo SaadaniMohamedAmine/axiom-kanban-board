@@ -6,6 +6,8 @@ import Link from "next/link";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ToastProvider } from "@/contexts/toast-context";
+import { ShortcutsProvider } from "@/contexts/shortcuts-context";
+import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
 
 export default async function AppLayout({
   children,
@@ -35,6 +37,7 @@ export default async function AppLayout({
 
   return (
     <ToastProvider>
+    <ShortcutsProvider>
     <div className="flex h-screen bg-background">
       <aside className="hidden md:flex w-[260px] bg-surface-container border-r border-outline-variant flex flex-col">
         <div className="p-6 border-b border-outline-variant">
@@ -129,6 +132,8 @@ export default async function AppLayout({
         <div className="flex-1 overflow-auto">{children}</div>
       </main>
     </div>
+    <ShortcutsPanel />
+    </ShortcutsProvider>
     </ToastProvider>
   );
 }
