@@ -32,6 +32,11 @@ export default async function SettingsPage({ params }: Props) {
       href: `/${workspaceSlug}/settings/ai-quota`,
       description: "Daily Axiom Intelligence usage and limits",
     },
+    {
+      label: "Developers",
+      href: `/${workspaceSlug}/settings/developers`,
+      description: "API keys and webhook integrations",
+    },
   ];
 
   return (
