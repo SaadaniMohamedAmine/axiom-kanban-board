@@ -3,6 +3,7 @@
 import { randomBytes } from "crypto";
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
+import { getPlanLimits } from "../billing/plan-limits";
 import {
   createWorkspaceSchema,
   renameWorkspaceSchema,
@@ -94,6 +95,16 @@ export async function inviteMember(input: InviteMemberInput) {
   const { workspaceId, email, role } = validated;
 
   await requireRole(workspaceId, "ADMIN");
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { plan: true, _count: { select: { members: true } } },
+  });
+  if (!workspace) throw new Error("Workspace not found");
+  const limits = getPlanLimits(workspace.plan);
+  if (workspace._count.members >= limits.maxMembers) {
+    throw new Error(`PLAN_LIMIT_MEMBERS:${workspace.plan}`);
+  }
 
   const existingMember = await prisma.workspaceMember.findFirst({
     where: {

@@ -2,6 +2,7 @@
 
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
+import { getPlanLimits } from "../billing/plan-limits";
 import {
   createBoardSchema,
   createColumnSchema,
@@ -65,6 +66,16 @@ export async function createBoard(input: CreateBoardInput) {
   const { workspaceId, name, template } = validated;
 
   await requireRole(workspaceId, "ADMIN");
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { plan: true, _count: { select: { boards: true } } },
+  });
+  if (!workspace) throw new Error("Workspace not found");
+  const limits = getPlanLimits(workspace.plan);
+  if (workspace._count.boards >= limits.maxBoards) {
+    throw new Error(`PLAN_LIMIT_BOARDS:${workspace.plan}`);
+  }
 
   const defaultColumns = DEFAULT_COLUMNS[template] ?? DEFAULT_COLUMNS.CUSTOM;
 
