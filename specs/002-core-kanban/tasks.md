@@ -29,10 +29,10 @@ Single Next.js project, per `plan.md`'s Project Structure — `src/app`, `src/co
 
 **Purpose**: Get the project ready to build any of this feature's stories.
 
-- [ ] T001 Install `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, and `framer-motion` (add to `package.json`, `pnpm install`) — both already declared as the chosen stack in `TECH-STACK.md`, not yet installed
-- [ ] T002 Apply the five schema additions from `data-model.md` to `prisma/schema.prisma` (`Board.taskCounter`, `Task.code` → required, `Task.sprintId` + relation, `Invitation.expiresAt`, `ActivityEvent.actorId` + relation), then run `pnpm prisma migrate dev --name core-kanban-fields`
-- [ ] T003 [P] Normalize the Tailwind theme (`tailwind.config.ts` / global CSS) to `axiom-design/axiom/DESIGN.md`'s canonical tokens (Level 0/1/2 surfaces, `#3B82F6` primary, AI violet/cyan accents, 8px grid, shape radii), reconciling the two conflicting conventions used across the Stitch exports (research.md §10)
-- [ ] T004 [P] Scaffold the authenticated route group shell in `src/app/(app)/layout.tsx` (sidebar/topnav container per `axiom_main_kanban_board_export`) and empty placeholder routes `src/app/(app)/workspaces/new/page.tsx`, `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx`, `src/app/(app)/[workspaceSlug]/settings/members/page.tsx`
+- [X] T001 Install `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`, and `framer-motion` (add to `package.json`, `pnpm install`) — both already declared as the chosen stack in `TECH-STACK.md`, not yet installed
+- [X] T002 Apply the five schema additions from `data-model.md` to `prisma/schema.prisma` (`Board.taskCounter`, `Task.code` → required, `Task.sprintId` + relation, `Invitation.expiresAt`, `ActivityEvent.actorId` + relation), then run `pnpm prisma migrate dev --name core-kanban-fields`
+- [X] T003 [P] Normalize the Tailwind theme (`tailwind.config.ts` / global CSS) to `axiom-design/axiom/DESIGN.md`'s canonical tokens (Level 0/1/2 surfaces, `#3B82F6` primary, AI violet/cyan accents, 8px grid, shape radii), reconciling the two conflicting conventions used across the Stitch exports (research.md §10)
+- [X] T004 [P] Scaffold the authenticated route group shell in `src/app/(app)/layout.tsx` (sidebar/topnav container per `axiom_main_kanban_board_export`) and empty placeholder routes `src/app/(app)/workspaces/new/page.tsx`, `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx`, `src/app/(app)/[workspaceSlug]/settings/members/page.tsx`
 
 **Checkpoint**: Dependencies installed, schema migrated, route shell exists.
 
@@ -44,12 +44,12 @@ Single Next.js project, per `plan.md`'s Project Structure — `src/app`, `src/co
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete.
 
-- [ ] T005 Implement `requireRole(workspaceId, minRole)` in `src/lib/permissions.ts` per `contracts/permission-enforcement.md` (session lookup, `WorkspaceMember.role` check, `PermissionError` with `INSUFFICIENT_ROLE`) — depends on T002
-- [ ] T006 [P] Implement the gap-stepped order helper in `src/lib/task-order.ts` (midpoint-between-neighbors, renumber-on-collapse) per `research.md` §3
-- [ ] T007 [P] Implement the atomic task-code helper in `src/lib/task-code.ts` using Prisma's `board.update({ data: { taskCounter: { increment: 1 } } })` per `contracts/task-code-generation.md` — depends on T002
-- [ ] T008 [P] Create shared types `src/types/workspace.types.ts`, `src/types/board.types.ts`, `src/types/task.types.ts`, `src/types/sprint.types.ts`
-- [ ] T009 [P] Create Zod validation schemas `src/lib/validations/workspace.schema.ts`, `src/lib/validations/board.schema.ts`, `src/lib/validations/task.schema.ts`, `src/lib/validations/sprint.schema.ts`
-- [ ] T010 Create `prisma/seed.ts` generating one demo workspace + one `KANBAN`-template board + 2–3 columns, so User Story 1 (and 2, 5) can be built and independently tested before User Story 3's own creation UI exists — depends on T002
+- [X] T005 Implement `requireRole(workspaceId, minRole)` in `src/lib/permissions.ts` per `contracts/permission-enforcement.md` (session lookup, `WorkspaceMember.role` check, `PermissionError` with `INSUFFICIENT_ROLE`) — depends on T002
+- [X] T006 [P] Implement the gap-stepped order helper in `src/lib/task-order.ts` (midpoint-between-neighbors, renumber-on-collapse) per `research.md` §3
+- [X] T007 [P] Implement the atomic task-code helper in `src/lib/task-code.ts` using Prisma's `board.update({ data: { taskCounter: { increment: 1 } } })` per `contracts/task-code-generation.md` — depends on T002
+- [X] T008 [P] Create shared types `src/types/workspace.types.ts`, `src/types/board.types.ts`, `src/types/task.types.ts`, `src/types/sprint.types.ts`
+- [X] T009 [P] Create Zod validation schemas `src/lib/validations/workspace.schema.ts`, `src/lib/validations/board.schema.ts`, `src/lib/validations/task.schema.ts`, `src/lib/validations/sprint.schema.ts`
+- [X] T010 Create `prisma/seed.ts` generating one demo workspace + one `KANBAN`-template board + 2–3 columns, so User Story 1 (and 2, 5) can be built and independently tested before User Story 3's own creation UI exists — depends on T002
 
 **Checkpoint**: Foundation ready — user story implementation can begin.
 
@@ -67,15 +67,15 @@ throttle the network and confirm a failed drag rolls back cleanly.
 
 ### Implementation for User Story 1
 
-- [ ] T011 [P] [US1] Implement `createTask` Server Action in `src/lib/actions/task.actions.ts` (`requireRole(workspaceId, 'MEMBER')`, uses `task-code.ts` + `task-order.ts`) per `contracts/task-code-generation.md` — depends on T005, T006, T007
-- [ ] T012 [US1] Implement `moveTask` Server Action in `src/lib/actions/task.actions.ts` per `contracts/task-move-optimistic-ui.md` (gap-stepped reorder, `STATUS_CHANGE` activity event only on column change) — depends on T011 (same file)
-- [ ] T013 [US1] Implement `deleteTask` Server Action in `src/lib/actions/task.actions.ts` — depends on T011 (same file)
-- [ ] T014 [P] [US1] Build `TaskCard` in `src/components/board/task-card.tsx` (convert the card markup from `axiom-design/axiom_main_kanban_board_export/code.html`)
-- [ ] T015 [P] [US1] Build `Column` in `src/components/board/column.tsx` using `@dnd-kit/sortable`'s `SortableContext`/`useSortable` (convert column markup from the same export)
-- [ ] T016 [US1] Build `BoardView` in `src/components/board/board-view.tsx` wiring `DndContext`, `onDragEnd` → `moveTask`, and `useOptimistic` for instant position updates with rollback on failure — depends on T012, T014, T015
-- [ ] T017 [P] [US1] Build `EmptyBoardState` in `src/components/board/empty-board-state.tsx` (convert `axiom-design/axiom_empty_board_state/code.html`)
-- [ ] T018 [US1] Wire `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx` to fetch the board/columns/tasks (scoped through `workspaceId`) and render `BoardView` or `EmptyBoardState` — depends on T016, T017
-- [ ] T019 [US1] Add the "New Task" quick-create control (sidebar button + per-column add) calling `createTask` in `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx` — depends on T011, T018
+- [X] T011 [P] [US1] Implement `createTask` Server Action in `src/lib/actions/task.actions.ts` (`requireRole(workspaceId, 'MEMBER')`, uses `task-code.ts` + `task-order.ts`) per `contracts/task-code-generation.md` — depends on T005, T006, T007
+- [X] T012 [US1] Implement `moveTask` Server Action in `src/lib/actions/task.actions.ts` per `contracts/task-move-optimistic-ui.md` (gap-stepped reorder, `STATUS_CHANGE` activity event only on column change) — depends on T011 (same file)
+- [X] T013 [US1] Implement `deleteTask` Server Action in `src/lib/actions/task.actions.ts` — depends on T011 (same file)
+- [X] T014 [P] [US1] Build `TaskCard` in `src/components/board/task-card.tsx` (convert the card markup from `axiom-design/axiom_main_kanban_board_export/code.html`)
+- [X] T015 [P] [US1] Build `Column` in `src/components/board/column.tsx` using `@dnd-kit/sortable`'s `SortableContext`/`useSortable` (convert column markup from the same export)
+- [X] T016 [US1] Build `BoardView` in `src/components/board/board-view.tsx` wiring `DndContext`, `onDragEnd` → `moveTask`, and `useOptimistic` for instant position updates with rollback on failure — depends on T012, T014, T015
+- [X] T017 [P] [US1] Build `EmptyBoardState` in `src/components/board/empty-board-state.tsx` (convert `axiom-design/axiom_empty_board_state/code.html`)
+- [X] T018 [US1] Wire `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx` to fetch the board/columns/tasks (scoped through `workspaceId`) and render `BoardView` or `EmptyBoardState` — depends on T016, T017
+- [X] T019 [US1] Add the "New Task" quick-create control (sidebar button + per-column add) calling `createTask` in `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx` — depends on T011, T018
 
 **Checkpoint**: User Story 1 fully functional and independently testable against the seeded board.
 
@@ -92,16 +92,16 @@ every change correctly attributed and ordered.
 
 ### Implementation for User Story 2
 
-- [ ] T020 [US2] Implement `updateTaskFields` Server Action in `src/lib/actions/task.actions.ts` (title/description/priority/estimate/dueDate, writes a `STATUS_CHANGE` `ActivityEvent` per changed field) per `contracts/task-detail-activity.md` — depends on T011 (same file)
-- [ ] T021 [US2] Implement `setTaskAssignees` Server Action in `src/lib/actions/task.actions.ts` (writes an `ASSIGNED` `ActivityEvent`) — depends on T020 (same file)
-- [ ] T022 [US2] Implement `setTaskLabels` Server Action in `src/lib/actions/task.actions.ts` — depends on T020 (same file)
-- [ ] T023 [P] [US2] Implement `addComment` Server Action in `src/lib/actions/comment.actions.ts` (writes a `COMMENTED` `ActivityEvent`) per `contracts/task-detail-activity.md` — depends on T005
-- [ ] T024 [P] [US2] Build the `TaskDetailModal` shell (header, Description/Activity/Comments left column) in `src/components/task-detail/task-detail-modal.tsx` (convert `axiom-design/axiom_task_detail_modal_export/code.html`)
-- [ ] T025 [P] [US2] Build `TaskPropertiesPanel` (assignees, labels, priority, estimate, due date) in `src/components/task-detail/task-properties-panel.tsx` — NEW, no export exists for this surface (the export's right column is AI-only, out of scope); build from `DESIGN.md` tokens per `research.md` §10
-- [ ] T026 [P] [US2] Build `ActivityList` in `src/components/task-detail/activity-list.tsx` (actor name via `actorId`, human-readable description from `type`/`payload`, relative timestamp)
-- [ ] T027 [P] [US2] Build `CommentThread` in `src/components/task-detail/comment-thread.tsx`
-- [ ] T028 [US2] Wire task-card click to open `TaskDetailModal` (client modal state, no route/page reload) from `src/components/board/board-view.tsx`, composing `TaskPropertiesPanel`, `ActivityList`, `CommentThread` — depends on T016, T024, T025, T026, T027
-- [ ] T029 [US2] Add the Markdown formatting toolbar (bold/italic/list/link) and renderer for the description field inside `src/components/task-detail/task-properties-panel.tsx` per `research.md` §5 — depends on T020, T025
+- [X] T020 [US2] Implement `updateTaskFields` Server Action in `src/lib/actions/task.actions.ts` (title/description/priority/estimate/dueDate, writes a `STATUS_CHANGE` `ActivityEvent` per changed field) per `contracts/task-detail-activity.md` — depends on T011 (same file)
+- [X] T021 [US2] Implement `setTaskAssignees` Server Action in `src/lib/actions/task.actions.ts` (writes an `ASSIGNED` `ActivityEvent`) — depends on T020 (same file)
+- [X] T022 [US2] Implement `setTaskLabels` Server Action in `src/lib/actions/task.actions.ts` — depends on T020 (same file)
+- [X] T023 [P] [US2] Implement `addComment` Server Action in `src/lib/actions/comment.actions.ts` (writes a `COMMENTED` `ActivityEvent`) per `contracts/task-detail-activity.md` — depends on T005
+- [X] T024 [P] [US2] Build the `TaskDetailModal` shell (header, Description/Activity/Comments left column) in `src/components/task-detail/task-detail-modal.tsx` (convert `axiom-design/axiom_task_detail_modal_export/code.html`)
+- [X] T025 [P] [US2] Build `TaskPropertiesPanel` (assignees, labels, priority, estimate, due date) in `src/components/task-detail/task-properties-panel.tsx` — NEW, no export exists for this surface (the export's right column is AI-only, out of scope); build from `DESIGN.md` tokens per `research.md` §10
+- [X] T026 [P] [US2] Build `ActivityList` in `src/components/task-detail/activity-list.tsx` (actor name via `actorId`, human-readable description from `type`/`payload`, relative timestamp)
+- [X] T027 [P] [US2] Build `CommentThread` in `src/components/task-detail/comment-thread.tsx`
+- [X] T028 [US2] Wire task-card click to open `TaskDetailModal` (client modal state, no route/page reload) from `src/components/board/board-view.tsx`, composing `TaskPropertiesPanel`, `ActivityList`, `CommentThread` — depends on T016, T024, T025, T026, T027
+- [X] T029 [US2] Add the Markdown formatting toolbar (bold/italic/list/link) and renderer for the description field inside `src/components/task-detail/task-properties-panel.tsx` per `research.md` §5 — depends on T020, T025
 
 **Checkpoint**: User Stories 1 and 2 both independently functional.
 
@@ -119,15 +119,15 @@ template, and add/rename/reorder/recolor a column.
 
 ### Implementation for User Story 3
 
-- [ ] T030 [P] [US3] Implement `createWorkspace`, `renameWorkspace`, `deleteWorkspace` (OWNER-only) Server Actions in `src/lib/actions/workspace.actions.ts` (slug generation on create) — depends on T005
-- [ ] T031 [US3] Implement `inviteMember` (ADMIN-minimum) and `acceptInvitation` Server Actions in `src/lib/actions/workspace.actions.ts` per `contracts/invitation-lifecycle.md` (duplicate-member/duplicate-invite checks, `expiresAt` = +7 days, lazy expiry on accept) — depends on T030 (same file)
-- [ ] T032 [P] [US3] Implement `createBoard` Server Action (template-driven default columns) in `src/lib/actions/board.actions.ts` — depends on T005
-- [ ] T033 [US3] Implement `createColumn`, `renameColumn`, `reorderColumn`, `recolorColumn`, `deleteColumn` (blocked while non-empty) Server Actions in `src/lib/actions/board.actions.ts` — depends on T032 (same file), T006
-- [ ] T034 [P] [US3] Build `WorkspaceForm` in `src/components/workspace/workspace-form.tsx` (convert `axiom-design/axiom_onboarding_workspace_name_export/code.html`) and wire `src/app/(app)/workspaces/new/page.tsx` — depends on T030
-- [ ] T035 [P] [US3] Build `MemberList` + invite form in `src/components/workspace/member-list.tsx` (convert `axiom-design/axiom_team_management/code.html`) and wire `src/app/(app)/[workspaceSlug]/settings/members/page.tsx` — depends on T031
-- [ ] T036 [P] [US3] Build `BoardCreateModal` in `src/components/board-admin/board-create-modal.tsx` — NEW, no export exists; build from `DESIGN.md` tokens — depends on T032
-- [ ] T037 [US3] Build `ColumnManager` controls (add/rename/reorder/recolor/delete) in `src/components/board-admin/column-manager.tsx` — NEW, no export exists — depends on T033
-- [ ] T038 [US3] Wire the sidebar's "Workspace"/"Boards" navigation in `src/app/(app)/layout.tsx` to real workspace/board data (replacing static seed-only links) — depends on T030, T032
+- [X] T030 [P] [US3] Implement `createWorkspace`, `renameWorkspace`, `deleteWorkspace` (OWNER-only) Server Actions in `src/lib/actions/workspace.actions.ts` (slug generation on create) — depends on T005
+- [X] T031 [US3] Implement `inviteMember` (ADMIN-minimum) and `acceptInvitation` Server Actions in `src/lib/actions/workspace.actions.ts` per `contracts/invitation-lifecycle.md` (duplicate-member/duplicate-invite checks, `expiresAt` = +7 days, lazy expiry on accept) — depends on T030 (same file)
+- [X] T032 [P] [US3] Implement `createBoard` Server Action (template-driven default columns) in `src/lib/actions/board.actions.ts` — depends on T005
+- [X] T033 [US3] Implement `createColumn`, `renameColumn`, `reorderColumn`, `recolorColumn`, `deleteColumn` (blocked while non-empty) Server Actions in `src/lib/actions/board.actions.ts` — depends on T032 (same file), T006
+- [X] T034 [P] [US3] Build `WorkspaceForm` in `src/components/workspace/workspace-form.tsx` (convert `axiom-design/axiom_onboarding_workspace_name_export/code.html`) and wire `src/app/(app)/workspaces/new/page.tsx` — depends on T030
+- [X] T035 [P] [US3] Build `MemberList` + invite form in `src/components/workspace/member-list.tsx` (convert `axiom-design/axiom_team_management/code.html`) and wire `src/app/(app)/[workspaceSlug]/settings/members/page.tsx` — depends on T031
+- [X] T036 [P] [US3] Build `BoardCreateModal` in `src/components/board-admin/board-create-modal.tsx` — NEW, no export exists; build from `DESIGN.md` tokens — depends on T032
+- [X] T037 [US3] Build `ColumnManager` controls (add/rename/reorder/recolor/delete) in `src/components/board-admin/column-manager.tsx` — NEW, no export exists — depends on T033
+- [X] T038 [US3] Wire the sidebar's "Workspace"/"Boards" navigation in `src/app/(app)/layout.tsx` to real workspace/board data (replacing static seed-only links) — depends on T030, T032
 
 **Checkpoint**: User Stories 1–3 independently functional — real end-to-end onboarding now works without the seed script.
 
@@ -144,9 +144,9 @@ and confirm each is rejected with `INSUFFICIENT_ROLE`.
 
 ### Implementation for User Story 4
 
-- [ ] T039 [US4] Add role-conditional rendering (hide/disable create/edit/move/delete controls for `VIEWER`) across `src/components/board/board-view.tsx`, `src/components/board/task-card.tsx`, `src/components/task-detail/task-detail-modal.tsx`, `src/components/task-detail/task-properties-panel.tsx`, `src/components/workspace/member-list.tsx`, `src/components/board-admin/board-create-modal.tsx`, `src/components/board-admin/column-manager.tsx` — depends on T016, T028, T035, T036, T037
-- [ ] T040 [P] [US4] Extend `src/lib/actions/workspace.actions.ts` so `deleteWorkspace` requires `OWNER` and member-role changes require `ADMIN` (verify/tighten beyond the base `MEMBER` guard already used elsewhere) per `contracts/permission-enforcement.md`'s role table — depends on T031
-- [ ] T041 [US4] Execute the `quickstart.md` User Story 4 checklist: as a `VIEWER`, invoke `createTask`, `moveTask`, `renameWorkspace`, and `inviteMember` directly (bypassing the UI) and confirm every one is rejected — depends on T039, T040
+- [X] T039 [US4] Add role-conditional rendering (hide/disable create/edit/move/delete controls for `VIEWER`) across `src/components/board/board-view.tsx`, `src/components/board/task-card.tsx`, `src/components/task-detail/task-detail-modal.tsx`, `src/components/task-detail/task-properties-panel.tsx`, `src/components/workspace/member-list.tsx`, `src/components/board-admin/board-create-modal.tsx`, `src/components/board-admin/column-manager.tsx` — depends on T016, T028, T035, T036, T037
+- [X] T040 [P] [US4] Extend `src/lib/actions/workspace.actions.ts` so `deleteWorkspace` requires `OWNER` and member-role changes require `ADMIN` (verify/tighten beyond the base `MEMBER` guard already used elsewhere) per `contracts/permission-enforcement.md`'s role table — depends on T031
+- [X] T041 [US4] Execute the `quickstart.md` User Story 4 checklist: as a `VIEWER`, invoke `createTask`, `moveTask`, `renameWorkspace`, and `inviteMember` directly (bypassing the UI) and confirm every one is rejected — depends on T039, T040
 
 **Checkpoint**: User Stories 1–4 independently functional; permission boundary verified both in UI and server-side.
 
@@ -163,10 +163,10 @@ date range (`endDate < startDate`) is rejected.
 
 ### Implementation for User Story 5
 
-- [ ] T042 [P] [US5] Implement `createSprint`, `updateSprint`, `deleteSprint` Server Actions in `src/lib/actions/sprint.actions.ts` (reject `endDate < startDate` per FR-014) — depends on T005
-- [ ] T043 [US5] Implement `attachTaskToSprint`, `detachTaskFromSprint` Server Actions in `src/lib/actions/sprint.actions.ts` (sets/clears `Task.sprintId`) — depends on T042 (same file)
-- [ ] T044 [US5] Build `SprintPanel` (create/list sprints, status transitions, task attach/detach) in `src/components/sprint/sprint-panel.tsx` — NEW, no export exists; build from `DESIGN.md` tokens — depends on T042, T043
-- [ ] T045 [US5] Wire `SprintPanel` into `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx` for `SCRUM`-template boards — depends on T044, T018
+- [X] T042 [P] [US5] Implement `createSprint`, `updateSprint`, `deleteSprint` Server Actions in `src/lib/actions/sprint.actions.ts` (reject `endDate < startDate` per FR-014) — depends on T005
+- [X] T043 [US5] Implement `attachTaskToSprint`, `detachTaskFromSprint` Server Actions in `src/lib/actions/sprint.actions.ts` (sets/clears `Task.sprintId`) — depends on T042 (same file)
+- [X] T044 [US5] Build `SprintPanel` (create/list sprints, status transitions, task attach/detach) in `src/components/sprint/sprint-panel.tsx` — NEW, no export exists; build from `DESIGN.md` tokens — depends on T042, T043
+- [X] T045 [US5] Wire `SprintPanel` into `src/app/(app)/[workspaceSlug]/boards/[boardId]/page.tsx` for `SCRUM`-template boards — depends on T044, T018
 
 **Checkpoint**: All five user stories independently functional.
 
@@ -176,11 +176,11 @@ date range (`endDate < startDate`) is rejected.
 
 **Purpose**: Final gates before this feature is considered done.
 
-- [ ] T046 [P] Audit every Server Action across `src/lib/actions/*.ts` (including `sprint.actions.ts`) against `contracts/permission-enforcement.md`'s role table — no mutation left unguarded
-- [ ] T047 [P] Verify keyboard-operable drag & drop (`@dnd-kit/core`'s `KeyboardSensor`) and WCAG AA contrast (4.5:1) across every new screen, carrying forward Feature 001's accessibility bar
-- [ ] T048 Run `pnpm build`, `pnpm lint`, `pnpm type-check` and fix any failures — depends on T001–T045 (Constitution §IV gate, blocking before push)
-- [ ] T049 Execute the full `quickstart.md` walkthrough (all five user stories + edge cases) and record results — depends on T048
-- [ ] T050 Update `PROGRESS.md` marking Phase 3 (Core Kanban) complete — Constitution §VI, performed after merge to `main`
+- [X] T046 [P] Audit every Server Action across `src/lib/actions/*.ts` (including `sprint.actions.ts`) against `contracts/permission-enforcement.md`'s role table — no mutation left unguarded
+- [X] T047 [P] Verify keyboard-operable drag & drop (`@dnd-kit/core`'s `KeyboardSensor`) and WCAG AA contrast (4.5:1) across every new screen, carrying forward Feature 001's accessibility bar
+- [X] T048 Run `pnpm build`, `pnpm lint`, `pnpm type-check` and fix any failures — depends on T001–T045 (Constitution §IV gate, blocking before push)
+- [X] T049 Execute the full `quickstart.md` walkthrough (all five user stories + edge cases) and record results — depends on T048
+- [X] T050 Update `PROGRESS.md` marking Phase 3 (Core Kanban) complete — Constitution §VI, performed after merge to `main`
 
 ---
 
