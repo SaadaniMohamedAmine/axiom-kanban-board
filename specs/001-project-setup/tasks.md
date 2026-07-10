@@ -102,7 +102,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T019 [US3] Build the login screen in `src/app/(auth)/login/page.tsx` reusing the approved design
 - [X] T020 [US3] Build the sign-up screen in `src/app/(auth)/sign-up/page.tsx`, reusing the exported design from `axiom-design/axiom_sign_up/code.html`, including the inline conflict-error state defined in `contracts/auth-conflict.md`
 - [X] T021 [US3] Wire the Google/GitHub OAuth buttons and the credentials form on both screens to the Better Auth client
-- [ ] T022 [US3] Manually validate all four acceptance scenarios (Google, GitHub, credentials, duplicate-email block) per `quickstart.md` US3
+- [X] T022 [US3] Manually validate all four acceptance scenarios (Google, GitHub, credentials, duplicate-email block) per `quickstart.md` US3
 
 **Checkpoint**: Account creation works frictionlessly through all three methods, and the security-critical duplicate-email block from FR-011 is enforced — SC-003 met.
 
@@ -138,7 +138,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T029 [US5] Mirror every variable from `.env.local` into Vercel's project environment settings
 - [X] T030 [US5] Deploy to Vercel and confirm the production URL is publicly reachable, rendering at minimum the functional login/sign-up screen
 - [X] T031 [US5] Run a secrets scan across the full repository history before the first public push, confirming zero secret values are committed (FR-007)
-- [ ] T032 [US5] Manually validate WCAG AA (full keyboard navigation, 4.5:1 text contrast) on the deployed sign-up screen per `quickstart.md`'s accessibility check
+- [X] T032 [US5] Manually validate WCAG AA (full keyboard navigation, 4.5:1 text contrast) on the deployed sign-up screen per `quickstart.md`'s accessibility check
 
 **Checkpoint**: Public production URL live and secret-free — SC-005 and SC-006 met.
 
@@ -151,7 +151,7 @@ Single Next.js project at the repository root, per `plan.md`'s Structure Decisio
 - [X] T033 [P] Remove dead code and stray `console.log` calls introduced across this feature (constitution Clean Code principle)
 - [X] T034 Run `pnpm lint` and `pnpm type-check`; resolve every reported issue
 - [X] T035 Run a final `pnpm build` to confirm a clean, zero-error production build before push (constitution Pre-Push Build Verification gate)
-- [ ] T036 Update `PROGRESS.md`'s Phase 2 checklist and overall progress percentage to reflect this feature's completion (constitution Progress Documentation principle — apply once this branch merges)
+- [X] T036 Update `PROGRESS.md`'s Phase 2 checklist and overall progress percentage to reflect this feature's completion (constitution Progress Documentation principle — apply once this branch merges)
 
 ---
 
