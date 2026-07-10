@@ -27,8 +27,7 @@ export function MoveToMenu({
       await moveTask({
         taskId,
         targetColumnId,
-        order: 9999,
-        sourceColumnId: currentColumnId,
+        targetIndex: 9999,
       });
       onMoved?.();
     });

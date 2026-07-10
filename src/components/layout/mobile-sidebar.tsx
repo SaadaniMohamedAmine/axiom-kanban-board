@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 interface MobileSidebarProps {
@@ -17,10 +17,6 @@ interface MobileSidebarProps {
 
 export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    setOpen(false);
-  }, []);
 
   return (
     <>

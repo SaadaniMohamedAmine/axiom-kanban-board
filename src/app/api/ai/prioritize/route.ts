@@ -54,7 +54,6 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  let savedLogId: string | null = null;
   let fullOutput = "";
 
   const stream = new ReadableStream({
@@ -82,14 +81,13 @@ export async function POST(req: NextRequest) {
             confidence: 0.8,
           },
         });
-        savedLogId = log.id;
 
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({ done: true, logId: log.id })}\n\n`
           )
         );
-      } catch (err) {
+      } catch {
         controller.enqueue(
           encoder.encode(
             `data: ${JSON.stringify({ error: "Axiom Intelligence encountered an error." })}\n\n`

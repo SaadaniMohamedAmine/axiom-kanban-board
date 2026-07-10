@@ -21,6 +21,7 @@ export function ReasoningStream({
   const [status, setStatus] = useState<"idle" | "streaming" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const abortRef = useRef<AbortController | null>(null);
+  const startedRef = useRef(false);
 
   async function startStream() {
     if (status === "streaming") return;
@@ -107,12 +108,16 @@ export function ReasoningStream({
   }
 
   useEffect(() => {
-    if (autoStart) {
-      void startStream();
-    }
     return () => {
       abortRef.current?.abort();
     };
+  }, []);
+
+  useEffect(() => {
+    if (autoStart && !startedRef.current) {
+      startedRef.current = true;
+      void startStream();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [autoStart]);
 

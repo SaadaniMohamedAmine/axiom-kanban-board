@@ -4,7 +4,6 @@ import { useState } from "react";
 import { ReasoningStream } from "@/components/ai/reasoning-stream";
 
 interface SprintHealthSummaryProps {
-  boardId: string;
   sprintId: string;
   sprintName: string;
   overdueTasks: number;
@@ -14,7 +13,6 @@ interface SprintHealthSummaryProps {
 }
 
 export function SprintHealthSummary({
-  boardId,
   sprintId,
   sprintName,
   overdueTasks,

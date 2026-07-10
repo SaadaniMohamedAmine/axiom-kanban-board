@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { ReasoningStream } from "./reasoning-stream";
 import { FeedbackButtons } from "./feedback-buttons";
 import type { TaskWithRelations } from "@/types/task.types";
@@ -37,7 +37,7 @@ export function AxiomIntelligencePanel({
 }: AxiomIntelligencePanelProps) {
   const [active, setActive] = useState<ActiveSuggestion | null>(null);
 
-  function getPayload(type: SuggestionType): Record<string, unknown> {
+  const getPayload = useCallback((type: SuggestionType): Record<string, unknown> => {
     const base = {
       taskId: task.id,
       title: task.title,
@@ -70,7 +70,7 @@ export function AxiomIntelligencePanel({
       case "assign":
         return { ...base, members: boardMembers };
     }
-  }
+  }, [task, columnName, boardMembers]);
 
   return (
     <div className="mt-6 border-t border-outline-variant/20 pt-6">

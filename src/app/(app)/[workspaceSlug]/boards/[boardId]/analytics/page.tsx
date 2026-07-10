@@ -34,9 +34,7 @@ export default async function AnalyticsPage({ params }: Props) {
   const sprints = await prisma.sprint.findMany({
     where: { boardId },
     include: {
-      tasks: {
-        select: { id: true, estimate: true, sprintId: true, dueDate: true, columnId: true },
-      },
+      tasks: true,
     },
     orderBy: { startDate: "asc" },
   });
@@ -108,7 +106,6 @@ export default async function AnalyticsPage({ params }: Props) {
         <div className="space-y-8">
           {activeSprint && (
             <SprintHealthSummary
-              boardId={boardId}
               sprintId={activeSprint.id}
               sprintName={activeSprint.name}
               overdueTasks={overdueTasks}
