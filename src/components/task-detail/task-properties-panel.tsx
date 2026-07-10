@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { updateTaskFields, setTaskAssignees, setTaskLabels } from "@/lib/actions/task.actions";
+import { useState, useRef } from "react";
+import { updateTaskFields } from "@/lib/actions/task.actions";
 import type { TaskWithRelations } from "@/types/task.types";
 
 interface TaskPropertiesPanelProps {
@@ -12,6 +12,9 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
   const [priority, setPriority] = useState(task.priority);
   const [estimate, setEstimate] = useState(task.estimate?.toString() ?? "");
   const [dueDate, setDueDate] = useState(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
+  const [description, setDescription] = useState(task.description ?? "");
+  const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   async function handlePriorityChange(newPriority: typeof task.priority) {
     setPriority(newPriority);
@@ -44,8 +47,95 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
     }
   }
 
+  function insertMarkdown(prefix: string, suffix: string = "") {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = description.substring(start, end);
+    const newText = description.substring(0, start) + prefix + selectedText + suffix + description.substring(end);
+    setDescription(newText);
+    textarea.focus();
+    textarea.setSelectionRange(start + prefix.length, end + prefix.length);
+  }
+
+  async function handleDescriptionBlur() {
+    if (description !== task.description) {
+      try {
+        await updateTaskFields({ taskId: task.id, description: description || null });
+      } catch (error) {
+        setDescription(task.description ?? "");
+      }
+    }
+    setIsEditingDescription(false);
+  }
+
   return (
     <div className="space-y-6">
+      <div>
+        <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">
+          Description
+        </label>
+        {isEditingDescription ? (
+          <div>
+            <div className="flex gap-1 mb-2 p-1 bg-surface-container-lowest border border-outline-variant rounded-t-lg">
+              <button
+                type="button"
+                onClick={() => insertMarkdown("**", "**")}
+                className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
+                title="Bold"
+              >
+                B
+              </button>
+              <button
+                type="button"
+                onClick={() => insertMarkdown("*", "*")}
+                className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors italic"
+                title="Italic"
+              >
+                I
+              </button>
+              <button
+                type="button"
+                onClick={() => insertMarkdown("- ")}
+                className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
+                title="List"
+              >
+                •
+              </button>
+              <button
+                type="button"
+                onClick={() => insertMarkdown("[", "](url)")}
+                className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
+                title="Link"
+              >
+                🔗
+              </button>
+            </div>
+            <textarea
+              ref={textareaRef}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              onBlur={handleDescriptionBlur}
+              className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-b-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary min-h-[120px] resize-y"
+              placeholder="Add a description..."
+            />
+          </div>
+        ) : (
+          <div
+            onClick={() => setIsEditingDescription(true)}
+            className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface cursor-pointer hover:border-primary/50 transition-colors min-h-[60px]"
+          >
+            {description ? (
+              <div dangerouslySetInnerHTML={{ __html: description }} />
+            ) : (
+              <p className="italic opacity-60">Click to add description...</p>
+            )}
+          </div>
+        )}
+      </div>
+
       <div>
         <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">
           Priority

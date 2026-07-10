@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { BoardView } from "@/components/board/board-view";
+import { BoardViewWithModal } from "./board-view-with-modal";
 import { CreateTaskForm } from "./create-task-form";
 
 export default async function BoardPage({
@@ -39,6 +39,12 @@ export default async function BoardPage({
         include: {
           tasks: {
             orderBy: { order: "asc" },
+            include: {
+              assignees: true,
+              labels: true,
+              comments: true,
+              activity: true,
+            },
           },
         },
       },
@@ -55,7 +61,7 @@ export default async function BoardPage({
         <h1 className="text-h2 text-on-surface">{board.name}</h1>
       </div>
       <div className="flex-1 overflow-hidden flex flex-col">
-        <BoardView board={board} columns={board.columns} />
+        <BoardViewWithModal board={board} columns={board.columns} />
       </div>
       <CreateTaskForm boardId={board.id} columns={board.columns} />
     </div>
