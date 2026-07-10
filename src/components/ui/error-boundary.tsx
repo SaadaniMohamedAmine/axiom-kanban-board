@@ -1,6 +1,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
+import Link from "next/link";
 import { Component, type ReactNode } from "react";
 
 interface Props {
@@ -49,12 +50,12 @@ export class ErrorBoundary extends Component<Props, State> {
                 >
                   Try again
                 </button>
-                <a
+                <Link
                   href="/"
                   className="px-5 py-2.5 border border-outline-variant text-on-surface rounded-xl text-[14px] font-medium hover:bg-surface-container-high transition-colors"
                 >
                   Back to home
-                </a>
+                </Link>
               </div>
               {this.state.eventId && (
                 <p className="mt-6 text-[11px] text-on-surface-variant/30 font-mono">
