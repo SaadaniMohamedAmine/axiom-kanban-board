@@ -84,6 +84,8 @@
 - [x] T013 — Composant FeedbackButtons (utile/inutile)
 - [x] T014 — Panel Axiom Intelligence intégré au task-detail-modal
 - [x] T015 — Intégration complète avec passage de boardMembers et columnName
+- [x] Code review (2026-07-10) : fixed Sprint Health AI summary sending a non-cuid `taskId` (`/api/ai/prioritize` always 400'd) — endpoint now accepts `taskId` or `sprintId`
+- [x] Manual QA (2026-07-10) : fixed `ReasoningStream` never rendering any suggestion — `startedRef` guard blocked the retry after React Strict Mode's dev double-invoke aborted the first request
 
 **Phase 5 : 15/15 — 100%**
 
@@ -95,6 +97,8 @@
 - [x] T020 — Composant AnalyticsEmptyState
 - [x] T021 — Page analytics avec données sprints
 - [x] T022 — Lien Analytics dans sidebar pour chaque board
+- [x] Code review (2026-07-10) : fixed `blockedTasks` hardcoded to 0 in the analytics page — now computed from real task activity (no activity 3+ days while outside the done column)
+- [x] Manual QA (2026-07-10) : validated burndown/velocity/sprint-health rendering end-to-end against a live seeded sprint
 
 **Phase 6 : 7/7 — 100%**
 
@@ -105,8 +109,16 @@
 - [x] T026 — BoardView avec TouchSensor et scroll horizontal snap
 - [x] T027 — TaskCard avec tap targets adaptés mobile
 - [x] T028 — TaskDetailModal fullscreen sur mobile (100dvh)
+- [x] Code review (2026-07-10) : fixed `MoveToMenu` being built but never wired into the UI — now rendered in `TaskDetailModal` (mobile-only) as the non-drag alternative it was built for
+- [x] Manual QA (2026-07-10) : validated mobile board/drawer/task-modal rendering visually
 
 **Phase 7 : 6/6 — 100%**
+
+---
+
+**Phase A (features 004-006 — Axiom Intelligence, Analytics & Sprints, Responsive Mobile) : ✅ DELEGATION COMPLETE.** Implémentée en une seule branche (`feat-phase-A-core-product-03-06`, 13 commits) au lieu des 3 branches/PR séparées prévues par `PHASE-A-DELEGATION.md`. Code review manuelle (CodeRabbit indisponible localement) : 4 bugs trouvés et corrigés. QA manuelle en conditions réelles : 1 bug bloquant supplémentaire trouvé et corrigé (Axiom Intelligence ne rendait jamais aucune suggestion). `pnpm build`/`lint`/`type-check` verts. **Reste : push + PR vers `main`** (pas encore fait, contrairement aux phases précédentes).
+
+---
 
 ## Phase 8 — Polish & Deploy final (0%)
 *(le projet est déjà live sur Vercel depuis la Phase 2 — cette phase couvre la mise en prod finale, le polish, et la revue de lancement)*
