@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 
 export default async function AppLayout({
@@ -17,6 +18,11 @@ export default async function AppLayout({
   if (!session) {
     redirect("/login");
   }
+
+  Sentry.setUser({
+    id: session.user.id,
+    email: session.user.email,
+  });
 
   const memberships = await prisma.workspaceMember.findMany({
     where: { userId: session.user.id },
