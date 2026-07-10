@@ -18,12 +18,21 @@ export function BoardViewWithModal({ board, columns, canEdit, currentUser }: Boa
   const [selectedTask, setSelectedTask] = useState<TaskWithRelations | null>(null);
 
   function handleTaskClick(task: Task) {
-    const fullTask = columns
-      .flatMap((col) => col.tasks)
-      .find((t) => t.id === task.id);
-    if (fullTask) {
-      setSelectedTask(fullTask);
-    }
+    // `task` comes from BoardView's live, realtime-synced state, so it always
+    // has current scalar fields (title, priority, dueDate, etc.) even for
+    // tasks created or edited by other users after the initial page load.
+    // Relations (assignees/labels/comments/activity) aren't part of the
+    // realtime payloads, so enrich from the original SSR snapshot when
+    // available and fall back to empty arrays for tasks created live, which
+    // legitimately have none yet.
+    const relations = columns.flatMap((col) => col.tasks).find((t) => t.id === task.id);
+    setSelectedTask({
+      ...task,
+      assignees: relations?.assignees ?? [],
+      labels: relations?.labels ?? [],
+      comments: relations?.comments ?? [],
+      activity: relations?.activity ?? [],
+    });
   }
 
   return (

@@ -258,6 +258,38 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput, socketId?: 
 
   const taskUpdatedAtBefore = task.updatedAt;
 
+  // Conflict detection must run BEFORE this update's own activity rows are
+  // inserted below — otherwise the "most recent activity" query always finds
+  // the row this same request is about to create and falsely reports the
+  // acting user as having superseded themselves.
+  let conflictEvent: ConflictEvent | null = null;
+  if (expectedUpdatedAt) {
+    const expectedTime = new Date(expectedUpdatedAt).getTime();
+    const actualTime = taskUpdatedAtBefore.getTime();
+
+    if (Math.abs(expectedTime - actualTime) > 1000) {
+      const supersedingActivity = await prisma.activityEvent.findFirst({
+        where: {
+          taskId,
+          createdAt: {
+            gt: new Date(expectedUpdatedAt),
+          },
+        },
+        orderBy: { createdAt: "desc" },
+      });
+
+      if (supersedingActivity) {
+        conflictEvent = {
+          type: "task.conflict",
+          taskId,
+          supersededActorId: supersedingActivity.actorId,
+          field: activityPayloads[0]?.field ?? "unknown",
+          timestamp: new Date().toISOString(),
+        };
+      }
+    }
+  }
+
   await prisma.$transaction([
     prisma.task.update({
       where: { id: taskId },
@@ -281,37 +313,12 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput, socketId?: 
     socketId,
   );
 
-  if (expectedUpdatedAt) {
-    const expectedTime = new Date(expectedUpdatedAt).getTime();
-    const actualTime = taskUpdatedAtBefore.getTime();
-
-    if (Math.abs(expectedTime - actualTime) > 1000) {
-      const supersededActivity = await prisma.activityEvent.findFirst({
-        where: {
-          taskId,
-          createdAt: {
-            gt: new Date(expectedUpdatedAt),
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      });
-
-      if (supersededActivity) {
-        const conflictEvent: ConflictEvent = {
-          type: "task.conflict",
-          taskId,
-          supersededActorId: supersededActivity.actorId,
-          field: activityPayloads[0]?.field ?? "unknown",
-          timestamp: new Date().toISOString(),
-        };
-
-        await triggerBoardEvent(
-          task.boardId,
-          conflictEvent as unknown as BoardEvent,
-          socketId,
-        );
-      }
-    }
+  if (conflictEvent) {
+    await triggerBoardEvent(
+      task.boardId,
+      conflictEvent as unknown as BoardEvent,
+      socketId,
+    );
   }
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");

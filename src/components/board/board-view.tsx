@@ -37,8 +37,17 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
     setColumns((prev) => {
       switch (event.type) {
         case "task.created": {
-          const task = event.data as unknown as Task;
-          if (!task?.id || !task.columnId) return prev;
+          const raw = event.data as Record<string, unknown>;
+          if (!raw?.id || !raw.columnId) return prev;
+          // Dates cross the wire as JSON strings — convert back to Date
+          // instances so this task matches the shape SSR-rendered tasks have
+          // (callers like task-properties-panel call .toISOString() on them).
+          const task = {
+            ...raw,
+            dueDate: raw.dueDate ? new Date(raw.dueDate as string) : null,
+            createdAt: new Date(raw.createdAt as string),
+            updatedAt: new Date(raw.updatedAt as string),
+          } as unknown as Task;
           return prev.map((col) => {
             if (col.id !== task.columnId) return col;
             if (col.tasks.some((t) => t.id === task.id)) return col;
@@ -62,7 +71,7 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
           const withoutTask = prev.map((col) => {
             const found = col.tasks.find((t) => t.id === movedTaskId);
             if (found) {
-              movedTask = found;
+              movedTask = { ...found, order, columnId: targetColId };
               return { ...col, tasks: col.tasks.filter((t) => t.id !== movedTaskId) };
             }
             return col;
