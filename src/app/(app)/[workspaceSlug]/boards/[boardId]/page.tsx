@@ -55,12 +55,37 @@ export default async function BoardPage({
       sprints: {
         orderBy: { startDate: "desc" },
       },
+      workspace: {
+        include: {
+          members: {
+            include: {
+              user: { select: { id: true, name: true } },
+            },
+          },
+        },
+      },
     },
   });
 
   if (!board || board.workspaceId !== workspace.id) {
     redirect(`/${workspaceSlug}`);
   }
+
+  const taskCounts = await prisma.taskAssignee.groupBy({
+    by: ["userId"],
+    where: {
+      task: {
+        boardId,
+      },
+    },
+    _count: { taskId: true },
+  });
+
+  const boardMembers = board.workspace.members.map((m) => ({
+    userId: m.user.id,
+    name: m.user.name,
+    taskCount: taskCounts.find((t) => t.userId === m.user.id)?._count.taskId ?? 0,
+  }));
 
   const allTasks = board.columns.flatMap((col) => col.tasks);
 
@@ -76,6 +101,7 @@ export default async function BoardPage({
             columns={board.columns}
             canEdit={canEdit}
             currentUser={{ id: session.user.id, name: session.user.name, image: session.user.image ?? null }}
+            boardMembers={boardMembers}
           />
           {canEdit && <CreateTaskForm boardId={board.id} columns={board.columns} />}
         </div>

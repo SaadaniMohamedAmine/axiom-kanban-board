@@ -12,19 +12,13 @@ interface BoardViewWithModalProps {
   columns: (ColumnType & { tasks: TaskWithRelations[] })[];
   canEdit: boolean;
   currentUser: PresenceMember;
+  boardMembers: { userId: string; name: string; taskCount: number }[];
 }
 
-export function BoardViewWithModal({ board, columns, canEdit, currentUser }: BoardViewWithModalProps) {
+export function BoardViewWithModal({ board, columns, canEdit, currentUser, boardMembers }: BoardViewWithModalProps) {
   const [selectedTask, setSelectedTask] = useState<TaskWithRelations | null>(null);
 
   function handleTaskClick(task: Task) {
-    // `task` comes from BoardView's live, realtime-synced state, so it always
-    // has current scalar fields (title, priority, dueDate, etc.) even for
-    // tasks created or edited by other users after the initial page load.
-    // Relations (assignees/labels/comments/activity) aren't part of the
-    // realtime payloads, so enrich from the original SSR snapshot when
-    // available and fall back to empty arrays for tasks created live, which
-    // legitimately have none yet.
     const relations = columns.flatMap((col) => col.tasks).find((t) => t.id === task.id);
     setSelectedTask({
       ...task,
@@ -35,11 +29,21 @@ export function BoardViewWithModal({ board, columns, canEdit, currentUser }: Boa
     });
   }
 
+  const selectedColumn = selectedTask
+    ? columns.find((col) => col.tasks.some((t) => t.id === selectedTask.id))
+    : null;
+
   return (
     <>
       <BoardView board={board} columns={columns} onTaskClick={handleTaskClick} canEdit={canEdit} currentUser={currentUser} />
-      {selectedTask && (
-        <TaskDetailModal task={selectedTask} onClose={() => setSelectedTask(null)} canEdit={canEdit} />
+      {selectedTask && selectedColumn && (
+        <TaskDetailModal
+          task={selectedTask}
+          onClose={() => setSelectedTask(null)}
+          canEdit={canEdit}
+          columnName={selectedColumn.name}
+          boardMembers={boardMembers}
+        />
       )}
     </>
   );

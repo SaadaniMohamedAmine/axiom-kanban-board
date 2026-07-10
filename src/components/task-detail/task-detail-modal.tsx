@@ -5,14 +5,17 @@ import type { TaskWithRelations } from "@/types/task.types";
 import { TaskPropertiesPanel } from "./task-properties-panel";
 import { ActivityList } from "./activity-list";
 import { CommentThread } from "./comment-thread";
+import { AxiomIntelligencePanel } from "@/components/ai/axiom-intelligence-panel";
 
 interface TaskDetailModalProps {
   task: TaskWithRelations;
   onClose: () => void;
   canEdit: boolean;
+  columnName: string;
+  boardMembers: { userId: string; name: string; taskCount: number }[];
 }
 
-export function TaskDetailModal({ task, onClose, canEdit }: TaskDetailModalProps) {
+export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembers }: TaskDetailModalProps) {
   const [now] = useState(() => Date.now());
 
   useEffect(() => {
@@ -97,8 +100,9 @@ export function TaskDetailModal({ task, onClose, canEdit }: TaskDetailModalProps
           </section>
 
           {/* Right Column (Properties) */}
-          <aside className="w-[340px] bg-black/20 p-6">
+          <aside className="w-[340px] bg-black/20 p-6 overflow-y-auto">
             <TaskPropertiesPanel task={task} canEdit={canEdit} />
+            <AxiomIntelligencePanel task={task} columnName={columnName} boardMembers={boardMembers} />
           </aside>
         </div>
 
