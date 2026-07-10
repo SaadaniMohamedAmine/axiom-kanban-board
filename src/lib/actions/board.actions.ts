@@ -16,6 +16,27 @@ import {
 } from "../validations/board.schema";
 import { revalidatePath } from "next/cache";
 import { calculateOrderAtEnd } from "../task-order";
+import { triggerBoardEvent } from "../realtime";
+import { auth } from "../auth";
+import { headers } from "next/headers";
+import type { BoardEvent } from "@/types/realtime.types";
+
+function makeColumnEvent(
+  boardId: string,
+  actorId: string,
+  columnId: string,
+  data: Record<string, unknown>,
+): BoardEvent {
+  return {
+    type: "column.updated",
+    boardId,
+    taskId: null,
+    columnId,
+    actorId,
+    data,
+    timestamp: new Date().toISOString(),
+  };
+}
 
 const DEFAULT_COLUMNS: Record<string, { name: string; color: string }[]> = {
   KANBAN: [
@@ -66,7 +87,7 @@ export async function createBoard(input: CreateBoardInput) {
   return board;
 }
 
-export async function createColumn(input: CreateColumnInput) {
+export async function createColumn(input: CreateColumnInput, socketId?: string) {
   const validated = createColumnSchema.parse(input);
   const { boardId, name, color } = validated;
 
@@ -98,11 +119,20 @@ export async function createColumn(input: CreateColumnInput) {
     },
   });
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      boardId,
+      makeColumnEvent(boardId, session.user.id, column.id, column as unknown as Record<string, unknown>),
+      socketId,
+    );
+  }
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return column;
 }
 
-export async function renameColumn(input: RenameColumnInput) {
+export async function renameColumn(input: RenameColumnInput, socketId?: string) {
   const validated = renameColumnSchema.parse(input);
   const { columnId, name } = validated;
 
@@ -122,11 +152,20 @@ export async function renameColumn(input: RenameColumnInput) {
     data: { name },
   });
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      column.boardId,
+      makeColumnEvent(column.boardId, session.user.id, columnId, { columnId, name }),
+      socketId,
+    );
+  }
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
 
-export async function reorderColumn(input: ReorderColumnInput) {
+export async function reorderColumn(input: ReorderColumnInput, socketId?: string) {
   const validated = reorderColumnSchema.parse(input);
   const { columnId, order } = validated;
 
@@ -146,11 +185,20 @@ export async function reorderColumn(input: ReorderColumnInput) {
     data: { order },
   });
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      column.boardId,
+      makeColumnEvent(column.boardId, session.user.id, columnId, { columnId, order }),
+      socketId,
+    );
+  }
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
 
-export async function recolorColumn(input: RecolorColumnInput) {
+export async function recolorColumn(input: RecolorColumnInput, socketId?: string) {
   const validated = recolorColumnSchema.parse(input);
   const { columnId, color } = validated;
 
@@ -170,11 +218,20 @@ export async function recolorColumn(input: RecolorColumnInput) {
     data: { color },
   });
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      column.boardId,
+      makeColumnEvent(column.boardId, session.user.id, columnId, { columnId, color }),
+      socketId,
+    );
+  }
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
 
-export async function deleteColumn(columnId: string) {
+export async function deleteColumn(columnId: string, socketId?: string) {
   const column = await prisma.column.findUnique({
     where: { id: columnId },
     include: {
@@ -196,6 +253,15 @@ export async function deleteColumn(columnId: string) {
   await prisma.column.delete({
     where: { id: columnId },
   });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      column.boardId,
+      makeColumnEvent(column.boardId, session.user.id, columnId, { columnId, deleted: true }),
+      socketId,
+    );
+  }
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
