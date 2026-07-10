@@ -6,6 +6,7 @@ import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Column } from "./column";
 import { TaskCard } from "./task-card";
 import { EmptyBoardState } from "./empty-board-state";
+import { PresenceAvatars } from "@/components/realtime/presence-avatars";
 import { moveTask } from "@/lib/actions/task.actions";
 import { useBoardChannel } from "@/hooks/use-board-channel";
 import { getPusherClient } from "@/lib/pusher-client";
@@ -103,7 +104,7 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
     });
   }, []);
 
-  const { connectionState } = useBoardChannel(board.id, { onEvent: handleBoardEvent });
+  const { connectionState, members } = useBoardChannel(board.id, { onEvent: handleBoardEvent });
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -189,11 +190,14 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-      {moveError && (
-        <div className="mx-8 mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-          {moveError}
-        </div>
-      )}
+      <div className="flex items-center justify-between mx-8 mt-4">
+        {moveError && (
+          <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+            {moveError}
+          </div>
+        )}
+        <PresenceAvatars members={members} currentUserId={currentUser.id} />
+      </div>
       <div className="flex-1 overflow-x-auto flex gap-6 p-8">
         {optimisticColumns.map((column) => (
           <Column key={column.id} column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} />
