@@ -4,6 +4,7 @@ import { randomBytes } from "crypto";
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import { getPlanLimits } from "../billing/plan-limits";
+import { createAuditLog } from "../audit/log";
 import {
   createWorkspaceSchema,
   renameWorkspaceSchema,
@@ -75,6 +76,19 @@ export async function renameWorkspace(input: RenameWorkspaceInput) {
     data: { name, slug },
   });
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "WORKSPACE_RENAMED",
+      targetType: "workspace",
+      targetId: workspaceId,
+      targetLabel: name,
+    });
+  }
+
   revalidatePath("/", "layout");
   return { success: true };
 }
@@ -144,6 +158,19 @@ export async function inviteMember(input: InviteMemberInput) {
       expiresAt,
     },
   });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "MEMBER_INVITED",
+      targetType: "user",
+      targetLabel: email,
+      metadata: { role },
+    });
+  }
 
   revalidatePath(`/[workspaceSlug]/settings/members`, "page");
   return { success: true };

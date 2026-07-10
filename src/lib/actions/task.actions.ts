@@ -22,6 +22,7 @@ import { auth } from "../auth";
 import { headers } from "next/headers";
 import { triggerBoardEvent } from "../realtime";
 import type { BoardEvent, ConflictEvent } from "@/types/realtime.types";
+import { createAuditLog } from "../audit/log";
 
 function makeEvent(
   type: BoardEvent["type"],
@@ -204,6 +205,18 @@ export async function deleteTask(taskId: string, socketId?: string) {
       makeEvent("task.deleted", task.boardId, session.user.id, { taskId }, taskId),
       socketId,
     );
+  }
+
+  if (session) {
+    void createAuditLog({
+      workspaceId: task.board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "TASK_DELETED",
+      targetType: "task",
+      targetId: taskId,
+      targetLabel: `${task.code}: ${task.title}`,
+    });
   }
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");

@@ -3,6 +3,7 @@
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import { getPlanLimits } from "../billing/plan-limits";
+import { createAuditLog } from "../audit/log";
 import {
   createBoardSchema,
   createColumnSchema,
@@ -93,6 +94,19 @@ export async function createBoard(input: CreateBoardInput) {
       },
     },
   });
+
+  const boardSession = await auth.api.getSession({ headers: await headers() });
+  if (boardSession) {
+    void createAuditLog({
+      workspaceId,
+      actorId: boardSession.user.id,
+      actorEmail: boardSession.user.email,
+      action: "BOARD_CREATED",
+      targetType: "board",
+      targetId: board.id,
+      targetLabel: board.name,
+    });
+  }
 
   revalidatePath(`/[workspaceSlug]`, "page");
   return board;
