@@ -7,9 +7,10 @@ import type { Column } from "@/types/board.types";
 interface ColumnManagerProps {
   boardId: string;
   columns: Column[];
+  canEdit: boolean;
 }
 
-export function ColumnManager({ boardId, columns }: ColumnManagerProps) {
+export function ColumnManager({ boardId, columns, canEdit }: ColumnManagerProps) {
   const [newColumnName, setNewColumnName] = useState("");
   const [editingColumnId, setEditingColumnId] = useState<string | null>(null);
   const [editingName, setEditingName] = useState("");
@@ -55,27 +56,29 @@ export function ColumnManager({ boardId, columns }: ColumnManagerProps) {
     <div className="p-6 bg-surface-container border border-outline-variant rounded-lg">
       <h3 className="text-h3 text-on-surface mb-4">Manage Columns</h3>
 
-      <form onSubmit={handleCreateColumn} className="mb-4 flex gap-2">
-        <input
-          type="text"
-          value={newColumnName}
-          onChange={(e) => setNewColumnName(e.target.value)}
-          placeholder="New column name"
-          className="flex-1 px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-primary"
-        />
-        <button
-          type="submit"
-          disabled={isSubmitting || !newColumnName.trim()}
-          className="px-4 py-2 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-        >
-          Add
-        </button>
-      </form>
+      {canEdit && (
+        <form onSubmit={handleCreateColumn} className="mb-4 flex gap-2">
+          <input
+            type="text"
+            value={newColumnName}
+            onChange={(e) => setNewColumnName(e.target.value)}
+            placeholder="New column name"
+            className="flex-1 px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <button
+            type="submit"
+            disabled={isSubmitting || !newColumnName.trim()}
+            className="px-4 py-2 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          >
+            Add
+          </button>
+        </form>
+      )}
 
       <div className="space-y-2">
         {columns.map((column) => (
           <div key={column.id} className="flex items-center gap-2 p-3 bg-surface-container-lowest border border-outline-variant rounded-lg">
-            {editingColumnId === column.id ? (
+            {editingColumnId === column.id && canEdit ? (
               <>
                 <input
                   type="text"
@@ -105,21 +108,25 @@ export function ColumnManager({ boardId, columns }: ColumnManagerProps) {
                   )}
                   <span className="text-body-md text-on-surface">{column.name}</span>
                 </div>
-                <button
-                  onClick={() => {
-                    setEditingColumnId(column.id);
-                    setEditingName(column.name);
-                  }}
-                  className="px-3 py-1 text-on-surface-variant hover:text-on-surface transition-colors"
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={() => handleDeleteColumn(column.id)}
-                  className="px-3 py-1 text-error hover:text-error/80 transition-colors"
-                >
-                  Delete
-                </button>
+                {canEdit && (
+                  <>
+                    <button
+                      onClick={() => {
+                        setEditingColumnId(column.id);
+                        setEditingName(column.name);
+                      }}
+                      className="px-3 py-1 text-on-surface-variant hover:text-on-surface transition-colors"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeleteColumn(column.id)}
+                      className="px-3 py-1 text-error hover:text-error/80 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
               </>
             )}
           </div>

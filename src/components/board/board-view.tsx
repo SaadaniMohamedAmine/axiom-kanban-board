@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useOptimistic, startTransition } from "react";
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Column } from "./column";
 import { TaskCard } from "./task-card";
 import { EmptyBoardState } from "./empty-board-state";
@@ -14,11 +14,13 @@ interface BoardViewProps {
   board: Board;
   columns: (ColumnType & { tasks: Task[] })[];
   onTaskClick?: (task: Task) => void;
+  canEdit: boolean;
 }
 
-export function BoardView({ columns: initialColumns, onTaskClick }: BoardViewProps) {
+export function BoardView({ columns: initialColumns, onTaskClick, canEdit }: BoardViewProps) {
   const [columns, setColumns] = useState(initialColumns);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [moveError, setMoveError] = useState<string | null>(null);
   const [optimisticColumns, setOptimisticColumns] = useOptimistic(
     columns,
     (state, newColumns: (ColumnType & { tasks: Task[] })[]) => newColumns
@@ -29,6 +31,9 @@ export function BoardView({ columns: initialColumns, onTaskClick }: BoardViewPro
       activationConstraint: {
         distance: 8,
       },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
@@ -39,6 +44,7 @@ export function BoardView({ columns: initialColumns, onTaskClick }: BoardViewPro
   }
 
   function handleDragStart(event: DragStartEvent) {
+    if (!canEdit) return;
     const task = columns.flatMap((col) => col.tasks).find((t) => t.id === event.active.id);
     if (task) {
       setActiveTask(task);
@@ -49,7 +55,7 @@ export function BoardView({ columns: initialColumns, onTaskClick }: BoardViewPro
     const { active, over } = event;
     setActiveTask(null);
 
-    if (!over) return;
+    if (!canEdit || !over) return;
 
     const activeTask = columns.flatMap((col) => col.tasks).find((t) => t.id === active.id);
     if (!activeTask) return;
@@ -85,6 +91,7 @@ export function BoardView({ columns: initialColumns, onTaskClick }: BoardViewPro
 
     startTransition(async () => {
       setOptimisticColumns(newColumns);
+      setMoveError(null);
 
       try {
         await moveTask({
@@ -93,21 +100,27 @@ export function BoardView({ columns: initialColumns, onTaskClick }: BoardViewPro
           targetIndex,
         });
         setColumns(newColumns);
-      } catch {
+      } catch (error) {
         setColumns(columns);
+        setMoveError(error instanceof Error ? error.message : "Failed to move task");
       }
     });
   }
 
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+      {moveError && (
+        <div className="mx-8 mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+          {moveError}
+        </div>
+      )}
       <div className="flex-1 overflow-x-auto flex gap-6 p-8">
         {optimisticColumns.map((column) => (
-          <Column key={column.id} column={column} tasks={column.tasks} onTaskClick={onTaskClick} />
+          <Column key={column.id} column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} />
         ))}
       </div>
       <DragOverlay>
-        {activeTask ? <TaskCard task={activeTask} /> : null}
+        {activeTask ? <TaskCard task={activeTask} canEdit={canEdit} /> : null}
       </DragOverlay>
     </DndContext>
   );

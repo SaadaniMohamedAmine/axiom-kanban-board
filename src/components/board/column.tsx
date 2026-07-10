@@ -10,9 +10,10 @@ interface ColumnProps {
   column: ColumnType;
   tasks: Task[];
   onTaskClick?: (task: Task) => void;
+  canEdit: boolean;
 }
 
-export function Column({ column, tasks, onTaskClick }: ColumnProps) {
+export function Column({ column, tasks, onTaskClick, canEdit }: ColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
@@ -28,18 +29,20 @@ export function Column({ column, tasks, onTaskClick }: ColumnProps) {
             {tasks.length}
           </span>
         </div>
-        <button className="text-outline hover:text-on-surface transition-colors">
-          <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="1"></circle>
-            <circle cx="19" cy="12" r="1"></circle>
-            <circle cx="5" cy="12" r="1"></circle>
-          </svg>
-        </button>
+        {canEdit && (
+          <button className="text-outline hover:text-on-surface transition-colors">
+            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="1"></circle>
+              <circle cx="19" cy="12" r="1"></circle>
+              <circle cx="5" cy="12" r="1"></circle>
+            </svg>
+          </button>
+        )}
       </div>
       <div ref={setNodeRef} className="space-y-4 min-h-[200px]">
         <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
           {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onClick={() => onTaskClick?.(task)} />
+            <TaskCard key={task.id} task={task} onClick={() => onTaskClick?.(task)} canEdit={canEdit} />
           ))}
         </SortableContext>
       </div>

@@ -9,9 +9,10 @@ import { CommentThread } from "./comment-thread";
 interface TaskDetailModalProps {
   task: TaskWithRelations;
   onClose: () => void;
+  canEdit: boolean;
 }
 
-export function TaskDetailModal({ task, onClose }: TaskDetailModalProps) {
+export function TaskDetailModal({ task, onClose, canEdit }: TaskDetailModalProps) {
   const [now] = useState(() => Date.now());
 
   useEffect(() => {
@@ -97,7 +98,7 @@ export function TaskDetailModal({ task, onClose }: TaskDetailModalProps) {
 
           {/* Right Column (Properties) */}
           <aside className="w-[340px] bg-black/20 p-6">
-            <TaskPropertiesPanel task={task} />
+            <TaskPropertiesPanel task={task} canEdit={canEdit} />
           </aside>
         </div>
 

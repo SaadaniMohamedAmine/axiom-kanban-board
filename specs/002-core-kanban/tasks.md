@@ -184,6 +184,16 @@ date range (`endDate < startDate`) is rejected.
 
 ---
 
+## Phase 9: Convergence
+
+**Purpose**: Close gaps found by `/speckit-converge` between the spec/plan and the current code, despite Phase 3–8 tasks being marked complete.
+
+- [X] T051 Add role-conditional rendering (hide/disable create/edit/move/delete controls for `VIEWER`) in `src/components/board/board-view.tsx`, `src/components/board/task-card.tsx`, `src/components/task-detail/task-detail-modal.tsx`, `src/components/task-detail/task-properties-panel.tsx`, `src/components/board-admin/board-create-modal.tsx`, `src/components/board-admin/column-manager.tsx`, and surface a clear user-facing error message when a mutation is rejected server-side, per US4/AC2, FR-012 (partial)
+- [ ] T052 Add `@dnd-kit/core`'s `KeyboardSensor` to the `useSensors` call in `src/components/board/board-view.tsx` so drag & drop is keyboard-operable, per plan.md's Technical Context constraint (missing)
+- [ ] T053 Fix `inviteMember`'s `revalidatePath` call in `src/lib/actions/workspace.actions.ts` to target the real `/[workspaceSlug]/settings/members` route instead of the raw workspace id, per FR-003 (partial)
+
+---
+
 ## Dependencies & Execution Order
 
 ### Phase Dependencies

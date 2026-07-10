@@ -9,9 +9,10 @@ import type { Task, TaskWithRelations } from "@/types/task.types";
 interface BoardViewWithModalProps {
   board: Board;
   columns: (ColumnType & { tasks: TaskWithRelations[] })[];
+  canEdit: boolean;
 }
 
-export function BoardViewWithModal({ board, columns }: BoardViewWithModalProps) {
+export function BoardViewWithModal({ board, columns, canEdit }: BoardViewWithModalProps) {
   const [selectedTask, setSelectedTask] = useState<TaskWithRelations | null>(null);
 
   function handleTaskClick(task: Task) {
@@ -25,9 +26,9 @@ export function BoardViewWithModal({ board, columns }: BoardViewWithModalProps) 
 
   return (
     <>
-      <BoardView board={board} columns={columns} onTaskClick={handleTaskClick} />
+      <BoardView board={board} columns={columns} onTaskClick={handleTaskClick} canEdit={canEdit} />
       {selectedTask && (
-        <TaskDetailModal task={selectedTask} onClose={() => setSelectedTask(null)} />
+        <TaskDetailModal task={selectedTask} onClose={() => setSelectedTask(null)} canEdit={canEdit} />
       )}
     </>
   );

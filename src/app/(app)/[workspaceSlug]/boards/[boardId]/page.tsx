@@ -33,6 +33,8 @@ export default async function BoardPage({
     redirect("/");
   }
 
+  const canEdit = workspace.members[0].role !== "VIEWER";
+
   const board = await prisma.board.findUnique({
     where: { id: boardId },
     include: {
@@ -69,8 +71,8 @@ export default async function BoardPage({
       </div>
       <div className="flex-1 overflow-hidden flex">
         <div className="flex-1 flex flex-col overflow-hidden">
-          <BoardViewWithModal board={board} columns={board.columns} />
-          <CreateTaskForm boardId={board.id} columns={board.columns} />
+          <BoardViewWithModal board={board} columns={board.columns} canEdit={canEdit} />
+          {canEdit && <CreateTaskForm boardId={board.id} columns={board.columns} />}
         </div>
         {board.template === "SCRUM" && (
           <aside className="w-96 border-l border-outline-variant overflow-y-auto">

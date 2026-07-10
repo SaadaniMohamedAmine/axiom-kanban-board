@@ -6,9 +6,10 @@ import type { TaskWithRelations } from "@/types/task.types";
 
 interface TaskPropertiesPanelProps {
   task: TaskWithRelations;
+  canEdit: boolean;
 }
 
-export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
+export function TaskPropertiesPanel({ task, canEdit }: TaskPropertiesPanelProps) {
   const [priority, setPriority] = useState(task.priority);
   const [estimate, setEstimate] = useState(task.estimate?.toString() ?? "");
   const [dueDate, setDueDate] = useState(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
@@ -17,6 +18,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   async function handlePriorityChange(newPriority: typeof task.priority) {
+    if (!canEdit) return;
     setPriority(newPriority);
     try {
       await updateTaskFields({ taskId: task.id, priority: newPriority });
@@ -26,6 +28,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
   }
 
   async function handleEstimateBlur() {
+    if (!canEdit) return;
     const num = parseInt(estimate, 10);
     const newValue = isNaN(num) ? null : num;
     if (newValue !== task.estimate) {
@@ -38,6 +41,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
   }
 
   async function handleDueDateChange(newDate: string) {
+    if (!canEdit) return;
     setDueDate(newDate);
     const newValue = newDate ? new Date(newDate).toISOString() : null;
     try {
@@ -61,7 +65,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
   }
 
   async function handleDescriptionBlur() {
-    if (description !== task.description) {
+    if (canEdit && description !== task.description) {
       try {
         await updateTaskFields({ taskId: task.id, description: description || null });
       } catch {
@@ -77,7 +81,7 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
         <label className="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">
           Description
         </label>
-        {isEditingDescription ? (
+        {isEditingDescription && canEdit ? (
           <div>
             <div className="flex gap-1 mb-2 p-1 bg-surface-container-lowest border border-outline-variant rounded-t-lg">
               <button
@@ -124,13 +128,13 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
           </div>
         ) : (
           <div
-            onClick={() => setIsEditingDescription(true)}
-            className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface cursor-pointer hover:border-primary/50 transition-colors min-h-[60px]"
+            onClick={() => canEdit && setIsEditingDescription(true)}
+            className={`w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface min-h-[60px] ${canEdit ? "cursor-pointer hover:border-primary/50 transition-colors" : "cursor-default"}`}
           >
             {description ? (
               <div className="whitespace-pre-wrap">{description}</div>
             ) : (
-              <p className="italic opacity-60">Click to add description...</p>
+              <p className="italic opacity-60">{canEdit ? "Click to add description..." : "No description yet"}</p>
             )}
           </div>
         )}
@@ -143,7 +147,8 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
         <select
           value={priority}
           onChange={(e) => handlePriorityChange(e.target.value as typeof task.priority)}
-          className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
+          disabled={!canEdit}
+          className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <option value="URGENT">Urgent</option>
           <option value="HIGH">High</option>
@@ -162,7 +167,8 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
           onChange={(e) => setEstimate(e.target.value)}
           onBlur={handleEstimateBlur}
           placeholder="0"
-          className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
+          disabled={!canEdit}
+          className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 
@@ -174,7 +180,8 @@ export function TaskPropertiesPanel({ task }: TaskPropertiesPanelProps) {
           type="date"
           value={dueDate}
           onChange={(e) => handleDueDateChange(e.target.value)}
-          className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
+          disabled={!canEdit}
+          className="w-full px-3 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
 

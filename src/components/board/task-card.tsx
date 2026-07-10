@@ -7,6 +7,7 @@ import type { Task } from "@/types/task.types";
 interface TaskCardProps {
   task: Task;
   onClick?: () => void;
+  canEdit: boolean;
 }
 
 const priorityStyles = {
@@ -16,10 +17,11 @@ const priorityStyles = {
   LOW: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
 };
 
-export function TaskCard({ task, onClick }: TaskCardProps) {
+export function TaskCard({ task, onClick, canEdit }: TaskCardProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: task.id,
     data: { task },
+    disabled: !canEdit,
   });
 
   const style = {
@@ -32,8 +34,8 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
     <article
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
+      {...(canEdit ? attributes : {})}
+      {...(canEdit ? listeners : {})}
       onClick={onClick}
       className="bg-surface-container border border-outline-variant p-4 rounded-lg hover:border-primary/50 transition-colors cursor-pointer group"
       data-id={task.code}

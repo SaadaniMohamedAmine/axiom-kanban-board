@@ -9,9 +9,10 @@ interface WorkspaceBoardsWithModalProps {
   workspaceId: string;
   workspaceSlug: string;
   boards: Board[];
+  canCreateBoard: boolean;
 }
 
-export function WorkspaceBoardsWithModal({ workspaceId, workspaceSlug, boards }: WorkspaceBoardsWithModalProps) {
+export function WorkspaceBoardsWithModal({ workspaceId, workspaceSlug, boards, canCreateBoard }: WorkspaceBoardsWithModalProps) {
   const [isCreating, setIsCreating] = useState(false);
 
   return (
@@ -20,12 +21,14 @@ export function WorkspaceBoardsWithModal({ workspaceId, workspaceSlug, boards }:
         <p className="text-body-md text-on-surface-variant">
           {boards.length === 0 ? "No boards yet" : `${boards.length} board${boards.length > 1 ? "s" : ""}`}
         </p>
-        <button
-          onClick={() => setIsCreating(true)}
-          className="px-4 py-2 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 transition-all"
-        >
-          Create Board
-        </button>
+        {canCreateBoard && (
+          <button
+            onClick={() => setIsCreating(true)}
+            className="px-4 py-2 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 transition-all"
+          >
+            Create Board
+          </button>
+        )}
       </div>
 
       {boards.length === 0 ? (
