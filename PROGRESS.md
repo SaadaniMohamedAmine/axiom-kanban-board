@@ -120,6 +120,38 @@
 
 ---
 
+## Phase B — UX Excellence (Dark/Light Mode, Motion, Shortcuts, Onboarding, Polish) — ✅ COMPLETE (100%)
+
+- [x] Packages installés : next-themes, react-hotkeys-hook, driver.js, clsx, tailwind-merge, @playwright/test
+- [x] Migration Prisma : ajout `onboardingCompleted` sur User
+- [x] **Feature 016 — Dark/Light Mode** : variables CSS light/dark, ThemeProvider, ThemeToggle dans le header, tokens CSS partout
+- [x] **Feature 008 — UX & Motion** : motion tokens centralisés (MOTION), skeleton component, board-skeleton, page-transition, toast system (context + provider), micro-interactions Framer Motion (task-card hover/tap, column enter/exit, modal entrance)
+- [x] **Feature 014 — Keyboard Shortcuts** : useKeyboardShortcuts hook, ShortcutsPanel modal, ShortcutsProvider, ⌘K / ? / Esc raccourcis dans board-view-with-modal
+- [x] **Feature 013 — Onboarding Tour** : tour interactif driver.js (5 étapes), completeOnboarding server action, déclenché conditionnellement, IDs DOM (sidebar-workspaces, board-columns, invite-team-link)
+- [x] **Feature 007 — Polish & Deploy** : page 404 on-brand, Settings menu, Notifications page + server actions, command palette avec search API, ⌘K palette, Playwright e2e tests (auth + board)
+- [x] CSS override driver.js dans globals.css
+- [x] `pnpm lint` : 0 errors
+- [x] `pnpm type-check` : 0 errors
+
+**Phase B : 33/33 — 100%**
+
+---
+
+## Phase C — SEO, Analytics, Sentry, Changelog, Roadmap — ✅ COMPLETE (100%)
+
+- [x] Packages installés : @sentry/nextjs, @vercel/analytics, @vercel/speed-insights, gray-matter, remark, remark-html
+- [x] **Feature 019 — SEO & Landing** : landing page publique Axiom, metadata SEO complètes (Open Graph, Twitter cards), OG image dynamique, robots.txt, sitemap.xml, layout marketing minimaliste
+- [x] **Feature 011 — Vercel Analytics** : composants Analytics + SpeedInsights dans le layout racine
+- [x] **Feature 010 — Sentry** : 3 configs (client/server/edge), wrapper next.config.ts, ErrorBoundary component, global-error.tsx, identification utilisateur dans le layout
+- [x] **Feature 012 — Changelog** : 3 entrées markdown (v0.1, v0.2, v1.0), helper de lecture Markdown (gray-matter + remark), page publique avec timeline
+- [x] **Feature 015 — Public Roadmap** : config statique Now/Next/Later, page publique 3 colonnes avec badges de statut
+- [x] `pnpm lint` : 0 errors
+- [x] `pnpm type-check` : 0 errors
+
+**Phase C : 23/23 — 100%**
+
+---
+
 ## Phase 8 — Polish & Deploy final (0%)
 *(le projet est déjà live sur Vercel depuis la Phase 2 — cette phase couvre la mise en prod finale, le polish, et la revue de lancement)*
 
@@ -146,4 +178,4 @@
 
 ---
 
-**Progression globale du projet : 40/~60 tâches estimées — ~67%** *(Phases 0-7 complétées, reste Phases 8-10)*
+**Progression globale du projet : 96/~116 tâches estimées — ~83%** *(Phases 0-7 + Phase B + Phase C complétées, reste Phases 8-10)*
