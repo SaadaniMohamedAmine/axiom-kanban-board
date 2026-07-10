@@ -2,6 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { signUpSchema, type SignUpInput } from "@/lib/validations/auth";
 
@@ -21,7 +22,16 @@ function SignUpForm() {
   const [conflictError, setConflictError] = useState<{
     message: string;
     existingProvider?: string;
-  } | null>(null);
+  } | null>(() =>
+    // Better Auth redirects OAuth failures back here as `?error=...`
+    // (see errorCallbackURL below) instead of resolving the signIn.social() promise.
+    searchParams.get("error") === "account_not_linked"
+      ? {
+          message:
+            "This email is already registered with a different sign-in method. Try the method you used originally.",
+        }
+      : null
+  );
   const [formData, setFormData] = useState<SignUpInput>({
     name: "",
     email: "",
@@ -29,13 +39,7 @@ function SignUpForm() {
   });
 
   useEffect(() => {
-    // Better Auth redirects OAuth failures back here as `?error=...`
-    // (see errorCallbackURL below) instead of resolving the signIn.social() promise.
     if (searchParams.get("error") === "account_not_linked") {
-      setConflictError({
-        message:
-          "This email is already registered with a different sign-in method. Try the method you used originally.",
-      });
       router.replace("/sign-up");
     }
   }, [searchParams, router]);
@@ -72,7 +76,7 @@ function SignUpForm() {
       } else {
         router.push("/");
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -101,7 +105,7 @@ function SignUpForm() {
           setError(error.message || `${provider} sign up failed`);
         }
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -119,7 +123,7 @@ function SignUpForm() {
         <div className="mb-10 text-center">
           <h1 className="text-3xl font-bold text-[#adc6ff] mb-2">Axiom</h1>
           <p className="text-[#c2c6d6] text-sm opacity-80">
-            Let's build your intelligence layer.
+            Let&apos;s build your intelligence layer.
           </p>
         </div>
 
@@ -248,9 +252,9 @@ function SignUpForm() {
           <div className="mt-6 text-center">
             <p className="text-sm text-[#c2c6d6]">
               Already have an account?{" "}
-              <a href="/login" className="text-[#adc6ff] hover:text-[#d8e2ff] transition-colors font-medium">
+              <Link href="/login" className="text-[#adc6ff] hover:text-[#d8e2ff] transition-colors font-medium">
                 Log in
-              </a>
+              </Link>
             </p>
           </div>
         </div>

@@ -31,8 +31,29 @@
 
 **Phase 2 : 5/5 — 100%**
 
-## Phase 3 — Core Kanban (0%)
-*(détail à reprendre du draft initial, ajusté à l'architecture Next.js)*
+## Phase 3 — Core Kanban — ✅ COMPLETE (100%)
+- [x] Schema additions (Board.taskCounter, Task.code required, Task.sprintId, Invitation.expiresAt, ActivityEvent.actorId)
+- [x] Tailwind theme normalized to DESIGN.md tokens
+- [x] Authenticated route group shell with sidebar/topnav
+- [x] requireRole permission guard
+- [x] Task order helper (gap-stepped)
+- [x] Atomic task code generation
+- [x] Shared types and Zod validation schemas
+- [x] Prisma seed script
+- [x] US1: Fluid task board interaction (create, drag&drop, delete tasks with optimistic UI)
+- [x] US2: Rich task detail (description, assignees, labels, comments, activity history)
+- [x] US3: Workspace and board setup (create workspace, invite members, create board from template)
+- [x] US4: Role-based permission enforcement (server-side guards on all mutations)
+- [x] US5: Sprint planning (create sprints, attach tasks, status transitions)
+- [x] Build verification passed (pnpm build, type-check)
+- [x] Security/correctness review: fixed stored XSS in task description, broken drag&drop optimistic update, task-order duplicate collisions, cross-tenant assignee/label IDOR, weak invitation token
+- [x] Quality gate repair: `pnpm lint` (broken by Next 16's flat-config migration) fixed and enforced clean — build, lint, and type-check all pass per Constitution Gate IV
+- [x] Post-review hardening (2026-07-10): fixed broken Tailwind v4 theme (missing `@config` link + unlayered CSS reset silently overriding every spacing utility, affecting 19 files), unawaited Next.js 16 async route `params` on 4 pages (workspace/board/members lookups always resolved `undefined`), and the post-`createWorkspace` redirect pointing at a route with no page
+- [x] `/speckit-converge` audit against spec.md/plan.md found and fixed 3 remaining gaps: VIEWER-role mutating controls not hidden/disabled in board UI (T051), drag & drop not keyboard-operable via `KeyboardSensor` (T052), `inviteMember`'s `revalidatePath` targeting the wrong route so the members list didn't refresh after an invite (T053) — tracked as Phase 9: Convergence in `specs/002-core-kanban/tasks.md`
+- [x] `pnpm lint` broken a second time — Next.js 16 removed the `next lint` subcommand entirely; script repointed to `eslint .` directly
+- [x] Merged to `main` via PR #3 (2026-07-10) — Vercel preview build green, all Constitution Gate IV checks (build/lint/type-check) passing
+
+**Phase 3 : 16/16 — 100%**
 
 ## Phase 4 — Realtime (0%)
 ## Phase 5 — AI Features / Axiom Intelligence (0%)

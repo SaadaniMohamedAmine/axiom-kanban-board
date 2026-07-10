@@ -1,0 +1,113 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+
+export default async function AppLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/login");
+  }
+
+  const memberships = await prisma.workspaceMember.findMany({
+    where: { userId: session.user.id },
+    include: {
+      workspace: {
+        include: {
+          boards: {
+            select: { id: true, name: true },
+          },
+        },
+      },
+    },
+  });
+
+  return (
+    <div className="flex h-screen bg-background">
+      <aside className="w-[260px] bg-surface-container border-r border-outline-variant flex flex-col">
+        <div className="p-6 border-b border-outline-variant">
+          <h1 className="text-h3 font-semibold text-on-surface">Axiom</h1>
+        </div>
+        <nav className="flex-1 p-4 overflow-y-auto">
+          <div className="text-label-md text-on-surface-variant uppercase tracking-wider mb-2">
+            Workspaces
+          </div>
+          {memberships.map((membership) => (
+            <div key={membership.workspace.id} className="mb-4">
+              <Link
+                href={`/${membership.workspace.slug}`}
+                className="flex items-center gap-2 px-3 py-2 text-body-md text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+              >
+                <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+                  <rect height="7" width="7" x="3" y="3"></rect>
+                  <rect height="7" width="7" x="14" y="3"></rect>
+                  <rect height="7" width="7" x="14" y="14"></rect>
+                  <rect height="7" width="7" x="3" y="14"></rect>
+                </svg>
+                {membership.workspace.name}
+              </Link>
+              <div className="ml-6 mt-1 space-y-1">
+                {membership.workspace.boards.map((board) => (
+                  <Link
+                    key={board.id}
+                    href={`/${membership.workspace.slug}/boards/${board.id}`}
+                    className="flex items-center gap-2 px-3 py-1.5 text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
+                  >
+                    <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 11l2-2 2 2"></path>
+                      <path d="M4 19h16"></path>
+                      <path d="M4 5h16"></path>
+                      <path d="M4 12h16"></path>
+                    </svg>
+                    {board.name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ))}
+          <Link
+            href="/workspaces/new"
+            className="flex items-center gap-2 px-3 py-2 text-body-md text-primary hover:bg-primary/10 rounded-lg transition-colors mt-4"
+          >
+            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+              <line x1="12" x2="12" y1="5" y2="19"></line>
+              <line x1="5" x2="19" y1="12" y2="12"></line>
+            </svg>
+            New Workspace
+          </Link>
+        </nav>
+        <div className="p-4 border-t border-outline-variant">
+          <Link
+            href="/settings"
+            className="flex items-center gap-2 px-3 py-2 text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+          >
+            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Settings
+          </Link>
+        </div>
+      </aside>
+      <main className="flex-1 flex flex-col overflow-hidden">
+        <header className="h-16 bg-surface-container border-b border-outline-variant flex items-center px-6">
+          <div className="flex-1" />
+          <div className="flex items-center gap-4">
+            <span className="text-body-md text-on-surface-variant">
+              {session.user.name}
+            </span>
+          </div>
+        </header>
+        <div className="flex-1 overflow-auto">{children}</div>
+      </main>
+    </div>
+  );
+}

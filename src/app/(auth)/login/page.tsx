@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { signInSchema, type SignInInput } from "@/lib/validations/auth";
 
@@ -37,7 +38,7 @@ export default function LoginPage() {
       } else {
         router.push("/");
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -57,7 +58,7 @@ export default function LoginPage() {
       if (error) {
         setError(error.message || `${provider} sign in failed`);
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -178,10 +179,10 @@ export default function LoginPage() {
 
           <div className="mt-6 text-center">
             <p className="text-sm text-[#c2c6d6]">
-              Don't have an account?{" "}
-              <a href="/sign-up" className="text-[#adc6ff] hover:text-[#d8e2ff] transition-colors font-medium">
+              Don&apos;t have an account?{" "}
+              <Link href="/sign-up" className="text-[#adc6ff] hover:text-[#d8e2ff] transition-colors font-medium">
                 Sign up
-              </a>
+              </Link>
             </p>
           </div>
         </div>
