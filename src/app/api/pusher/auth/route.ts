@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   const authResponse = pusher.authorizeChannel(socketId, channelName, {
-    id: session.user.id,
+    user_id: session.user.id,
     user_info: {
       id: session.user.id,
       name: session.user.name,

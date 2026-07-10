@@ -8,7 +8,6 @@ import { TaskCard } from "./task-card";
 import { EmptyBoardState } from "./empty-board-state";
 import { PresenceAvatars } from "@/components/realtime/presence-avatars";
 import { ConnectionIndicator } from "@/components/realtime/connection-indicator";
-import { ConflictBadge } from "@/components/realtime/conflict-badge";
 import { moveTask } from "@/lib/actions/task.actions";
 import { useBoardChannel } from "@/hooks/use-board-channel";
 import { getPusherClient } from "@/lib/pusher-client";

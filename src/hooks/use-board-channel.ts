@@ -31,16 +31,14 @@ export function useBoardChannel(
   const [socketId, setSocketId] = useState<string | undefined>(undefined);
   const [connectionState, setConnectionState] = useState<ConnectionState>("live");
   const [members, setMembers] = useState<PresenceMember[]>([]);
-  const onEventRef = useRef(options?.onEvent);
-  const onConflictRef = useRef(options?.onConflict);
-  const onColumnsUpdateRef = useRef(options?.onColumnsUpdate);
+  const optionsRef = useRef(options);
   const channelRef = useRef<PresenceChannel | null>(null);
   const degradedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pollingIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  onEventRef.current = options?.onEvent;
-  onConflictRef.current = options?.onConflict;
-  onColumnsUpdateRef.current = options?.onColumnsUpdate;
+  useEffect(() => {
+    optionsRef.current = options;
+  });
 
   const stopPolling = useCallback(() => {
     if (pollingIntervalRef.current) {
@@ -55,7 +53,7 @@ export function useBoardChannel(
     const poll = async () => {
       try {
         const snapshot = await getBoardSnapshot(boardId);
-        onColumnsUpdateRef.current?.(snapshot.columns as (Column & { tasks: Task[] })[]);
+        optionsRef.current?.onColumnsUpdate?.(snapshot.columns as (Column & { tasks: Task[] })[]);
       } catch {
         // Polling failure is non-fatal — next interval will retry
       }
@@ -67,8 +65,6 @@ export function useBoardChannel(
 
   useEffect(() => {
     const pusher = getPusherClient();
-
-    setSocketId(pusher.connection.socket_id ?? undefined);
 
     const onStateChange = ({ current }: { current: string }) => {
       setSocketId(pusher.connection.socket_id ?? undefined);
@@ -97,7 +93,7 @@ export function useBoardChannel(
 
     channel.bind("pusher:subscription_succeeded", () => {
       const initialMembers: PresenceMember[] = [];
-      channel.each((member: { id: string; info: PresenceMember }) => {
+      channel.members.each((member: { id: string; info: PresenceMember }) => {
         initialMembers.push(member.info);
       });
       setMembers(initialMembers);
@@ -117,12 +113,12 @@ export function useBoardChannel(
     const eventTypes = ["task.created", "task.updated", "task.moved", "task.deleted", "column.updated"] as const;
     for (const eventType of eventTypes) {
       channel.bind(eventType, (data: BoardEvent) => {
-        onEventRef.current?.(data);
+        optionsRef.current?.onEvent?.(data);
       });
     }
 
     channel.bind("task.conflict", (data: ConflictEvent) => {
-      onConflictRef.current?.(data);
+      optionsRef.current?.onConflict?.(data);
     });
 
     return () => {
