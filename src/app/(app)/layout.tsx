@@ -9,6 +9,8 @@ import { ToastProvider } from "@/contexts/toast-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
 import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
 import { OnboardingTour } from "@/components/onboarding/onboarding-tour";
+import { CommandPaletteProvider } from "@/contexts/command-palette-context";
+import { CommandPalette } from "@/components/command-palette/command-palette";
 
 export default async function AppLayout({
   children,
@@ -46,6 +48,7 @@ export default async function AppLayout({
   return (
     <ToastProvider>
     <ShortcutsProvider>
+    <CommandPaletteProvider>
     <div className="flex h-screen bg-background">
       <aside className="hidden md:flex w-[260px] bg-surface-container border-r border-outline-variant flex flex-col">
         <div className="p-6 border-b border-outline-variant">
@@ -142,9 +145,11 @@ export default async function AppLayout({
       </main>
     </div>
     <ShortcutsPanel />
+    <CommandPalette />
     {!user?.onboardingCompleted && (
       <OnboardingTour boardId={firstBoard?.id} />
     )}
+    </CommandPaletteProvider>
     </ShortcutsProvider>
     </ToastProvider>
   );
