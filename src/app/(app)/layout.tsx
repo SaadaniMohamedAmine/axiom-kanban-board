@@ -56,19 +56,31 @@ export default async function AppLayout({
               </Link>
               <div className="ml-6 mt-1 space-y-1">
                 {membership.workspace.boards.map((board) => (
-                  <Link
-                    key={board.id}
-                    href={`/${membership.workspace.slug}/boards/${board.id}`}
-                    className="flex items-center gap-2 px-3 py-1.5 text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
-                  >
-                    <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M4 11l2-2 2 2"></path>
-                      <path d="M4 19h16"></path>
-                      <path d="M4 5h16"></path>
-                      <path d="M4 12h16"></path>
-                    </svg>
-                    {board.name}
-                  </Link>
+                  <div key={board.id}>
+                    <Link
+                      href={`/${membership.workspace.slug}/boards/${board.id}`}
+                      className="flex items-center gap-2 px-3 py-1.5 text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
+                    >
+                      <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 11l2-2 2 2"></path>
+                        <path d="M4 19h16"></path>
+                        <path d="M4 5h16"></path>
+                        <path d="M4 12h16"></path>
+                      </svg>
+                      {board.name}
+                    </Link>
+                    <Link
+                      href={`/${membership.workspace.slug}/boards/${board.id}/analytics`}
+                      className="flex items-center gap-2 pl-7 pr-3 py-1 text-[12px] text-on-surface-variant/60 hover:text-on-surface-variant hover:bg-surface-container-high rounded transition-colors"
+                    >
+                      <svg fill="none" height="12" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="12">
+                        <line x1="18" x2="18" y1="20" y2="10" />
+                        <line x1="12" x2="12" y1="20" y2="4" />
+                        <line x1="6" x2="6" y1="20" y2="14" />
+                      </svg>
+                      Analytics
+                    </Link>
+                  </div>
                 ))}
               </div>
             </div>
