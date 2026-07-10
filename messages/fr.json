@@ -1,0 +1,101 @@
+{
+  "nav": {
+    "boards": "Tableaux",
+    "analytics": "Analytiques",
+    "settings": "Paramètres",
+    "notifications": "Notifications",
+    "developers": "Développeurs",
+    "aiQuota": "Quota IA",
+    "newBoard": "Nouveau tableau",
+    "newWorkspace": "Nouvel espace de travail"
+  },
+  "auth": {
+    "signIn": "Se connecter",
+    "signOut": "Se déconnecter",
+    "signUp": "Créer un compte",
+    "email": "Adresse email",
+    "password": "Mot de passe",
+    "name": "Nom complet",
+    "continueWithGoogle": "Continuer avec Google",
+    "alreadyHaveAccount": "Déjà un compte ?",
+    "noAccount": "Pas encore de compte ?"
+  },
+  "board": {
+    "addTask": "Ajouter une tâche",
+    "addColumn": "Ajouter une colonne",
+    "deleteBoard": "Supprimer le tableau",
+    "emptyColumn": "Aucune tâche dans cette colonne",
+    "taskCode": "Code",
+    "taskTitle": "Titre",
+    "taskPriority": "Priorité",
+    "taskEstimate": "Estimation",
+    "taskDueDate": "Échéance",
+    "priority": {
+      "URGENT": "Urgent",
+      "HIGH": "Haute",
+      "MEDIUM": "Moyenne",
+      "LOW": "Faible"
+    }
+  },
+  "ai": {
+    "name": "Axiom Intelligence",
+    "prioritize": "Analyser la priorité",
+    "estimate": "Estimer l'effort",
+    "describe": "Enrichir la description",
+    "detectBlocker": "Détecter les blocages",
+    "assign": "Suggérer un assigné",
+    "thinking": "Axiom Intelligence analyse...",
+    "quotaReached": "Le quota Axiom Intelligence pour aujourd'hui est atteint. Réinitialisation à minuit UTC.",
+    "suggestionApplied": "Suggestion appliquée",
+    "confidence": "Confiance"
+  },
+  "sprint": {
+    "active": "Sprint actif",
+    "planned": "Planifié",
+    "completed": "Terminé",
+    "startDate": "Début",
+    "endDate": "Fin",
+    "velocity": "Vélocité",
+    "burndown": "Burndown"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "general": "Général",
+    "members": "Membres",
+    "billing": "Facturation",
+    "developers": "Développeurs",
+    "notifications": "Notifications",
+    "language": "Langue",
+    "theme": "Thème",
+    "dangerZone": "Zone de danger",
+    "deleteWorkspace": "Supprimer l'espace de travail"
+  },
+  "billing": {
+    "currentPlan": "Plan actuel",
+    "upgrade": "Passer à Pro",
+    "manage": "Gérer l'abonnement",
+    "renewsOn": "Renouvellement le",
+    "freePlan": "Plan Gratuit",
+    "proPlan": "Plan Pro",
+    "teamPlan": "Plan Team",
+    "limitReached": "Vous avez atteint la limite du plan Gratuit. Passez à Pro pour continuer.",
+    "upgradeCta": "Voir les plans"
+  },
+  "errors": {
+    "generic": "Une erreur est survenue. Veuillez réessayer.",
+    "unauthorized": "Accès non autorisé.",
+    "notFound": "Page introuvable.",
+    "forbidden": "Vous n'avez pas les permissions nécessaires."
+  },
+  "actions": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "confirm": "Confirmer",
+    "back": "Retour",
+    "loading": "Chargement...",
+    "copy": "Copier",
+    "copied": "Copié",
+    "export": "Exporter"
+  }
+}

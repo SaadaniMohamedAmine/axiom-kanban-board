@@ -60,14 +60,47 @@ enum AIFeedback {
   NOT_USEFUL
 }
 
+// --- Phase E ---
+
+enum WorkspacePlan {
+  FREE
+  PRO
+  TEAM
+}
+
+enum AuditAction {
+  WORKSPACE_CREATED
+  WORKSPACE_RENAMED
+  WORKSPACE_DELETED
+  MEMBER_INVITED
+  MEMBER_JOINED
+  MEMBER_ROLE_CHANGED
+  MEMBER_REMOVED
+  BOARD_CREATED
+  BOARD_DELETED
+  TASK_DELETED
+  AUTH_LOGIN
+  AUTH_LOGIN_FAILED
+  AUTH_LOGOUT
+  API_KEY_CREATED
+  API_KEY_REVOKED
+  API_KEY_USED
+  AI_SUGGESTION_APPLIED
+  BILLING_UPGRADED
+  BILLING_DOWNGRADED
+  BILLING_CANCELLED
+}
+
 model User {
-  id            String    @id @default(cuid())
-  name          String
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id              String    @id @default(cuid())
+  name            String
+  email           String    @unique
+  emailVerified   Boolean   @default(false)
+  image           String?
+  locale          String    @default("fr")
+  emailPreferences Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   accounts    Account[]
   sessions    Session[]
@@ -130,28 +163,37 @@ model Verification {
 }
 
 model Workspace {
-  id        String   @id @default(cuid())
-  name      String
-  slug      String   @unique
-  ownerId   String
-  createdAt DateTime @default(now())
+  id                   String        @id @default(cuid())
+  name                 String
+  slug                 String        @unique
+  ownerId              String
+  plan                 WorkspacePlan @default(FREE)
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  planExpiresAt        DateTime?
+  aiRequestsToday      Int           @default(0)
+  aiRequestsResetAt    DateTime?
+  createdAt            DateTime      @default(now())
 
-  owner   User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
-  members WorkspaceMember[]
-  boards  Board[]
-  invitations Invitation[]
+  owner          User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  members        WorkspaceMember[]
+  boards         Board[]
+  invitations    Invitation[]
+  apiKeys        APIKey[]
+  webhookConfigs WebhookConfig[]
+  auditLogs      AuditLog[]
 
   @@index([ownerId])
   @@map("workspaces")
 }
 
 model WorkspaceMember {
-  id         String       @id @default(cuid())
+  id          String       @id @default(cuid())
   workspaceId String
-  userId     String
-  role       MemberRole   @default(MEMBER)
-  invitedAt  DateTime     @default(now())
-  joinedAt   DateTime?
+  userId      String
+  role        MemberRole   @default(MEMBER)
+  invitedAt   DateTime     @default(now())
+  joinedAt    DateTime?
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -305,8 +347,8 @@ model ActivityEvent {
   payload   Json
   createdAt DateTime     @default(now())
 
-  task   Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
-  actor  User @relation(fields: [actorId], references: [id], onDelete: Cascade)
+  task  Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Cascade)
 
   @@index([taskId])
   @@index([actorId])
@@ -356,4 +398,61 @@ model Notification {
 
   @@index([userId])
   @@map("notifications")
+}
+
+// --- Phase D (existing in DB) ---
+
+model APIKey {
+  id          String    @id @default(cuid())
+  workspaceId String
+  name        String
+  keyHash     String    @unique
+  prefix      String
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("api_keys")
+}
+
+model WebhookConfig {
+  id          String   @id @default(cuid())
+  workspaceId String
+  url         String
+  events      String[]
+  secret      String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("webhook_configs")
+}
+
+// --- Phase E ---
+
+model AuditLog {
+  id          String      @id @default(cuid())
+  workspaceId String
+  actorId     String?
+  actorEmail  String
+  action      AuditAction
+  targetType  String?
+  targetId    String?
+  targetLabel String?
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime    @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([workspaceId, createdAt])
+  @@index([actorId])
+  @@map("audit_logs")
 }

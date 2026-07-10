@@ -1,0 +1,101 @@
+{
+  "nav": {
+    "boards": "Boards",
+    "analytics": "Analytics",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "developers": "Developers",
+    "aiQuota": "AI Quota",
+    "newBoard": "New board",
+    "newWorkspace": "New workspace"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "signUp": "Create account",
+    "email": "Email address",
+    "password": "Password",
+    "name": "Full name",
+    "continueWithGoogle": "Continue with Google",
+    "alreadyHaveAccount": "Already have an account?",
+    "noAccount": "No account yet?"
+  },
+  "board": {
+    "addTask": "Add task",
+    "addColumn": "Add column",
+    "deleteBoard": "Delete board",
+    "emptyColumn": "No tasks in this column",
+    "taskCode": "Code",
+    "taskTitle": "Title",
+    "taskPriority": "Priority",
+    "taskEstimate": "Estimate",
+    "taskDueDate": "Due date",
+    "priority": {
+      "URGENT": "Urgent",
+      "HIGH": "High",
+      "MEDIUM": "Medium",
+      "LOW": "Low"
+    }
+  },
+  "ai": {
+    "name": "Axiom Intelligence",
+    "prioritize": "Analyze priority",
+    "estimate": "Estimate effort",
+    "describe": "Enrich description",
+    "detectBlocker": "Detect blockers",
+    "assign": "Suggest assignee",
+    "thinking": "Axiom Intelligence is analyzing...",
+    "quotaReached": "Axiom Intelligence quota reached for today. Resets at midnight UTC.",
+    "suggestionApplied": "Suggestion applied",
+    "confidence": "Confidence"
+  },
+  "sprint": {
+    "active": "Active sprint",
+    "planned": "Planned",
+    "completed": "Completed",
+    "startDate": "Start",
+    "endDate": "End",
+    "velocity": "Velocity",
+    "burndown": "Burndown"
+  },
+  "settings": {
+    "title": "Settings",
+    "general": "General",
+    "members": "Members",
+    "billing": "Billing",
+    "developers": "Developers",
+    "notifications": "Notifications",
+    "language": "Language",
+    "theme": "Theme",
+    "dangerZone": "Danger zone",
+    "deleteWorkspace": "Delete workspace"
+  },
+  "billing": {
+    "currentPlan": "Current plan",
+    "upgrade": "Upgrade to Pro",
+    "manage": "Manage subscription",
+    "renewsOn": "Renews on",
+    "freePlan": "Free plan",
+    "proPlan": "Pro plan",
+    "teamPlan": "Team plan",
+    "limitReached": "You've reached the Free plan limit. Upgrade to Pro to continue.",
+    "upgradeCta": "View plans"
+  },
+  "errors": {
+    "generic": "Something went wrong. Please try again.",
+    "unauthorized": "Unauthorized.",
+    "notFound": "Page not found.",
+    "forbidden": "You don't have permission to access this."
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "confirm": "Confirm",
+    "back": "Back",
+    "loading": "Loading...",
+    "copy": "Copy",
+    "copied": "Copied",
+    "export": "Export"
+  }
+}
