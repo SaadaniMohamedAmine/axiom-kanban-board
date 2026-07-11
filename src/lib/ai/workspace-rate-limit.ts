@@ -22,11 +22,11 @@ export async function checkWorkspaceQuota(
 
   const now = new Date();
 
+  // aiRequestsResetAt stores the *upcoming* reset instant (tomorrow midnight
+  // UTC), not the last reset date — so a reset is due once that instant has
+  // passed, not whenever its calendar date differs from today's.
   const shouldReset =
-    !workspace.aiRequestsResetAt ||
-    workspace.aiRequestsResetAt.getUTCDate() !== now.getUTCDate() ||
-    workspace.aiRequestsResetAt.getUTCMonth() !== now.getUTCMonth() ||
-    workspace.aiRequestsResetAt.getUTCFullYear() !== now.getUTCFullYear();
+    !workspace.aiRequestsResetAt || now >= workspace.aiRequestsResetAt;
 
   if (shouldReset) {
     const resetAt = new Date(

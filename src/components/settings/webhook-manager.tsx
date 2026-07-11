@@ -22,12 +22,14 @@ interface Props {
   workspaceId: string;
   workspaceSlug: string;
   webhooks: WebhookRecord[];
+  canManage: boolean;
 }
 
-export function WebhookManager({ workspaceId, webhooks }: Props) {
+export function WebhookManager({ workspaceId, webhooks, canManage }: Props) {
   const [url, setUrl] = useState("");
   const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
   const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
   function toggleEvent(eventId: string) {
@@ -38,17 +40,27 @@ export function WebhookManager({ workspaceId, webhooks }: Props) {
 
   function handleCreate() {
     if (!url || selectedEvents.length === 0) return;
+    setError(null);
     startTransition(async () => {
-      const { secret } = await createWebhook(workspaceId, { url, events: selectedEvents });
-      setRevealedSecret(secret);
-      setUrl("");
-      setSelectedEvents([]);
+      try {
+        const { secret } = await createWebhook(workspaceId, { url, events: selectedEvents });
+        setRevealedSecret(secret);
+        setUrl("");
+        setSelectedEvents([]);
+      } catch {
+        setError("Could not create the webhook. You may not have permission.");
+      }
     });
   }
 
   function handleDelete(webhookId: string) {
+    setError(null);
     startTransition(async () => {
-      await deleteWebhook(workspaceId, webhookId);
+      try {
+        await deleteWebhook(workspaceId, webhookId);
+      } catch {
+        setError("Could not delete the webhook. You may not have permission.");
+      }
     });
   }
 
@@ -58,6 +70,12 @@ export function WebhookManager({ workspaceId, webhooks }: Props) {
       <p className="text-[13px] text-on-surface-variant/70 mb-5">
         Receive HTTP POST requests when events happen. Payloads are signed with HMAC-SHA256.
       </p>
+
+      {error && (
+        <div className="mb-5 p-3 rounded-xl border border-red-500/30 bg-red-500/5 text-[13px] text-red-400">
+          {error}
+        </div>
+      )}
 
       {revealedSecret && (
         <div className="mb-5 p-4 rounded-xl border border-green-500/30 bg-green-500/5">
@@ -70,37 +88,43 @@ export function WebhookManager({ workspaceId, webhooks }: Props) {
         </div>
       )}
 
-      <div className="space-y-3 mb-5 p-4 rounded-xl border border-outline-variant/20 bg-surface-container">
-        <input
-          type="url"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://your-service.com/webhooks/axiom"
-          className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/30 bg-surface-container-high text-[13px] text-on-surface placeholder:text-on-surface-variant/40 outline-none focus:ring-1 focus:ring-primary/50"
-        />
-        <div className="flex flex-wrap gap-2">
-          {AVAILABLE_EVENTS.map((ev) => (
-            <button
-              key={ev.id}
-              onClick={() => toggleEvent(ev.id)}
-              className={`px-3 py-1.5 rounded-lg text-[12px] font-medium border transition-colors ${
-                selectedEvents.includes(ev.id)
-                  ? "bg-primary/15 text-primary border-primary/30"
-                  : "bg-surface-container-high text-on-surface-variant border-outline-variant/20"
-              }`}
-            >
-              {ev.label}
-            </button>
-          ))}
+      {canManage ? (
+        <div className="space-y-3 mb-5 p-4 rounded-xl border border-outline-variant/20 bg-surface-container">
+          <input
+            type="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            placeholder="https://your-service.com/webhooks/axiom"
+            className="w-full px-4 py-2.5 rounded-xl border border-outline-variant/30 bg-surface-container-high text-[13px] text-on-surface placeholder:text-on-surface-variant/40 outline-none focus:ring-1 focus:ring-primary/50"
+          />
+          <div className="flex flex-wrap gap-2">
+            {AVAILABLE_EVENTS.map((ev) => (
+              <button
+                key={ev.id}
+                onClick={() => toggleEvent(ev.id)}
+                className={`px-3 py-1.5 rounded-lg text-[12px] font-medium border transition-colors ${
+                  selectedEvents.includes(ev.id)
+                    ? "bg-primary/15 text-primary border-primary/30"
+                    : "bg-surface-container-high text-on-surface-variant border-outline-variant/20"
+                }`}
+              >
+                {ev.label}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={handleCreate}
+            disabled={!url || selectedEvents.length === 0 || isPending}
+            className="w-full py-2.5 bg-primary text-white rounded-xl text-[13px] font-medium hover:brightness-110 transition-all disabled:opacity-50"
+          >
+            Add Webhook
+          </button>
         </div>
-        <button
-          onClick={handleCreate}
-          disabled={!url || selectedEvents.length === 0 || isPending}
-          className="w-full py-2.5 bg-primary text-white rounded-xl text-[13px] font-medium hover:brightness-110 transition-all disabled:opacity-50"
-        >
-          Add Webhook
-        </button>
-      </div>
+      ) : (
+        <p className="text-[12px] text-on-surface-variant/50 mb-5">
+          Only workspace admins can add or remove webhooks.
+        </p>
+      )}
 
       {webhooks.length === 0 ? (
         <p className="text-[13px] text-on-surface-variant/50 text-center py-4">
@@ -126,13 +150,15 @@ export function WebhookManager({ workspaceId, webhooks }: Props) {
                   ))}
                 </div>
               </div>
-              <button
-                onClick={() => handleDelete(wh.id)}
-                disabled={isPending}
-                className="shrink-0 text-[12px] text-red-400 hover:text-red-300 transition-colors mt-0.5 disabled:opacity-50"
-              >
-                Delete
-              </button>
+              {canManage && (
+                <button
+                  onClick={() => handleDelete(wh.id)}
+                  disabled={isPending}
+                  className="shrink-0 text-[12px] text-red-400 hover:text-red-300 transition-colors mt-0.5 disabled:opacity-50"
+                >
+                  Delete
+                </button>
+              )}
             </div>
           ))}
         </div>

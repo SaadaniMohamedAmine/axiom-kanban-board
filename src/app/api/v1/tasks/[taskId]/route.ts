@@ -54,6 +54,19 @@ export async function PATCH(req: NextRequest, { params }: Props) {
     );
   }
 
+  if (parsed.data.columnId !== undefined) {
+    const column = await prisma.column.findFirst({
+      where: { id: parsed.data.columnId, boardId: task.boardId },
+      select: { id: true },
+    });
+    if (!column) {
+      return new Response(
+        JSON.stringify({ error: "not_found", message: "Column not found on this task's board." }),
+        { status: 404, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  }
+
   const updated = await prisma.task.update({
     where: { id: taskId },
     data: {

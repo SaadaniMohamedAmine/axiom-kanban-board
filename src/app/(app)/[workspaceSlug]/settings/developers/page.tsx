@@ -36,6 +36,12 @@ export default async function DevelopersPage({ params }: Props) {
 
   if (!workspace) redirect("/");
 
+  const currentMember = await prisma.workspaceMember.findUnique({
+    where: { workspaceId_userId: { workspaceId: workspace.id, userId: session.user.id } },
+    select: { role: true },
+  });
+  const canManage = currentMember?.role === "OWNER" || currentMember?.role === "ADMIN";
+
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-10">
       <div className="mb-8">
@@ -62,8 +68,8 @@ export default async function DevelopersPage({ params }: Props) {
         </span>
       </div>
 
-      <APIKeyManager workspaceId={workspace.id} workspaceSlug={workspaceSlug} apiKeys={workspace.apiKeys} />
-      <WebhookManager workspaceId={workspace.id} workspaceSlug={workspaceSlug} webhooks={workspace.webhookConfigs} />
+      <APIKeyManager workspaceId={workspace.id} workspaceSlug={workspaceSlug} apiKeys={workspace.apiKeys} canManage={canManage} />
+      <WebhookManager workspaceId={workspace.id} workspaceSlug={workspaceSlug} webhooks={workspace.webhookConfigs} canManage={canManage} />
     </div>
   );
 }
