@@ -4,7 +4,13 @@ import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
   dest: "public",
-  disable: process.env.NODE_ENV === "development",
+  // EMERGENCY: force-disabled — next-pwa's webpack/turbopack config
+  // patching breaks Vercel's serverless output file tracing, causing
+  // every DB-touching route to 500 with "Cannot find module
+  // '@prisma/client-runtime-utils'" in production. Re-enable once a
+  // tracing-safe next-pwa config (or alternative) is confirmed working
+  // on a preview deployment.
+  disable: true,
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
