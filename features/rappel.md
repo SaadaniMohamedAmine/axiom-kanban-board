@@ -31,7 +31,7 @@
 
 **Statut** : ⏭️ Reporté (pas bloquant)
 
-**Contexte** : Le projet Sentry `axiom-kanban-board` (org `mohamed-devs`) est créé, le DSN est configuré (`.env.local` en local, à ajouter dans Vercel → Environment Variables : `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`). La capture d'erreurs fonctionnera donc en prod dès que ces 4 vars seront ajoutées côté Vercel et le projet redéployé.
+**Contexte** : Le projet Sentry `axiom-kanban-board` (org `mohamed-devs`) est créé, le DSN est configuré. Les 4 vars (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`) sont déjà ajoutées dans `.env.local` **et** dans Vercel → Environment Variables (Production), via le CLI. La capture d'erreurs fonctionnera donc dès le prochain redéploiement.
 
 **Ce qui manque** : un **`SENTRY_AUTH_TOKEN`** (généré depuis Sentry → Settings → Auth Tokens) n'a pas été créé. Sans lui, `withSentryConfig` (dans `next.config.ts`) ne peut pas uploader automatiquement les source maps pendant le build CI.
 
@@ -41,5 +41,22 @@
 1. Sentry → Settings → Auth Tokens → générer un token avec les scopes `project:releases` et `org:read` minimum
 2. L'ajouter dans Vercel → Environment Variables sous `SENTRY_AUTH_TOKEN`
 3. Redéployer — les prochaines erreurs captées auront des stack traces lisibles (code source réel, pas minifié)
+
+---
+
+## Sentry — vérifier la capture d'erreur réelle en production
+
+**Statut** : ⏭️ À faire après le prochain déploiement
+
+**Contexte** : `sentry.client.config.ts` a `enabled: process.env.NODE_ENV === "production"` — donc **aucune erreur déclenchée en local (`pnpm dev`) ne remonte dans le dashboard Sentry**, même avec le DSN configuré. C'est voulu (évite de polluer le compte avec du bruit de dev). Le fallback `ErrorBoundary` a bien été validé visuellement en local (logo Axiom, "Something went wrong.", boutons Try again/Back to home, `Ref:` généré) — seule la transmission réelle vers Sentry reste à vérifier.
+
+**Bouton de test laissé en place volontairement** : `src/components/ui/test-error-button.tsx`, monté dans `src/app/(app)/[workspaceSlug]/page.tsx` (bouton rouge flottant "💥 Trigger error" en bas à droite). **Marqué TEMPORARY dans le code — à retirer après ce test.**
+
+**À faire** :
+1. Redéployer `axiom-kanban-board` en production (les 4 vars `SENTRY_*` sont déjà sur Vercel)
+2. Aller sur le site déployé, se connecter, cliquer sur "💥 Trigger error"
+3. Vérifier que le fallback `ErrorBoundary` s'affiche bien aussi en prod
+4. Aller sur `mohamed-devs.sentry.io` → Issues → confirmer qu'une nouvelle erreur "Test error — manual ErrorBoundary trigger" est apparue (généralement en quelques secondes)
+5. **Une fois confirmé** : supprimer `src/components/ui/test-error-button.tsx` et son import/usage dans `[workspaceSlug]/page.tsx`, puis redéployer une dernière fois
 
 ---
