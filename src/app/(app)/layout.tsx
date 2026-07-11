@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { SettingsLink } from "@/components/layout/settings-link";
+import { NotificationBell } from "@/components/layout/notification-bell";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ToastProvider } from "@/contexts/toast-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
@@ -44,7 +45,12 @@ export default async function AppLayout({
     select: { onboardingCompleted: true },
   });
 
+  const unreadNotificationCount = await prisma.notification.count({
+    where: { userId: session.user.id, readAt: null },
+  });
+
   const firstBoard = memberships[0]?.workspace?.boards?.[0];
+  const workspaceSlugs = memberships.map((m) => m.workspace.slug);
 
   return (
     <ToastProvider>
@@ -117,7 +123,7 @@ export default async function AppLayout({
         </nav>
         <div className="p-4 border-t border-outline-variant">
           <SettingsLink
-            workspaceSlugs={memberships.map((m) => m.workspace.slug)}
+            workspaceSlugs={workspaceSlugs}
             fallbackSlug={memberships[0]?.workspace.slug}
           />
         </div>
@@ -129,6 +135,11 @@ export default async function AppLayout({
         <header className="hidden md:flex h-16 bg-surface-container border-b border-outline-variant items-center px-6">
           <div className="flex-1" />
           <div className="flex items-center gap-3">
+            <NotificationBell
+              workspaceSlugs={workspaceSlugs}
+              fallbackSlug={memberships[0]?.workspace.slug}
+              unreadCount={unreadNotificationCount}
+            />
             <ThemeToggle />
             <span className="text-body-md text-on-surface-variant">
               {session.user.name}
