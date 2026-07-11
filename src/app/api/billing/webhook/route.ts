@@ -36,9 +36,11 @@ export async function POST(req: NextRequest) {
       if (!workspaceId || !session.subscription) break;
 
       const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
-      const priceId = subscription.items.data[0]?.price.id;
-      const plan = await getPlanFromPriceId(priceId);
-      const expiresAt = new Date(subscription.items.data[0].current_period_end * 1000);
+      const item = subscription.items.data[0];
+      if (!item) break;
+
+      const plan = await getPlanFromPriceId(item.price.id);
+      const expiresAt = new Date(item.current_period_end * 1000);
 
       await prisma.workspace.update({
         where: { id: workspaceId },
@@ -67,9 +69,11 @@ export async function POST(req: NextRequest) {
       const workspaceId = subscription.metadata?.workspaceId;
       if (!workspaceId) break;
 
-      const priceId = subscription.items.data[0]?.price.id;
-      const plan = await getPlanFromPriceId(priceId);
-      const expiresAt = new Date(subscription.items.data[0].current_period_end * 1000);
+      const item = subscription.items.data[0];
+      if (!item) break;
+
+      const plan = await getPlanFromPriceId(item.price.id);
+      const expiresAt = new Date(item.current_period_end * 1000);
 
       await prisma.workspace.update({
         where: { id: workspaceId },
