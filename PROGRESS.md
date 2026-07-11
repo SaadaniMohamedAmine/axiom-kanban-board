@@ -153,18 +153,10 @@
 ---
 
 ## Phase 8 — Polish & Deploy final (0%)
-*(le projet est déjà live sur Vercel depuis la Phase 2 — cette phase couvre la mise en prod finale, le polish, et la revue de lancement)*
+*(projets futurs / backlog)*
 
 ## Phase 9 — UX & Motion Design avancé (0%)
-- [ ] Audit heuristique UX complet (parcours bout en bout, friction points)
-- [ ] Micro-interactions avancées (hover, focus, états de chargement)
-- [ ] Transitions entre écrans/pages cohérentes (Framer Motion, courbes d'easing de marque)
-- [ ] Skeletons/loaders premium (jamais de spinner générique)
-- [ ] Feedback visuel sur actions clés (drag&drop, suggestion IA appliquée, sauvegarde)
-- [ ] Cohérence motion desktop ↔ mobile
-- [ ] Revue finale "feel" par un regard UX externe (ou check-list expert UX)
-
-**Phase 9 : 0/7 — 0%**
+*(projets futurs / backlog)*
 
 ## Phase 10 — Recruiter-Ready Packaging (0%)
 - [ ] README / case study : décisions techniques expliquées (pourquoi Better Auth, pourquoi Groq+Gemini, pourquoi tout-Next.js)

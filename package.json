@@ -8,10 +8,10 @@
     "start": "next start",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx --env-file=.env.local prisma/seed.ts"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "tsx --env-file=.env.local prisma/seed.ts"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
