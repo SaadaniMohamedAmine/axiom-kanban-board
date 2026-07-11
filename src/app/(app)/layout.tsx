@@ -4,11 +4,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
+import { getLocale } from "next-intl/server";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { SettingsLink } from "@/components/layout/settings-link";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { SignOutButton } from "@/components/layout/sign-out-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ToastProvider } from "@/contexts/toast-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
 import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
@@ -56,6 +58,8 @@ export default async function AppLayout({
   const unreadNotificationCount = await prisma.notification.count({
     where: { userId: session.user.id, readAt: null },
   });
+
+  const locale = (await getLocale()) as "fr" | "en";
 
   const firstBoard = memberships[0]?.workspace?.boards?.[0];
   const workspaceSlugs = memberships.map((m) => m.workspace.slug);
@@ -157,6 +161,7 @@ export default async function AppLayout({
               fallbackSlug={memberships[0]?.workspace.slug}
               unreadCount={unreadNotificationCount}
             />
+            <LocaleSwitcher currentLocale={locale} />
             <ThemeToggle />
             <span className="text-body-md text-on-surface-variant">
               {session.user.name}

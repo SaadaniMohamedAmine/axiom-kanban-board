@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 
-export function LandingPage() {
+interface Props {
+  currentLocale: "fr" | "en";
+}
+
+export function LandingPage({ currentLocale }: Props) {
   return (
     <div className="min-h-screen bg-background text-on-surface font-geist">
       {/* Nav */}
@@ -23,6 +28,7 @@ export function LandingPage() {
             <Link href="/roadmap" className="text-[13px] text-on-surface-variant hover:text-on-surface transition-colors hidden md:block">
               Roadmap
             </Link>
+            <LocaleSwitcher currentLocale={currentLocale} />
             <Link
               href="/login"
               className="text-[13px] text-on-surface-variant hover:text-on-surface transition-colors"

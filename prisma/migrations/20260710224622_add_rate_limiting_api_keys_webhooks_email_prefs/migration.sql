@@ -1,9 +1,9 @@
 -- AlterTable
-ALTER TABLE "users" ADD COLUMN "emailPreferences" JSONB;
+ALTER TABLE "users" ADD COLUMN     "emailPreferences" JSONB;
 
 -- AlterTable
-ALTER TABLE "workspaces" ADD COLUMN "aiRequestsResetAt" TIMESTAMP(3),
-ADD COLUMN "aiRequestsToday" INTEGER NOT NULL DEFAULT 0;
+ALTER TABLE "workspaces" ADD COLUMN     "aiRequestsResetAt" TIMESTAMP(3),
+ADD COLUMN     "aiRequestsToday" INTEGER NOT NULL DEFAULT 0;
 
 -- CreateTable
 CREATE TABLE "api_keys" (
