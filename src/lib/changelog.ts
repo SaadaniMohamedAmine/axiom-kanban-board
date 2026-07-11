@@ -36,5 +36,9 @@ export async function getAllChangelogEntries(): Promise<ChangelogEntry[]> {
     })
   );
 
-  return entries.sort((a, b) => (a.version > b.version ? -1 : 1));
+  // Numeric comparison so "10.0.0" doesn't sort before "9.0.0" the way
+  // plain string comparison would once versions reach double digits.
+  return entries.sort((a, b) =>
+    b.version.localeCompare(a.version, undefined, { numeric: true })
+  );
 }

@@ -15,6 +15,7 @@ import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
 import { OnboardingTour } from "@/components/onboarding/onboarding-tour";
 import { CommandPaletteProvider } from "@/contexts/command-palette-context";
 import { CommandPalette } from "@/components/command-palette/command-palette";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 export default async function AppLayout({
   children,
@@ -154,7 +155,9 @@ export default async function AppLayout({
             <SignOutButton />
           </div>
         </header>
-        <div className="flex-1 overflow-auto">{children}</div>
+        <div className="flex-1 overflow-auto">
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </div>
       </main>
     </div>
     <ShortcutsPanel />
