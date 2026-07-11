@@ -26,3 +26,20 @@
 - [ ] Données Speed Insights réelles → **non applicable ici**, remplacé par Lighthouse/PageSpeed en Phase 10
 
 ---
+
+## Sentry — Auth Token pour les source maps non configuré
+
+**Statut** : ⏭️ Reporté (pas bloquant)
+
+**Contexte** : Le projet Sentry `axiom-kanban-board` (org `mohamed-devs`) est créé, le DSN est configuré (`.env.local` en local, à ajouter dans Vercel → Environment Variables : `SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`). La capture d'erreurs fonctionnera donc en prod dès que ces 4 vars seront ajoutées côté Vercel et le projet redéployé.
+
+**Ce qui manque** : un **`SENTRY_AUTH_TOKEN`** (généré depuis Sentry → Settings → Auth Tokens) n'a pas été créé. Sans lui, `withSentryConfig` (dans `next.config.ts`) ne peut pas uploader automatiquement les source maps pendant le build CI.
+
+**Impact concret** : les erreurs remontent quand même dans Sentry en prod, mais les stack traces pointeront vers du **code JS minifié** (illisible) au lieu du code source TypeScript original — plus difficile à déboguer, mais pas bloquant pour que le monitoring fonctionne.
+
+**Pour finaliser plus tard** :
+1. Sentry → Settings → Auth Tokens → générer un token avec les scopes `project:releases` et `org:read` minimum
+2. L'ajouter dans Vercel → Environment Variables sous `SENTRY_AUTH_TOKEN`
+3. Redéployer — les prochaines erreurs captées auront des stack traces lisibles (code source réel, pas minifié)
+
+---
