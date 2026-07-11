@@ -144,17 +144,57 @@ Toutes les entrées utilisent `new Date()` au moment du build plutôt que la vra
 
 ---
 
-## Phase D — PWA (Feature 020) à re-vérifier sur le déploiement Vercel (HTTPS)
+## Phase D — Incident production post-merge (2026-07-11) : 500 sur tout le site, root cause + fix
 
-**Statut** : ✅ US PWA considérée validée (implémentation + build + code review OK) — vérification manuelle sur prod HTTPS à faire au prochain déploiement
+**Statut** : ✅ Résolu et en prod — mais 2 changements faits pendant l'incident restent en place et méritent un nettoyage propre (voir tâches ci-dessous)
 
-**Contexte** : Le service worker (`next-pwa`) est désactivé en développement (`disable: process.env.NODE_ENV === "development"` dans `next.config.ts`), donc rien de tout ça n'est testable sur `localhost`. Il faut impérativement tester sur le déploiement Vercel une fois en ligne.
+**Ce qui s'est passé** : juste après le merge de la PR #10 (Phase D) vers `main`, **le site entier est tombé en panne** (`GET /` et toute route touchant la DB → `500 Internal Server Error`, y compris `/api/v1/boards`). Le build Vercel réussissait ("● Ready"), donc rien ne le laissait voir avant de tester en vrai sur `axiom-kanban-board.vercel.app`.
 
-**À tester sur `https://axiom-kanban-board.vercel.app`** :
-1. Va sur le déploiement Vercel en HTTPS (pas localhost — le service worker est désactivé en dev)
-2. Chrome DevTools → onglet **Application** → **Manifest** : vérifie que `name`, `icons` (192/512), `theme_color` (`#0f131d`) s'affichent correctement
-3. Chrome DevTools → **Lighthouse** → coche "Progressive Web App" → Analyze : doit être vert
-4. Sur mobile (ou Chrome DevTools device emulation) : menu ⋮ → doit proposer "Add to Home Screen" / "Install app"
-5. Coupe le réseau (DevTools → Network → Offline) et recharge → doit afficher la page `/offline` avec le bouton "Try again"
+**Cause racine réelle** (confirmée) : dans `prisma/schema.prisma`, le bloc generator avait :
+```prisma
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"   // ← la ligne fautive
+}
+```
+Ce `output` custom existait depuis la Phase 2 (commit `8c83039`, tout début du projet) et n'avait jamais posé problème — parce qu'aucune route touchant vraiment Prisma en prod n'avait été exercée par un vrai utilisateur/test depuis. Il force Prisma à générer les fichiers du client **en dehors** de la structure gérée par pnpm (le "virtual store" `.pnpm/`). Résultat : le fichier généré `node_modules/.prisma/client/runtime/client.js` fait `require("@prisma/client-runtime-utils")` (une sous-dépendance interne de Prisma 7), mais Node ne peut plus la résoudre car elle n'est symlinkée QUE dans l'emplacement pnpm géré normalement (`node_modules/.pnpm/@prisma+client@.../node_modules/@prisma/client-runtime-utils`), pas dans l'emplacement custom. **Reproduit même en local** (`node -e "require('@prisma/client')"` plantait aussi sur la machine de dev, pas juste sur Vercel).
+
+**Le vrai fix** : supprimer la ligne `output` du generator, pour laisser Prisma générer au bon endroit (géré par pnpm, avec tous les sibling-packages correctement résolus). Un seul commit, une seule ligne supprimée (`b047fd5`).
+
+**3 fausses pistes explorées avant de trouver la vraie cause** (dans l'ordre, chacune testée et écartée) :
+1. `outputFileTracingIncludes` dans `next.config.ts` pour forcer Vercel à inclure les fichiers manquants — n'a rien changé (Turbopack ignore cette option, elle est faite pour Webpack)
+2. Désactiver `next-pwa` (soupçon que son patch webpack cassait le tracing Vercel) — testé, l'erreur persistait à l'identique
+3. Forcer `next build --webpack` au lieu de Turbopack (Next 16 utilise Turbopack par défaut pour `next build`, qui **saute complètement** l'étape "Collecting build traces") — a bien changé la signature de l'erreur (confirmé que Webpack tournait) mais **n'a pas résolu le vrai problème** (bug de résolution pnpm, indépendant du bundler). A aussi révélé un problème annexe : la route `/og/image` (edge runtime) dépassait la limite de 1MB des Edge Functions Vercel une fois buildée en Webpack → basculée en `runtime = "nodejs"` (fix légitime, à garder).
+
+**Deux changements "de guerre" à nettoyer proprement plus tard** (pas urgents, le site tourne bien comme ça) :
+
+1. **`package.json` — `"build": "prisma generate && next build --webpack"`** : forcé en Webpack pendant l'incident (fausse piste, mais fonctionne). À rebasculer sur Turbopack (juste `next build`, sans `--webpack`) dans un commit séparé, tester que le build + une route Prisma marchent toujours (maintenant que le vrai fix est en place, ça devrait être le cas), et déployer en preview d'abord pour vérifier avant de toucher `main`.
+
+2. **`next.config.ts` — next-pwa `disable: true` en dur** : désactivé pendant l'incident par excès de prudence (fausse piste, mais actuellement ça bloque une vraie feature — voir section suivante).
+
+---
+
+## Phase D — PWA (Feature 020) désactivée en prod suite à l'incident, à réactiver proprement
+
+**Statut** : ⏭️ À faire — feature actuellement non-fonctionnelle en prod (pas supprimée, juste désactivée)
+
+**C'est quoi cette feature, concrètement** : la PWA (Progressive Web App) permet à Axiom de se comporter comme une vraie app installable :
+- **Installation / "Add to Home Screen"** : sur mobile (et desktop Chrome), le navigateur propose d'installer Axiom comme une app avec icône sur l'écran d'accueil, ouverture en plein écran sans barre d'adresse — comme une app native.
+- **Mode offline** : un service worker met les pages visitées en cache ; en cas de perte de connexion, au lieu de l'écran d'erreur navigateur générique, l'utilisateur voit la page `/offline` on-brand ("You are offline. Try again") avec bouton de reconnexion.
+- **Manifest** : nom de l'app, icônes 192px/512px, couleur de thème (`#0f131d`), raccourci direct "New Board" accessible en long-press sur l'icône de l'app.
+
+**Pourquoi c'est cassé actuellement** : dans `next.config.ts`, la config `next-pwa` a `disable: true` en dur (mis pendant l'incident du 2026-07-11 par excès de prudence — ce n'était PAS la vraie cause du bug de prod, voir section précédente). Résultat : le manifest, les icônes et la page `/offline` répondent tous correctement en HTTP (200), mais le **service worker ne s'enregistre jamais**, donc aucune des 3 fonctionnalités ci-dessus ne marche réellement — pas d'installation proposée, pas de cache offline actif.
+
+**Pour réactiver (étapes précises, à faire dans cet ordre)** :
+1. Dans `next.config.ts`, remplacer `disable: true` par `disable: process.env.NODE_ENV === "development"` (comportement original : actif en prod, désactivé en dev/local)
+2. `pnpm build` en local pour confirmer que ça compile toujours sans erreur
+3. **Déployer en Preview d'abord** (`vercel deploy`, PAS `vercel deploy --prod` ni push direct sur `main`) — leçon apprise de l'incident : toujours valider un changement risqué sur une preview avant de toucher la prod
+4. Sur l'URL preview (⚠️ protégée par le SSO Vercel — utiliser soit un token de bypass automation, soit se connecter au compte Vercel dans le navigateur pour passer le mur SSO avant de tester)
+5. Suivre le scénario de test complet (déjà écrit, toujours valable) :
+   - Chrome DevTools → onglet **Application** → **Manifest** : vérifier que `name`, `icons` (192/512), `theme_color` (`#0f131d`) s'affichent correctement
+   - Chrome DevTools → **Lighthouse** → cocher "Progressive Web App" → Analyze : doit être vert
+   - Sur mobile (ou Chrome DevTools device emulation) : menu ⋮ → doit proposer "Add to Home Screen" / "Install app"
+   - Couper le réseau (DevTools → Network → Offline) et recharger → doit afficher la page `/offline` avec le bouton "Try again"
+6. Si tout est vert sur la preview → merger/déployer en production, puis refaire le même test rapide sur `https://axiom-kanban-board.vercel.app` pour confirmer
 
 ---
