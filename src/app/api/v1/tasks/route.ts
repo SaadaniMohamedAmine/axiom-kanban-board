@@ -3,6 +3,7 @@ import { requireAPIKey } from "@/lib/api/require-api-key";
 import { prisma } from "@/lib/prisma";
 import { z } from "zod";
 import { dispatchWebhooks } from "@/lib/api/webhook";
+import { generateTaskCode } from "@/lib/task-code";
 
 const createTaskSchema = z.object({
   boardId: z.string().cuid(),
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
 
   const board = await prisma.board.findFirst({
     where: { id: boardId, workspaceId },
-    select: { id: true, taskCounter: true },
+    select: { id: true },
   });
   if (!board) {
     return new Response(
@@ -61,12 +62,8 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const [updatedBoard, maxOrder] = await Promise.all([
-    prisma.board.update({
-      where: { id: boardId },
-      data: { taskCounter: { increment: 1 } },
-      select: { taskCounter: true },
-    }),
+  const [code, maxOrder] = await Promise.all([
+    generateTaskCode(boardId),
     prisma.task.aggregate({ where: { columnId }, _max: { order: true } }),
   ]);
 
@@ -78,7 +75,7 @@ export async function POST(req: NextRequest) {
       description,
       priority,
       estimate,
-      code: `AX-${updatedBoard.taskCounter}`,
+      code,
       order: (maxOrder._max.order ?? 0) + 1,
     },
   });
