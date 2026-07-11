@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import * as Sentry from "@sentry/nextjs";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { SettingsLink } from "@/components/layout/settings-link";
 import { NotificationBell } from "@/components/layout/notification-bell";
@@ -14,6 +15,7 @@ import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
 import { OnboardingTour } from "@/components/onboarding/onboarding-tour";
 import { CommandPaletteProvider } from "@/contexts/command-palette-context";
 import { CommandPalette } from "@/components/command-palette/command-palette";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 export default async function AppLayout({
   children,
@@ -27,6 +29,11 @@ export default async function AppLayout({
   if (!session) {
     redirect("/login");
   }
+
+  Sentry.setUser({
+    id: session.user.id,
+    email: session.user.email,
+  });
 
   const memberships = await prisma.workspaceMember.findMany({
     where: { userId: session.user.id },
@@ -148,7 +155,9 @@ export default async function AppLayout({
             <SignOutButton />
           </div>
         </header>
-        <div className="flex-1 overflow-auto">{children}</div>
+        <div className="flex-1 overflow-auto">
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </div>
       </main>
     </div>
     <ShortcutsPanel />

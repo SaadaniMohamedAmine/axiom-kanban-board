@@ -73,3 +73,42 @@ body {
   border: none !important;
 }
 .driver-overlay { background: rgba(0,0,0,0.6) !important; }
+
+.prose-axiom h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--on-surface);
+  margin: 20px 0 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--outline-variant);
+}
+.prose-axiom h2:first-child {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+.prose-axiom ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.prose-axiom ul li {
+  font-size: 14px;
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+  padding-left: 16px;
+  position: relative;
+}
+.prose-axiom ul li::before {
+  content: "\2014";
+  position: absolute;
+  left: 0;
+  color: var(--outline);
+}
+.prose-axiom strong {
+  color: var(--on-surface);
+  font-weight: 600;
+}
