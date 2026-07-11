@@ -67,7 +67,12 @@
 
 **Contexte** : la Feature 019 (SEO & Landing) est complète et validée (US1 — metadata, OG, robots.txt, sitemap.xml tous testés OK). Mais en creusant, il y a des marges d'amélioration réelles pour un SEO "parfait", du plus critique au plus cosmétique.
 
-### 🔴 1. CRITIQUE — `NEXT_PUBLIC_APP_URL` absente de Vercel + mauvais domaine en fallback
+### ✅ 1. RÉSOLU (Phase D) — `NEXT_PUBLIC_APP_URL` absente de Vercel + mauvais domaine en fallback
+
+**Statut** : ✅ Corrigé pendant Phase D (2026-07-11) — `NEXT_PUBLIC_APP_URL=https://axiom-kanban-board.vercel.app` ajoutée dans Vercel → Environment Variables (Production) via CLI. Le fallback codé en dur dans le code n'a pas été changé (reste `axiom-kanban.vercel.app`), donc si jamais cette var Vercel est supprimée par erreur, le bug reviendrait — envisager de corriger le fallback en dur un jour pour être robuste.
+
+<details>
+<summary>Détail original du bug (pour référence)</summary>
 
 **Découvert en vérifiant l'US1** : `NEXT_PUBLIC_APP_URL` n'est **pas définie** dans les Environment Variables Vercel (confirmé via `vercel env ls production`). Le code retombe donc sur le fallback codé en dur dans `src/app/layout.tsx`, `robots.ts` et `sitemap.ts` :
 ```ts
@@ -83,6 +88,8 @@ Or le vrai domaine stable du projet (confirmé via `vercel inspect`) est **`http
 - Soit corriger le fallback codé en dur dans les 3 fichiers pour qu'il soit juste par défaut
 
 **Recommandé** : faire les deux — corriger le fallback ET définir la vraie variable, pour être robuste même si le domaine custom change plus tard.
+
+</details>
 
 ### 🟠 2. Favicon / icônes manquants
 
@@ -118,5 +125,36 @@ Aucune page ne définit `alternates: { canonical: ... }` dans son `metadata`. Pa
 Toutes les entrées utilisent `new Date()` au moment du build plutôt que la vraie date de dernière modification. Pour `/changelog`, la date du fichier `.md` le plus récent (déjà disponible via `data.date` dans `getAllChangelogEntries()`) serait plus juste.
 
 **Priorité globale** : traiter le point 🔴 1 en premier (impact réel en prod dès aujourd'hui), le reste peut attendre la Phase 10 (Recruiter-Ready Packaging).
+
+---
+
+## Phase D — Emails transactionnels (Feature 024) pas encore testés en bout-en-bout
+
+**Statut** : ⏭️ À faire avant de merger la PR Phase D
+
+**Contexte** : `RESEND_API_KEY` et `RESEND_FROM` sont configurées sur Vercel (Production) depuis le 2026-07-11, avec l'adresse d'expédition sandbox `onboarding@resend.dev` (pas de domaine personnalisé vérifié — le projet tourne sur `axiom-kanban-board.vercel.app`, qui n'est pas vérifiable comme domaine d'envoi Resend). Le reste de Phase D (Rate Limiting, PWA, Webhooks/API) a été testé/validé en priorité, les emails ont été **volontairement reportés** car le compte Resend gratuit/sandbox limite l'envoi (quota bas, de l'ordre de quelques emails/heure).
+
+**À tester avant merge** :
+1. Email d'invitation (`inviteMember` → `sendInvitationEmail`) : inviter un membre depuis Settings → Members, vérifier réception + rendu du template `invitation.tsx`
+2. Email de bienvenue (`sendWelcomeEmail`) : créer un nouveau compte via `/sign-up` (email/password), vérifier réception + rendu du template `welcome.tsx` — la route `/api/auth/signup-hook` a été re-câblée pendant la review (elle ne l'était pas dans l'implémentation initiale), donc ce test valide aussi ce fix
+3. Vérifier dans le dashboard Resend (resend.com/logs) que les envois apparaissent bien, sans erreur
+4. Confirmer que le lien de désinscription et les liens dans les emails pointent vers la bonne URL (`https://axiom-kanban-board.vercel.app`, plus l'ancien domaine cassé)
+
+**Note** : `sendTaskAssignedEmail` (template `task-assigned.tsx`) existe mais n'est câblé nulle part dans le code — hors scope des tâches originales de Phase D. Pas la peine de le tester, il ne se déclenche jamais actuellement.
+
+---
+
+## Phase D — PWA (Feature 020) à re-vérifier sur le déploiement Vercel (HTTPS)
+
+**Statut** : ✅ US PWA considérée validée (implémentation + build + code review OK) — vérification manuelle sur prod HTTPS à faire au prochain déploiement
+
+**Contexte** : Le service worker (`next-pwa`) est désactivé en développement (`disable: process.env.NODE_ENV === "development"` dans `next.config.ts`), donc rien de tout ça n'est testable sur `localhost`. Il faut impérativement tester sur le déploiement Vercel une fois en ligne.
+
+**À tester sur `https://axiom-kanban-board.vercel.app`** :
+1. Va sur le déploiement Vercel en HTTPS (pas localhost — le service worker est désactivé en dev)
+2. Chrome DevTools → onglet **Application** → **Manifest** : vérifie que `name`, `icons` (192/512), `theme_color` (`#0f131d`) s'affichent correctement
+3. Chrome DevTools → **Lighthouse** → coche "Progressive Web App" → Analyze : doit être vert
+4. Sur mobile (ou Chrome DevTools device emulation) : menu ⋮ → doit proposer "Add to Home Screen" / "Install app"
+5. Coupe le réseau (DevTools → Network → Offline) et recharge → doit afficher la page `/offline` avec le bouton "Try again"
 
 ---

@@ -19,6 +19,7 @@ export default async function SettingsPage({ params }: Props) {
       slug: workspaceSlug,
       members: { some: { userId: session.user.id } },
     },
+    select: { id: true, name: true },
   });
 
   if (!workspace) redirect("/");
@@ -28,6 +29,8 @@ export default async function SettingsPage({ params }: Props) {
     { label: "Members", href: `/${workspaceSlug}/settings/members`, description: "Invite and manage team members" },
     { label: "Workspace", href: `/${workspaceSlug}/settings/workspace`, description: "Name, slug, preferences" },
     { label: "Notifications", href: `/${workspaceSlug}/notifications`, description: "Notification center and preferences" },
+    { label: "AI Quota", href: `/${workspaceSlug}/settings/ai-quota`, description: "Daily Axiom Intelligence usage and limits" },
+    { label: "Developers", href: `/${workspaceSlug}/settings/developers`, description: "API keys and webhook integrations" },
   ];
 
   return (

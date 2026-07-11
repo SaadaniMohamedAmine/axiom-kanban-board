@@ -47,6 +47,12 @@ export const metadata: Metadata = {
     images: ["/og/image"],
     creator: "@axiomapp",
   },
+  other: {
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "apple-mobile-web-app-title": "Axiom",
+  },
 };
 
 export default function RootLayout({
@@ -56,6 +62,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <meta name="theme-color" content="#0f131d" />
+      </head>
       <body suppressHydrationWarning>
         <ThemeProvider
           attribute="data-theme"

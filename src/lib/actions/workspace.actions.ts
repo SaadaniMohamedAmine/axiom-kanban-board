@@ -17,6 +17,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { sendInvitationEmail } from "../email/send";
 
 function generateSlug(name: string): string {
   return name
@@ -93,6 +94,9 @@ export async function inviteMember(input: InviteMemberInput) {
   const validated = inviteMemberSchema.parse(input);
   const { workspaceId, email, role } = validated;
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Not authenticated");
+
   await requireRole(workspaceId, "ADMIN");
 
   const existingMember = await prisma.workspaceMember.findFirst({
@@ -123,6 +127,13 @@ export async function inviteMember(input: InviteMemberInput) {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
 
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { name: true },
+  });
+
+  if (!workspace) throw new Error("Workspace not found");
+
   await prisma.invitation.create({
     data: {
       workspaceId,
@@ -133,6 +144,15 @@ export async function inviteMember(input: InviteMemberInput) {
       expiresAt,
     },
   });
+
+  void sendInvitationEmail({
+    to: email,
+    workspaceName: workspace.name,
+    inviterName: session.user.name,
+    role: role,
+    inviteToken: token,
+    expiresInDays: 7,
+  }).catch(() => {});
 
   revalidatePath(`/[workspaceSlug]/settings/members`, "page");
   return { success: true };

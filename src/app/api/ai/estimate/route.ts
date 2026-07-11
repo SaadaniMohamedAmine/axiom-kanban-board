@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { checkRateLimit } from "@/lib/ai/rate-limit";
+import { checkWorkspaceQuota, incrementWorkspaceQuota } from "@/lib/ai/workspace-rate-limit";
 import { streamCompletion } from "@/lib/ai/client";
 import { PROMPTS } from "@/lib/ai/prompts";
 import { estimateInputSchema } from "@/lib/validations/ai.schema";
@@ -13,11 +13,6 @@ export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
 
-  const rateLimit = checkRateLimit(session.user.id);
-  if (!rateLimit.allowed) {
-    return new Response(JSON.stringify({ error: "Axiom Intelligence daily limit reached.", resetAt: rateLimit.resetAt }), { status: 429 });
-  }
-
   const body = await req.json().catch(() => null);
   const parsed = estimateInputSchema.safeParse(body);
   if (!parsed.success) return new Response(JSON.stringify({ error: "Invalid input" }), { status: 400 });
@@ -26,30 +21,44 @@ export async function POST(req: NextRequest) {
 
   const task = await prisma.task.findFirst({
     where: { id: taskId, board: { workspace: { members: { some: { userId: session.user.id } } } } },
+    include: { board: { select: { workspaceId: true } } },
   });
   if (!task) return new Response(JSON.stringify({ error: "Task not found" }), { status: 404 });
+
+  const quota = await checkWorkspaceQuota(task.board.workspaceId);
+  if (!quota.allowed) {
+    return new Response(
+      JSON.stringify({
+        error: "quota_exceeded",
+        message: "Axiom Intelligence quota reached for today. Resets at midnight UTC.",
+        resetAt: quota.resetAt.toISOString(),
+        used: quota.used,
+        limit: quota.limit,
+      }),
+      { status: 429, headers: { "Content-Type": "application/json" } }
+    );
+  }
 
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder();
       try {
         const prompt = PROMPTS.estimate(title, description, similarTasks);
-        const fullOutput = await streamCompletion(prompt, (chunk) => {
+        await streamCompletion(prompt, (chunk) => {
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text: chunk })}\n\n`));
         });
-
-        const estimateMatch = fullOutput.match(/\b(1|2|3|5|8|13|21)\b/);
-        const estimate = estimateMatch ? parseInt(estimateMatch[1]) : 3;
 
         const log = await prisma.aILog.create({
           data: {
             taskId,
             type: "ESTIMATE",
             input: { title, description, similarTasks },
-            output: { reasoning: fullOutput, result: estimate },
+            output: { reasoning: "", result: "" },
             confidence: 0.75,
           },
         });
+
+        await incrementWorkspaceQuota(task.board.workspaceId);
 
         controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true, logId: log.id })}\n\n`));
       } catch {

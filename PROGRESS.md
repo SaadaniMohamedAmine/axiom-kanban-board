@@ -158,6 +158,28 @@
 
 ---
 
+## Phase D — Rate Limiting, PWA, Webhooks & API, Emails — ✅ COMPLETE (100%)
+
+- [x] Packages installés : resend, @react-email/components, @react-email/render, @ducanh2912/next-pwa
+- [x] Migration Prisma : `aiRequestsToday`/`aiRequestsResetAt` sur Workspace, models `APIKey`/`WebhookConfig`, `emailPreferences` sur User
+- [x] **Feature 018 — Rate Limiting Dashboard** : quota IA journalier par workspace (DB-backed), 5 endpoints IA branchés, page Settings → AI Quota avec barre de progression
+- [x] **Feature 020 — PWA** : manifest.ts, icônes 192/512, `next-pwa` intégré à `next.config.ts` (chaîné avec Sentry), page offline, meta theme-color/apple-touch-icon
+- [x] **Feature 017 — Webhooks & API publique** : API Keys (génération/hash/révocation), 4 routes `/api/v1/*` (boards, tasks CRUD), dispatch webhooks HMAC-SHA256, page Settings → Developers, doc publique `/docs/api`
+- [x] **Feature 024 — Emails transactionnels** : client Resend, 3 templates (invitation, welcome, task-assigned), envoi invitation + welcome câblés, page unsubscribe
+- [x] `pnpm lint` : 0 errors — `pnpm type-check` : 0 errors — `pnpm build` : vert
+- [x] Merge de `main` dans la branche : conflits résolus proprement (`next.config.ts`, `package.json`/`pnpm-lock.yaml`, `settings/page.tsx` fusionné en 6 sections, `layout.tsx` metadata SEO + PWA meta, `.env.example`)
+- [x] Code review manuelle (CodeRabbit exclu à la demande) : **1 bug critique** — le rate limiter se réinitialisait à chaque requête (comparaison de date sur le timestamp *futur* du reset au lieu de `now >= resetAt`), rendant le quota inopérant — + 4 bugs additionnels : `resend.ts` plantait `next build` si `RESEND_API_KEY` absent (cause du déploiement Vercel cassé), page offline sans `"use client"`, welcome email jamais déclenché (signup-hook non câblé), `PATCH /api/v1/tasks/:id` acceptait un `columnId` cross-board sans validation, page Developers accessible en écriture silencieusement pour les non-admins
+- [x] Bug additionnel trouvé en testant US3 : code de tâche non zero-paddé côté API (`AX-2` vs `AX-0001` côté UI) — route re-branchée sur le helper partagé `generateTaskCode()`
+- [x] Vars Vercel (Production) ajoutées via CLI : `RESEND_API_KEY`, `RESEND_FROM` (sandbox `onboarding@resend.dev`), `NEXT_PUBLIC_APP_URL` (corrige au passage le bug de domaine tracké depuis Phase C)
+- [x] US1 (Rate Limiting) validée manuellement de bout en bout : quota affiché, incrémente correctement (0→1→...), ne se réinitialise plus à chaque requête
+- [x] US3 (Webhooks & API) validée manuellement de bout en bout : génération/révocation clé API, GET/POST/PATCH `/api/v1/*`, webhook livré <1s avec signature HMAC vérifiée bit-à-bit, `/docs/api` public
+- [x] US2 (PWA) et emails (invitation/welcome) reportés à après déploiement Vercel HTTPS — trackés avec procédure de test détaillée dans `features/rappel.md`
+- [x] PR #10 ouverte, mergeable (plus de conflits) — merge vers `main` imminent
+
+**Phase D : 33/33 — 100% — ✅ CLÔTURÉE**
+
+---
+
 ## Phase 8 — Polish & Deploy final (0%)
 *(projets futurs / backlog)*
 
@@ -176,6 +198,6 @@
 
 ---
 
-**Progression globale du projet : 96/~116 tâches estimées — ~83%** *(Phases 0-7 + Phase B + Phase C clôturées et mergées vers `main`, reste Phases 8-10)*
+**Progression globale du projet : 129/~149 tâches estimées — ~87%** *(Phases 0-7 + Phase B + Phase C + Phase D clôturées, reste Phases 8-10 — Phase D pas encore mergée vers `main`, PR #10 ouverte et mergeable)*
 
-> Points de suivi post-clôture (non-bloquants, trackés dans `features/rappel.md`) : Vercel Speed Insights non activé (limite plan Hobby), Sentry Auth Token pour source maps non généré, vérification de la capture d'erreur Sentry en production à faire après déploiement, backlog SEO (6 pistes, dont la correction prioritaire de `NEXT_PUBLIC_APP_URL` absente de Vercel).
+> Points de suivi post-clôture (non-bloquants, trackés dans `features/rappel.md`) : Vercel Speed Insights non activé (limite plan Hobby), Sentry Auth Token pour source maps non généré, vérification de la capture d'erreur Sentry en production à faire après déploiement, backlog SEO restant (5 pistes — le bug prioritaire `NEXT_PUBLIC_APP_URL` a été corrigé pendant Phase D), PWA à valider sur le déploiement Vercel HTTPS (Feature 020), emails d'invitation/bienvenue à tester en bout-en-bout (Feature 024, quota Resend sandbox).
