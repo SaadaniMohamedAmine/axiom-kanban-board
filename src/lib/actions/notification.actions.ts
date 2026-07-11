@@ -9,7 +9,7 @@ export async function markNotificationRead(notificationId: string) {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new Error("Unauthorized");
 
-  await prisma.notification.update({
+  await prisma.notification.updateMany({
     where: {
       id: notificationId,
       userId: session.user.id,
