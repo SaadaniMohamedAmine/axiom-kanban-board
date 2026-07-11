@@ -132,8 +132,10 @@
 - [x] CSS override driver.js dans globals.css
 - [x] `pnpm lint` : 0 errors
 - [x] `pnpm type-check` : 0 errors
+- [x] Code review manuelle : 3 fixes (dépendances next-themes/driver.js/clsx/tailwind-merge manquantes, ThemeProvider non câblé, IDOR sur markNotificationRead)
+- [x] Mergée vers `main` via PR #8
 
-**Phase B : 33/33 — 100%**
+**Phase B : 33/33 — 100% — ✅ CLÔTURÉE**
 
 ---
 
@@ -147,8 +149,12 @@
 - [x] **Feature 015 — Public Roadmap** : config statique Now/Next/Later, page publique 3 colonnes avec badges de statut
 - [x] `pnpm lint` : 0 errors
 - [x] `pnpm type-check` : 0 errors
+- [x] Branche rebasée sur `main` (elle avait divergé avant 16 commits de Phase B) et conflits résolus proprement (`layout.tsx`, `globals.css`, `package.json`, `PROGRESS.md`) sans casser la logique `ThemeToggle` binaire de Phase B
+- [x] Code review manuelle (CodeRabbit indisponible) : 6 bugs trouvés et corrigés — `ErrorBoundary` jamais montée nulle part, tri du changelog non-numérique, statut "Command Palette" obsolète sur le roadmap public, route `/og/image` cassée (metadata pointait vers un chemin inexistant), vars Sentry/APP_URL absentes de `.env.example`, layout `(marketing)` orphelin supprimé
+- [x] 4 User Stories validées manuellement de bout en bout : US1 (landing, SEO metadata, OG image, robots.txt, sitemap.xml), US2 (changelog + roadmap), US3 (Vercel Analytics confirmé actif), US4 (Sentry configuré + fallback `ErrorBoundary` validé visuellement)
+- [x] Mergée vers `main` via PR #9
 
-**Phase C : 23/23 — 100%**
+**Phase C : 23/23 — 100% — ✅ CLÔTURÉE**
 
 ---
 
@@ -170,4 +176,6 @@
 
 ---
 
-**Progression globale du projet : 96/~116 tâches estimées — ~83%** *(Phases 0-7 + Phase B + Phase C complétées, reste Phases 8-10)*
+**Progression globale du projet : 96/~116 tâches estimées — ~83%** *(Phases 0-7 + Phase B + Phase C clôturées et mergées vers `main`, reste Phases 8-10)*
+
+> Points de suivi post-clôture (non-bloquants, trackés dans `features/rappel.md`) : Vercel Speed Insights non activé (limite plan Hobby), Sentry Auth Token pour source maps non généré, vérification de la capture d'erreur Sentry en production à faire après déploiement, backlog SEO (6 pistes, dont la correction prioritaire de `NEXT_PUBLIC_APP_URL` absente de Vercel).
