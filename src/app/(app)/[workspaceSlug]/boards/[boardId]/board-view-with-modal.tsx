@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { BoardView } from "@/components/board/board-view";
 import { TaskDetailModal } from "@/components/task-detail/task-detail-modal";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
+import { useShortcutsPanel } from "@/contexts/shortcuts-context";
+import { useCommandPalette } from "@/contexts/command-palette-context";
 import type { Board, Column as ColumnType } from "@/types/board.types";
 import type { Task, TaskWithRelations } from "@/types/task.types";
 import type { PresenceMember } from "@/types/realtime.types";
@@ -17,6 +20,14 @@ interface BoardViewWithModalProps {
 
 export function BoardViewWithModal({ board, columns, canEdit, currentUser, boardMembers }: BoardViewWithModalProps) {
   const [selectedTask, setSelectedTask] = useState<TaskWithRelations | null>(null);
+  const { toggle: toggleShortcuts } = useShortcutsPanel();
+  const { open: openCommandPalette } = useCommandPalette();
+
+  useKeyboardShortcuts([
+    { key: "k", meta: true, handler: openCommandPalette, description: "Open command palette" },
+    { key: "/", meta: true, handler: toggleShortcuts, description: "Keyboard shortcuts" },
+    { key: "?", handler: toggleShortcuts, description: "Keyboard shortcuts" },
+  ]);
 
   function handleTaskClick(task: Task) {
     const relations = columns.flatMap((col) => col.tasks).find((t) => t.id === task.id);

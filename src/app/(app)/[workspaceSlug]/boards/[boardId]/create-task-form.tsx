@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { createTask } from "@/lib/actions/task.actions";
 import { getPusherClient } from "@/lib/pusher-client";
+import { useToast } from "@/contexts/toast-context";
 import type { Column } from "@/types/board.types";
 
 interface CreateTaskFormProps {
@@ -15,6 +16,7 @@ export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
   const [title, setTitle] = useState("");
   const [columnId, setColumnId] = useState(columns[0]?.id ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -27,10 +29,12 @@ export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
         columnId,
         title: title.trim(),
       }, getPusherClient().connection.socket_id ?? undefined);
+      toast("Task created");
       setTitle("");
       setIsOpen(false);
     } catch (error) {
       console.error("Failed to create task:", error);
+      toast("Failed to create task", "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -40,6 +44,7 @@ export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
     return (
       <div className="p-4 border-t border-outline-variant">
         <button
+          id="create-task-btn"
           onClick={() => setIsOpen(true)}
           className="w-full py-2 px-4 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg text-label-md font-semibold transition-colors"
         >

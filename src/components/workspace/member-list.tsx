@@ -78,15 +78,15 @@ export function MemberList({ workspaceId, members, invitations, currentUserId, c
           <div key={member.id} className="flex items-center justify-between p-4 bg-surface-container border border-outline-variant rounded-lg">
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                {member.userId.slice(0, 2).toUpperCase()}
+                {member.user.name.slice(0, 2).toUpperCase()}
               </div>
               <div>
                 <p className="text-body-md text-on-surface font-medium">
-                  {member.userId.slice(0, 8)}
+                  {member.user.name}
                   {member.userId === currentUserId && " (You)"}
                 </p>
                 <p className="text-label-md text-on-surface-variant">
-                  Joined {new Date(member.joinedAt ?? member.invitedAt).toLocaleDateString()}
+                  {member.user.email} · Joined {new Date(member.joinedAt ?? member.invitedAt).toLocaleDateString()}
                 </p>
               </div>
             </div>

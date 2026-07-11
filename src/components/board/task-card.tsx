@@ -2,6 +2,8 @@
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { motion } from "framer-motion";
+import { MOTION } from "@/lib/motion";
 import { ConflictBadge } from "@/components/realtime/conflict-badge";
 import type { Task } from "@/types/task.types";
 
@@ -33,12 +35,14 @@ export function TaskCard({ task, onClick, canEdit, showConflict }: TaskCardProps
   };
 
   return (
-    <article
+    <motion.article
       ref={setNodeRef}
       style={style}
       {...(canEdit ? attributes : {})}
       {...(canEdit ? listeners : {})}
       onClick={onClick}
+      whileHover={{ y: -1, transition: { duration: MOTION.duration.fast } }}
+      whileTap={{ scale: 0.98, transition: { duration: MOTION.duration.instant } }}
       className="bg-surface-container border border-outline-variant p-4 md:p-4 rounded-lg hover:border-primary/50 transition-colors cursor-pointer group min-h-[80px] md:min-h-0"
       data-id={task.code}
     >
@@ -65,6 +69,6 @@ export function TaskCard({ task, onClick, canEdit, showConflict }: TaskCardProps
           </div>
         )}
       </div>
-    </article>
+    </motion.article>
   );
 }

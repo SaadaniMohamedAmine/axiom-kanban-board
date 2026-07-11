@@ -1,5 +1,5 @@
 import { render } from "@react-email/render";
-import { resend, FROM_ADDRESS } from "./resend";
+import { getResendClient, FROM_ADDRESS } from "./resend";
 import { InvitationEmail } from "./templates/invitation";
 import { WelcomeEmail } from "./templates/welcome";
 import { TaskAssignedEmail } from "./templates/task-assigned";
@@ -26,7 +26,7 @@ export async function sendInvitationEmail(params: {
     })
   );
 
-  return resend.emails.send({
+  return getResendClient().emails.send({
     from: FROM_ADDRESS,
     to: params.to,
     subject: `You have been invited to join ${params.workspaceName} on Axiom`,
@@ -37,7 +37,7 @@ export async function sendInvitationEmail(params: {
 export async function sendWelcomeEmail(params: { to: string; userName: string }) {
   const html = await render(WelcomeEmail({ userName: params.userName, appUrl: APP_URL }));
 
-  return resend.emails.send({
+  return getResendClient().emails.send({
     from: FROM_ADDRESS,
     to: params.to,
     subject: "Welcome to Axiom",
@@ -69,7 +69,7 @@ export async function sendTaskAssignedEmail(params: {
     })
   );
 
-  return resend.emails.send({
+  return getResendClient().emails.send({
     from: FROM_ADDRESS,
     to: params.to,
     subject: `${params.taskCode}: ${params.taskTitle} — assigned to you`,

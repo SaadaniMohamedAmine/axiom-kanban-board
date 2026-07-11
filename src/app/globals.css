@@ -1,17 +1,36 @@
 @import "tailwindcss";
 @config "../../tailwind.config.ts";
 
-:root {
+:root,
+[data-theme="dark"] {
   --background: #0f131d;
   --foreground: #dfe2f1;
   --surface: #0f131d;
   --surface-container: #1c1f2a;
   --surface-container-high: #262a35;
+  --surface-container-highest: #313540;
+  --surface-container-lowest: #0a0e18;
   --on-surface: #dfe2f1;
   --on-surface-variant: #c2c6d6;
   --outline: #8c909f;
   --outline-variant: #424754;
   --primary: #3B82F6;
+  --on-primary: #ffffff;
+}
+
+[data-theme="light"] {
+  --background: #f4f6fb;
+  --foreground: #1a1d27;
+  --surface: #f4f6fb;
+  --surface-container: #ffffff;
+  --surface-container-high: #edf0f7;
+  --surface-container-highest: #e2e5f0;
+  --surface-container-lowest: #fafbfe;
+  --on-surface: #1a1d27;
+  --on-surface-variant: #4a4f63;
+  --outline: #9299b0;
+  --outline-variant: #d0d4e4;
+  --primary: #2563eb;
   --on-primary: #ffffff;
 }
 
@@ -27,4 +46,69 @@ body {
     margin: 0;
     padding: 0;
   }
+}
+
+.axiom-driver-popover {
+  background: var(--surface-container-high) !important;
+  border: 1px solid var(--outline-variant) !important;
+  border-radius: 12px !important;
+  color: var(--on-surface) !important;
+  font-family: Geist, system-ui, sans-serif !important;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.4) !important;
+}
+.axiom-driver-popover .driver-popover-title {
+  color: var(--on-surface) !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+.axiom-driver-popover .driver-popover-description {
+  color: var(--on-surface-variant) !important;
+  font-size: 13px !important;
+}
+.axiom-driver-popover .driver-popover-footer button {
+  background: var(--primary) !important;
+  color: #fff !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  border: none !important;
+}
+.driver-overlay { background: rgba(0,0,0,0.6) !important; }
+
+.prose-axiom h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--on-surface);
+  margin: 20px 0 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--outline-variant);
+}
+.prose-axiom h2:first-child {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+.prose-axiom ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.prose-axiom ul li {
+  font-size: 14px;
+  color: var(--on-surface-variant);
+  line-height: 1.6;
+  padding-left: 16px;
+  position: relative;
+}
+.prose-axiom ul li::before {
+  content: "\2014";
+  position: absolute;
+  left: 0;
+  color: var(--outline);
+}
+.prose-axiom strong {
+  color: var(--on-surface);
+  font-weight: 600;
 }

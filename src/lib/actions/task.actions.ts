@@ -374,6 +374,7 @@ export async function setTaskAssignees(input: SetTaskAssigneesInput, socketId?: 
   const currentAssigneeIds = task.assignees.map((a) => a.userId);
   const added = userIds.filter((id) => !currentAssigneeIds.includes(id));
   const removed = currentAssigneeIds.filter((id) => !userIds.includes(id));
+  const notifiedUserIds = added.filter((id) => id !== session.user.id);
 
   await prisma.$transaction([
     prisma.taskAssignee.deleteMany({
@@ -392,6 +393,18 @@ export async function setTaskAssignees(input: SetTaskAssigneesInput, socketId?: 
         payload: { added, removed },
       },
     }),
+    ...notifiedUserIds.map((userId) =>
+      prisma.notification.create({
+        data: {
+          userId,
+          type: "task_assigned",
+          payload: {
+            title: "You were assigned a task",
+            message: `${task.title} (${task.code})`,
+          },
+        },
+      })
+    ),
   ]);
 
   await triggerBoardEvent(
