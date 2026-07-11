@@ -6,6 +6,7 @@ import Link from "next/link";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { SettingsLink } from "@/components/layout/settings-link";
 import { NotificationBell } from "@/components/layout/notification-bell";
+import { SignOutButton } from "@/components/layout/sign-out-button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { ToastProvider } from "@/contexts/toast-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
@@ -144,6 +145,7 @@ export default async function AppLayout({
             <span className="text-body-md text-on-surface-variant">
               {session.user.name}
             </span>
+            <SignOutButton />
           </div>
         </header>
         <div className="flex-1 overflow-auto">{children}</div>
