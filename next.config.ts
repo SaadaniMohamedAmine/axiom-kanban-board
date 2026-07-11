@@ -30,7 +30,16 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Prisma 7's driver-adapter client loads its runtime via a computed
+  // require() (e.g. "@prisma/client-<hash>"), which Vercel's static file
+  // tracer can't follow — without this, the deployed function is missing
+  // @prisma/client-runtime-utils and every DB-touching route 500s.
+  outputFileTracingIncludes: {
+    "/*": [
+      "./node_modules/.prisma/client/**/*",
+      "./node_modules/@prisma/client-runtime-utils/**/*",
+    ],
+  },
 };
 
 export default withSentryConfig(withPWA(nextConfig), {
