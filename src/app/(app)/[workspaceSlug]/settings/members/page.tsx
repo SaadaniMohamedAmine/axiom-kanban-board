@@ -21,7 +21,11 @@ export default async function MembersPage({
   const workspace = await prisma.workspace.findUnique({
     where: { slug: workspaceSlug },
     include: {
-      members: true,
+      members: {
+        include: {
+          user: { select: { name: true, email: true } },
+        },
+      },
       invitations: true,
     },
   });
