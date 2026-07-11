@@ -1,6 +1,10 @@
 import { ImageResponse } from "next/og";
 
-export const runtime = "edge";
+// Webpack's edge bundle for this route exceeds Vercel's 1MB Edge
+// Function limit (Turbopack's was smaller, but Turbopack skips
+// serverless file tracing entirely — see next.config.ts). Plain OG
+// image generation isn't latency-sensitive, so Node.js is fine.
+export const runtime = "nodejs";
 
 export async function GET() {
   return new ImageResponse(
