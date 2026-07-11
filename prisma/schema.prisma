@@ -69,6 +69,7 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  onboardingCompleted Boolean  @default(false)
   accounts    Account[]
   sessions    Session[]
   workspaces  Workspace[]       @relation("WorkspaceOwner")

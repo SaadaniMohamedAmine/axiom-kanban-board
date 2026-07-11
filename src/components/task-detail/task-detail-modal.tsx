@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MOTION } from "@/lib/motion";
 import type { TaskWithRelations } from "@/types/task.types";
 import { TaskPropertiesPanel } from "./task-properties-panel";
 import { ActivityList } from "./activity-list";
@@ -29,9 +31,23 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <main className="relative z-10 w-full md:max-w-5xl bg-surface-container-high md:bg-surface-container-high/85 backdrop-blur-xl border-0 md:border border-outline-variant rounded-none md:rounded-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[85vh] md:max-h-[800px] shadow-2xl">
+    <AnimatePresence>
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <motion.div
+          className="absolute inset-0 bg-black/60"
+          variants={MOTION.variants.modalOverlay}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          onClick={onClose}
+        />
+        <motion.main
+          variants={MOTION.variants.modalContent}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          className="relative z-10 w-full md:max-w-5xl bg-surface-container-high md:bg-surface-container-high/85 backdrop-blur-xl border-0 md:border border-outline-variant rounded-none md:rounded-2xl overflow-hidden flex flex-col h-[100dvh] md:h-[85vh] md:max-h-[800px] shadow-2xl"
+        >
         {/* Header */}
         <header className="p-8 flex justify-between items-start">
           <div className="space-y-1">
@@ -136,7 +152,8 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
             </button>
           </div>
         </footer>
-      </main>
-    </div>
+        </motion.main>
+      </div>
+    </AnimatePresence>
   );
 }

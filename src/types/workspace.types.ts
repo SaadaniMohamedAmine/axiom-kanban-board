@@ -15,6 +15,10 @@ export interface WorkspaceMember {
   role: WorkspaceRole;
   invitedAt: Date;
   joinedAt: Date | null;
+  user: {
+    name: string;
+    email: string;
+  };
 }
 
 export interface WorkspaceWithMembers extends Workspace {
