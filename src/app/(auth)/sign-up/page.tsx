@@ -74,6 +74,11 @@ function SignUpForm() {
           setError(error.message || "Sign up failed");
         }
       } else {
+        void fetch("/api/auth/signup-hook", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: formData.email, name: formData.name }),
+        }).catch(() => {});
         router.push("/");
       }
     } catch {

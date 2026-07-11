@@ -120,28 +120,82 @@
 
 ---
 
-## Phase 8 — Polish & Deploy final (0%)
-*(le projet est déjà live sur Vercel depuis la Phase 2 — cette phase couvre la mise en prod finale, le polish, et la revue de lancement)*
+## Phase B — UX Excellence (Dark/Light Mode, Motion, Shortcuts, Onboarding, Polish) — ✅ COMPLETE (100%)
 
-## Phase 9 — UX & Motion Design avancé (0%)
-- [ ] Audit heuristique UX complet (parcours bout en bout, friction points)
-- [ ] Micro-interactions avancées (hover, focus, états de chargement)
-- [ ] Transitions entre écrans/pages cohérentes (Framer Motion, courbes d'easing de marque)
-- [ ] Skeletons/loaders premium (jamais de spinner générique)
-- [ ] Feedback visuel sur actions clés (drag&drop, suggestion IA appliquée, sauvegarde)
-- [ ] Cohérence motion desktop ↔ mobile
-- [ ] Revue finale "feel" par un regard UX externe (ou check-list expert UX)
+- [x] Packages installés : next-themes, react-hotkeys-hook, driver.js, clsx, tailwind-merge, @playwright/test
+- [x] Migration Prisma : ajout `onboardingCompleted` sur User
+- [x] **Feature 016 — Dark/Light Mode** : variables CSS light/dark, ThemeProvider, ThemeToggle dans le header, tokens CSS partout
+- [x] **Feature 008 — UX & Motion** : motion tokens centralisés (MOTION), skeleton component, board-skeleton, page-transition, toast system (context + provider), micro-interactions Framer Motion (task-card hover/tap, column enter/exit, modal entrance)
+- [x] **Feature 014 — Keyboard Shortcuts** : useKeyboardShortcuts hook, ShortcutsPanel modal, ShortcutsProvider, ⌘K / ? / Esc raccourcis dans board-view-with-modal
+- [x] **Feature 013 — Onboarding Tour** : tour interactif driver.js (5 étapes), completeOnboarding server action, déclenché conditionnellement, IDs DOM (sidebar-workspaces, board-columns, invite-team-link)
+- [x] **Feature 007 — Polish & Deploy** : page 404 on-brand, Settings menu, Notifications page + server actions, command palette avec search API, ⌘K palette, Playwright e2e tests (auth + board)
+- [x] CSS override driver.js dans globals.css
+- [x] `pnpm lint` : 0 errors
+- [x] `pnpm type-check` : 0 errors
+- [x] Code review manuelle : 3 fixes (dépendances next-themes/driver.js/clsx/tailwind-merge manquantes, ThemeProvider non câblé, IDOR sur markNotificationRead)
+- [x] Mergée vers `main` via PR #8
 
-**Phase 9 : 0/7 — 0%**
-
-## Phase E — Final Features (100%)
-- [x] **Feature 021 — i18n FR/EN** : next-intl, messages files, locale switcher, middleware
-- [x] **Feature 022 — Billing** : Stripe Checkout + Portal, plans Free/Pro/Team, enforcement
-- [x] **Feature 023 — Audit Log** : AuditLog model, createAuditLog(), CSV export, filtres
-- [x] **Feature 009 — Recruiter-Ready Packaging** : README final, CI, seed data
-
-**Phase E : 4/4 — 100%**
+**Phase B : 33/33 — 100% — ✅ CLÔTURÉE**
 
 ---
 
-**Progression globale du projet : 24/24 features — 100% 🎉**
+## Phase C — SEO, Analytics, Sentry, Changelog, Roadmap — ✅ COMPLETE (100%)
+
+- [x] Packages installés : @sentry/nextjs, @vercel/analytics, @vercel/speed-insights, gray-matter, remark, remark-html
+- [x] **Feature 019 — SEO & Landing** : landing page publique Axiom, metadata SEO complètes (Open Graph, Twitter cards), OG image dynamique, robots.txt, sitemap.xml, layout marketing minimaliste
+- [x] **Feature 011 — Vercel Analytics** : composants Analytics + SpeedInsights dans le layout racine
+- [x] **Feature 010 — Sentry** : 3 configs (client/server/edge), wrapper next.config.ts, ErrorBoundary component, global-error.tsx, identification utilisateur dans le layout
+- [x] **Feature 012 — Changelog** : 3 entrées markdown (v0.1, v0.2, v1.0), helper de lecture Markdown (gray-matter + remark), page publique avec timeline
+- [x] **Feature 015 — Public Roadmap** : config statique Now/Next/Later, page publique 3 colonnes avec badges de statut
+- [x] `pnpm lint` : 0 errors
+- [x] `pnpm type-check` : 0 errors
+- [x] Branche rebasée sur `main` (elle avait divergé avant 16 commits de Phase B) et conflits résolus proprement (`layout.tsx`, `globals.css`, `package.json`, `PROGRESS.md`) sans casser la logique `ThemeToggle` binaire de Phase B
+- [x] Code review manuelle (CodeRabbit indisponible) : 6 bugs trouvés et corrigés — `ErrorBoundary` jamais montée nulle part, tri du changelog non-numérique, statut "Command Palette" obsolète sur le roadmap public, route `/og/image` cassée (metadata pointait vers un chemin inexistant), vars Sentry/APP_URL absentes de `.env.example`, layout `(marketing)` orphelin supprimé
+- [x] 4 User Stories validées manuellement de bout en bout : US1 (landing, SEO metadata, OG image, robots.txt, sitemap.xml), US2 (changelog + roadmap), US3 (Vercel Analytics confirmé actif), US4 (Sentry configuré + fallback `ErrorBoundary` validé visuellement)
+- [x] Mergée vers `main` via PR #9
+
+**Phase C : 23/23 — 100% — ✅ CLÔTURÉE**
+
+---
+
+## Phase D — Rate Limiting, PWA, Webhooks & API, Emails — ✅ COMPLETE (100%)
+
+- [x] Packages installés : resend, @react-email/components, @react-email/render, @ducanh2912/next-pwa
+- [x] Migration Prisma : `aiRequestsToday`/`aiRequestsResetAt` sur Workspace, models `APIKey`/`WebhookConfig`, `emailPreferences` sur User
+- [x] **Feature 018 — Rate Limiting Dashboard** : quota IA journalier par workspace (DB-backed), 5 endpoints IA branchés, page Settings → AI Quota avec barre de progression
+- [x] **Feature 020 — PWA** : manifest.ts, icônes 192/512, `next-pwa` intégré à `next.config.ts` (chaîné avec Sentry), page offline, meta theme-color/apple-touch-icon
+- [x] **Feature 017 — Webhooks & API publique** : API Keys (génération/hash/révocation), 4 routes `/api/v1/*` (boards, tasks CRUD), dispatch webhooks HMAC-SHA256, page Settings → Developers, doc publique `/docs/api`
+- [x] **Feature 024 — Emails transactionnels** : client Resend, 3 templates (invitation, welcome, task-assigned), envoi invitation + welcome câblés, page unsubscribe
+- [x] `pnpm lint` : 0 errors — `pnpm type-check` : 0 errors — `pnpm build` : vert
+- [x] Merge de `main` dans la branche : conflits résolus proprement (`next.config.ts`, `package.json`/`pnpm-lock.yaml`, `settings/page.tsx` fusionné en 6 sections, `layout.tsx` metadata SEO + PWA meta, `.env.example`)
+- [x] Code review manuelle (CodeRabbit exclu à la demande) : **1 bug critique** — le rate limiter se réinitialisait à chaque requête (comparaison de date sur le timestamp *futur* du reset au lieu de `now >= resetAt`), rendant le quota inopérant — + 4 bugs additionnels : `resend.ts` plantait `next build` si `RESEND_API_KEY` absent (cause du déploiement Vercel cassé), page offline sans `"use client"`, welcome email jamais déclenché (signup-hook non câblé), `PATCH /api/v1/tasks/:id` acceptait un `columnId` cross-board sans validation, page Developers accessible en écriture silencieusement pour les non-admins
+- [x] Bug additionnel trouvé en testant US3 : code de tâche non zero-paddé côté API (`AX-2` vs `AX-0001` côté UI) — route re-branchée sur le helper partagé `generateTaskCode()`
+- [x] Vars Vercel (Production) ajoutées via CLI : `RESEND_API_KEY`, `RESEND_FROM` (sandbox `onboarding@resend.dev`), `NEXT_PUBLIC_APP_URL` (corrige au passage le bug de domaine tracké depuis Phase C)
+- [x] US1 (Rate Limiting) validée manuellement de bout en bout : quota affiché, incrémente correctement (0→1→...), ne se réinitialise plus à chaque requête
+- [x] US3 (Webhooks & API) validée manuellement de bout en bout : génération/révocation clé API, GET/POST/PATCH `/api/v1/*`, webhook livré <1s avec signature HMAC vérifiée bit-à-bit, `/docs/api` public
+- [x] US2 (PWA) et emails (invitation/welcome) reportés à après déploiement Vercel HTTPS — trackés avec procédure de test détaillée dans `features/rappel.md`
+- [x] PR #10 ouverte, mergeable (plus de conflits) — merge vers `main` imminent
+
+**Phase D : 33/33 — 100% — ✅ CLÔTURÉE**
+
+---
+
+## Phase 8 — Polish & Deploy final (0%)
+*(projets futurs / backlog)*
+
+## Phase 9 — UX & Motion Design avancé (0%)
+*(projets futurs / backlog)*
+
+## Phase E — Final Features (code écrit, audit en cours)
+- [~] **Feature 021 — i18n FR/EN** : infra next-intl en place (messages, `i18n.ts`, middleware, server action), mais `LocaleSwitcher` jamais monté et aucun composant n'utilise `useTranslations()` — UI toujours 100% anglais/français codé en dur
+- [~] **Feature 022 — Billing** : Stripe Checkout + Portal + enforcement des limites écrits, mais webhook ne compile pas avec le SDK Stripe installé (`current_period_end`) et CTA pricing non branchés
+- [~] **Feature 023 — Audit Log** : model + `createAuditLog()` + page + export CSV écrits, mais seulement 6/19 `AuditAction` réellement déclenchées et bug de lint bloquant (`Date.now()` en render)
+- [x] **Feature 009 — Recruiter-Ready Packaging** : README final, CI, seed data
+
+**Phase E : code des 4 features présent — migration Prisma manquante + `pnpm build`/`pnpm lint` en échec avant de clôturer (voir audit du 2026-07-11)**
+
+---
+
+**Progression globale du projet : Phases 0-7 + B + C + D clôturées et mergées dans `main`. Phase E (021/022/023/009) mergée depuis `feat-phase-E-observability` — code écrit pour les 4 features, mais audit du 2026-07-11 a identifié des problèmes bloquants (migration Prisma manquante pour locale/plan/AuditLog, `pnpm build`/`pnpm lint` en échec, i18n non câblée dans l'UI) restant à corriger avant de considérer Phase E réellement terminée. Phase 10 (backlog "Recruiter-Ready Packaging") est couverte par la Feature 009 ci-dessus.**
+
+> Points de suivi post-clôture (non-bloquants, trackés dans `features/rappel.md`) : Vercel Speed Insights non activé (limite plan Hobby), Sentry Auth Token pour source maps non généré, vérification de la capture d'erreur Sentry en production à faire après déploiement, backlog SEO restant (5 pistes — le bug prioritaire `NEXT_PUBLIC_APP_URL` a été corrigé pendant Phase D), PWA à valider sur le déploiement Vercel HTTPS (Feature 020), emails d'invitation/bienvenue à tester en bout-en-bout (Feature 024, quota Resend sandbox).

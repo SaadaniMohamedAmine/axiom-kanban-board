@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -102,6 +101,7 @@ model User {
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 
+  onboardingCompleted Boolean  @default(false)
   accounts    Account[]
   sessions    Session[]
   workspaces  Workspace[]       @relation("WorkspaceOwner")
@@ -185,6 +185,37 @@ model Workspace {
 
   @@index([ownerId])
   @@map("workspaces")
+}
+
+model APIKey {
+  id          String    @id @default(cuid())
+  workspaceId String
+  name        String
+  keyHash     String    @unique
+  prefix      String
+  createdAt   DateTime  @default(now())
+  lastUsedAt  DateTime?
+  revokedAt   DateTime?
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("api_keys")
+}
+
+model WebhookConfig {
+  id          String   @id @default(cuid())
+  workspaceId String
+  url         String
+  events      String[]
+  secret      String
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@map("webhook_configs")
 }
 
 model WorkspaceMember {
@@ -398,39 +429,6 @@ model Notification {
 
   @@index([userId])
   @@map("notifications")
-}
-
-// --- Phase D (existing in DB) ---
-
-model APIKey {
-  id          String    @id @default(cuid())
-  workspaceId String
-  name        String
-  keyHash     String    @unique
-  prefix      String
-  createdAt   DateTime  @default(now())
-  lastUsedAt  DateTime?
-  revokedAt   DateTime?
-
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-
-  @@index([workspaceId])
-  @@map("api_keys")
-}
-
-model WebhookConfig {
-  id          String   @id @default(cuid())
-  workspaceId String
-  url         String
-  events      String[]
-  secret      String
-  active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-
-  workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
-
-  @@index([workspaceId])
-  @@map("webhook_configs")
 }
 
 // --- Phase E ---

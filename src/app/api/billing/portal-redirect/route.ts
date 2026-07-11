@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { stripe } from "@/lib/billing/stripe";
+import { getStripeClient } from "@/lib/billing/stripe";
 import { headers } from "next/headers";
 
 export async function GET(req: NextRequest) {
@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   if (!workspace?.stripeCustomerId) return NextResponse.redirect("/");
 
   const APP_URL = process.env.NEXT_PUBLIC_APP_URL!;
-  const portalSession = await stripe.billingPortal.sessions.create({
+  const portalSession = await getStripeClient().billingPortal.sessions.create({
     customer: workspace.stripeCustomerId,
     return_url: `${APP_URL}/${workspace.slug}/settings/billing`,
   });

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { stripe, STRIPE_PRICE_IDS } from "@/lib/billing/stripe";
+import { getStripeClient, STRIPE_PRICE_IDS } from "@/lib/billing/stripe";
 import { headers } from "next/headers";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app";
@@ -30,6 +30,8 @@ export async function POST(req: NextRequest) {
   if (!workspace) {
     return new Response(JSON.stringify({ error: "Workspace not found" }), { status: 404 });
   }
+
+  const stripe = getStripeClient();
 
   let customerId = workspace.stripeCustomerId;
   if (!customerId) {

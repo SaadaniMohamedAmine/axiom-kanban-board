@@ -16,6 +16,10 @@ interface Props {
 
 const PER_PAGE = 50;
 
+function sinceDate(days: number): Date {
+  return new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+}
+
 const ACTION_LABELS: Partial<Record<AuditAction, string>> = {
   WORKSPACE_CREATED: "Workspace created",
   WORKSPACE_RENAMED: "Workspace renamed",
@@ -67,11 +71,9 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
 
   const page = Math.max(1, parseInt(pageStr ?? "1", 10));
   const days = parseInt(daysStr ?? "30", 10);
-  const sinceDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
-
   const where = {
     workspaceId: workspace.id,
-    createdAt: { gte: sinceDate },
+    createdAt: { gte: sinceDate(days) },
     ...(actor ? { actorEmail: { contains: actor, mode: "insensitive" as const } } : {}),
     ...(action ? { action: action as AuditAction } : {}),
   };

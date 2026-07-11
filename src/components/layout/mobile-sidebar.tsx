@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { SignOutButton } from "./sign-out-button";
 
 interface MobileSidebarProps {
   memberships: {
@@ -88,10 +89,11 @@ export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-outline-variant">
+        <div className="p-4 border-t border-outline-variant flex items-center justify-between">
           <div className="text-[13px] text-on-surface-variant px-3 py-2">
             {userName}
           </div>
+          <SignOutButton />
         </div>
       </aside>
     </>

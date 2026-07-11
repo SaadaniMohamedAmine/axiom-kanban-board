@@ -21,6 +21,7 @@ import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import { headers } from "next/headers";
 import { triggerBoardEvent } from "../realtime";
+import { dispatchWebhooks } from "../api/webhook";
 import type { BoardEvent, ConflictEvent } from "@/types/realtime.types";
 import { createAuditLog } from "../audit/log";
 
@@ -90,6 +91,13 @@ export async function createTask(input: CreateTaskInput, socketId?: string) {
       makeEvent("task.created", boardId, session.user.id, task as unknown as Record<string, unknown>, task.id, columnId),
       socketId,
     );
+    void dispatchWebhooks(board.workspaceId, "task.created", {
+      id: task.id,
+      code: task.code,
+      title: task.title,
+      boardId,
+      columnId,
+    });
   }
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
@@ -177,6 +185,12 @@ export async function moveTask(input: MoveTaskInput, socketId?: string) {
     socketId,
   );
 
+  void dispatchWebhooks(task.board.workspaceId, "task.updated", {
+    taskId,
+    columnId: targetColumnId,
+    columnChanged,
+  });
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
@@ -205,6 +219,7 @@ export async function deleteTask(taskId: string, socketId?: string) {
       makeEvent("task.deleted", task.boardId, session.user.id, { taskId }, taskId),
       socketId,
     );
+    void dispatchWebhooks(task.board.workspaceId, "task.deleted", { taskId });
   }
 
   if (session) {
@@ -334,6 +349,8 @@ export async function updateTaskFields(input: UpdateTaskFieldsInput, socketId?: 
     );
   }
 
+  void dispatchWebhooks(task.board.workspaceId, "task.updated", { taskId, updates });
+
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return { success: true };
 }
@@ -370,6 +387,7 @@ export async function setTaskAssignees(input: SetTaskAssigneesInput, socketId?: 
   const currentAssigneeIds = task.assignees.map((a) => a.userId);
   const added = userIds.filter((id) => !currentAssigneeIds.includes(id));
   const removed = currentAssigneeIds.filter((id) => !userIds.includes(id));
+  const notifiedUserIds = added.filter((id) => id !== session.user.id);
 
   await prisma.$transaction([
     prisma.taskAssignee.deleteMany({
@@ -388,6 +406,18 @@ export async function setTaskAssignees(input: SetTaskAssigneesInput, socketId?: 
         payload: { added, removed },
       },
     }),
+    ...notifiedUserIds.map((userId) =>
+      prisma.notification.create({
+        data: {
+          userId,
+          type: "task_assigned",
+          payload: {
+            title: "You were assigned a task",
+            message: `${task.title} (${task.code})`,
+          },
+        },
+      })
+    ),
   ]);
 
   await triggerBoardEvent(

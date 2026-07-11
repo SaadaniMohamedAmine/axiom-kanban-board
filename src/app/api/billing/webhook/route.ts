@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { stripe } from "@/lib/billing/stripe";
+import { getStripeClient } from "@/lib/billing/stripe";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 import { WorkspacePlan } from "@prisma/client";
@@ -13,6 +13,8 @@ export async function POST(req: NextRequest) {
   if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
     return new Response("Missing signature", { status: 400 });
   }
+
+  const stripe = getStripeClient();
 
   let event: Stripe.Event;
   try {
@@ -36,7 +38,7 @@ export async function POST(req: NextRequest) {
       const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
       const priceId = subscription.items.data[0]?.price.id;
       const plan = await getPlanFromPriceId(priceId);
-      const expiresAt = new Date(subscription.current_period_end * 1000);
+      const expiresAt = new Date(subscription.items.data[0].current_period_end * 1000);
 
       await prisma.workspace.update({
         where: { id: workspaceId },
@@ -67,7 +69,7 @@ export async function POST(req: NextRequest) {
 
       const priceId = subscription.items.data[0]?.price.id;
       const plan = await getPlanFromPriceId(priceId);
-      const expiresAt = new Date(subscription.current_period_end * 1000);
+      const expiresAt = new Date(subscription.items.data[0].current_period_end * 1000);
 
       await prisma.workspace.update({
         where: { id: workspaceId },
