@@ -143,3 +143,18 @@ Toutes les entrées utilisent `new Date()` au moment du build plutôt que la vra
 **Note** : `sendTaskAssignedEmail` (template `task-assigned.tsx`) existe mais n'est câblé nulle part dans le code — hors scope des tâches originales de Phase D. Pas la peine de le tester, il ne se déclenche jamais actuellement.
 
 ---
+
+## Phase D — PWA (Feature 020) à re-vérifier sur le déploiement Vercel (HTTPS)
+
+**Statut** : ✅ US PWA considérée validée (implémentation + build + code review OK) — vérification manuelle sur prod HTTPS à faire au prochain déploiement
+
+**Contexte** : Le service worker (`next-pwa`) est désactivé en développement (`disable: process.env.NODE_ENV === "development"` dans `next.config.ts`), donc rien de tout ça n'est testable sur `localhost`. Il faut impérativement tester sur le déploiement Vercel une fois en ligne.
+
+**À tester sur `https://axiom-kanban-board.vercel.app`** :
+1. Va sur le déploiement Vercel en HTTPS (pas localhost — le service worker est désactivé en dev)
+2. Chrome DevTools → onglet **Application** → **Manifest** : vérifie que `name`, `icons` (192/512), `theme_color` (`#0f131d`) s'affichent correctement
+3. Chrome DevTools → **Lighthouse** → coche "Progressive Web App" → Analyze : doit être vert
+4. Sur mobile (ou Chrome DevTools device emulation) : menu ⋮ → doit proposer "Add to Home Screen" / "Install app"
+5. Coupe le réseau (DevTools → Network → Offline) et recharge → doit afficher la page `/offline` avec le bouton "Try again"
+
+---
