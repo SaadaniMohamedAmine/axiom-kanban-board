@@ -16,8 +16,13 @@ export default defineConfig({
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
   ],
   webServer: {
-    command: "pnpm dev",
+    // CI already runs `pnpm build` as its own step right before this — reuse
+    // that output via `next start` instead of recompiling from scratch with
+    // Turbopack, which was blowing past the 60s readiness timeout on the
+    // runner. Local dev keeps `pnpm dev` for fast iteration.
+    command: process.env.CI ? "pnpm start" : "pnpm dev",
     url: "http://localhost:3000",
     reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
   },
 });
