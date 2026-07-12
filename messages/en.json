@@ -157,6 +157,26 @@
     "lastUpdated": "Last updated July 2026",
     "backToAxiom": "Back to Axiom"
   },
+  "analytics": {
+    "noActiveSprintFound": "No active sprint found.",
+    "startSprintHint": "Start a sprint to see burndown and velocity data.",
+    "noActiveSprint": "No active sprint.",
+    "noDataForSprint": "No data for this sprint yet.",
+    "burndownFor": "Burndown — {sprintName}",
+    "noCompletedSprints": "No completed sprints yet.",
+    "velocityLastSprints": "Velocity (last {count} sprints)",
+    "avgPtsSprint": "Avg {avg} pts/sprint",
+    "storyPoints": "Story Points",
+    "remaining": "Remaining",
+    "ideal": "Ideal",
+    "points": "Points",
+    "sprintHealth": "Sprint Health",
+    "tasksDone": "Tasks done",
+    "overdue": "Overdue",
+    "blocked": "Blocked",
+    "aiSprintSummary": "Axiom Intelligence — Sprint summary",
+    "generateHealthSummary": "Generate AI health summary →"
+  },
   "devManagers": {
     "apiKeys": "API Keys",
     "apiKeysDesc": "Keys authenticate requests to",

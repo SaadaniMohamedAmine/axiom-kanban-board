@@ -157,6 +157,26 @@
     "lastUpdated": "Dernière mise à jour juillet 2026",
     "backToAxiom": "Retour à Axiom"
   },
+  "analytics": {
+    "noActiveSprintFound": "Aucun sprint actif trouvé.",
+    "startSprintHint": "Démarre un sprint pour voir les données de burndown et de vélocité.",
+    "noActiveSprint": "Aucun sprint actif.",
+    "noDataForSprint": "Aucune donnée pour ce sprint pour l'instant.",
+    "burndownFor": "Burndown — {sprintName}",
+    "noCompletedSprints": "Aucun sprint terminé pour l'instant.",
+    "velocityLastSprints": "Vélocité (derniers {count} sprints)",
+    "avgPtsSprint": "Moy. {avg} pts/sprint",
+    "storyPoints": "Points d'histoire",
+    "remaining": "Restant",
+    "ideal": "Idéal",
+    "points": "Points",
+    "sprintHealth": "Santé du sprint",
+    "tasksDone": "Tâches terminées",
+    "overdue": "En retard",
+    "blocked": "Bloquées",
+    "aiSprintSummary": "Axiom Intelligence — Résumé du sprint",
+    "generateHealthSummary": "Générer le résumé de santé IA →"
+  },
   "devManagers": {
     "apiKeys": "Clés API",
     "apiKeysDesc": "Les clés authentifient les requêtes vers",

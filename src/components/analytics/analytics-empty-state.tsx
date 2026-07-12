@@ -1,4 +1,8 @@
-export function AnalyticsEmptyState() {
+import { getTranslations } from "next-intl/server";
+
+export async function AnalyticsEmptyState() {
+  const t = await getTranslations("analytics");
+
   return (
     <div className="flex flex-col items-center justify-center h-64 text-center">
       <div className="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center mb-4">
@@ -8,9 +12,9 @@ export function AnalyticsEmptyState() {
           <line x1="6" x2="6" y1="20" y2="14" />
         </svg>
       </div>
-      <p className="text-[14px] text-on-surface-variant">No active sprint found.</p>
+      <p className="text-[14px] text-on-surface-variant">{t("noActiveSprintFound")}</p>
       <p className="text-[12px] text-on-surface-variant/50 mt-1">
-        Start a sprint to see burndown and velocity data.
+        {t("startSprintHint")}
       </p>
     </div>
   );
