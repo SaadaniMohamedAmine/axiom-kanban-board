@@ -7,7 +7,31 @@
     "developers": "Developers",
     "aiQuota": "AI Quota",
     "newBoard": "New board",
-    "newWorkspace": "New workspace"
+    "newWorkspace": "New workspace",
+    "workspaces": "Workspaces",
+    "auditLog": "Audit Log",
+    "changelog": "Changelog",
+    "roadmap": "Roadmap"
+  },
+  "landing": {
+    "badge": "Axiom Intelligence Engine",
+    "heroTitleLine1": "The intelligence layer",
+    "heroTitleLine2": "for elite teams.",
+    "heroSubtitle": "AI-powered Kanban that thinks with you. Prioritize smarter, estimate precisely, detect blockers before they block.",
+    "startFree": "Start free",
+    "viewDemo": "View demo →",
+    "signIn": "Sign in",
+    "getStarted": "Get started",
+    "features": {
+      "aiTitle": "AI Priority Engine",
+      "aiDesc": "Axiom Intelligence scores and reprioritizes your backlog automatically based on context, dependencies, and team velocity.",
+      "analyticsTitle": "Sprint Analytics",
+      "analyticsDesc": "Burndown charts, velocity tracking, and sprint health scores. Know exactly where your team stands at any moment.",
+      "realtimeTitle": "Real-time collaboration",
+      "realtimeDesc": "Every drag, every status change, every comment appears instantly across your team. Powered by Pusher Channels."
+    },
+    "stackLabel": "Built with a production-grade stack",
+    "footerCopyright": "© 2026 Axiom. Open source."
   },
   "auth": {
     "signIn": "Sign in",

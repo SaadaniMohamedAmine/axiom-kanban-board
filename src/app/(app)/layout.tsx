@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { SettingsLink } from "@/components/layout/settings-link";
 import { NotificationBell } from "@/components/layout/notification-bell";
@@ -60,6 +60,7 @@ export default async function AppLayout({
   });
 
   const locale = (await getLocale()) as "fr" | "en";
+  const t = await getTranslations("nav");
 
   const firstBoard = memberships[0]?.workspace?.boards?.[0];
   const workspaceSlugs = memberships.map((m) => m.workspace.slug);
@@ -75,7 +76,7 @@ export default async function AppLayout({
         </div>
         <nav className="flex-1 p-4 overflow-y-auto">
           <div id="sidebar-workspaces" className="text-label-md text-on-surface-variant uppercase tracking-wider mb-2">
-            Workspaces
+            {t("workspaces")}
           </div>
           {memberships.map((membership) => (
             <div key={membership.workspace.id} className="mb-4">
@@ -115,7 +116,7 @@ export default async function AppLayout({
                         <line x1="12" x2="12" y1="20" y2="4" />
                         <line x1="6" x2="6" y1="20" y2="14" />
                       </svg>
-                      Analytics
+                      {t("analytics")}
                     </Link>
                   </div>
                 ))}
@@ -130,7 +131,7 @@ export default async function AppLayout({
               <line x1="12" x2="12" y1="5" y2="19"></line>
               <line x1="5" x2="19" y1="12" y2="12"></line>
             </svg>
-            New Workspace
+            {t("newWorkspace")}
           </Link>
         </nav>
         <div className="p-4 border-t border-outline-variant">
@@ -141,7 +142,7 @@ export default async function AppLayout({
             <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
               <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
             </svg>
-            Audit Log
+            {t("auditLog")}
           </Link>
           <SettingsLink
             workspaceSlugs={workspaceSlugs}
