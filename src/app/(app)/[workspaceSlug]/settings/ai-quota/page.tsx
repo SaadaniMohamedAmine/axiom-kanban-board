@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
@@ -51,15 +52,18 @@ export default async function AIQuotaPage({ params }: Props) {
       ? "bg-yellow-500"
       : "bg-primary";
 
+  const t = await getTranslations("ai");
+  const tSettings = await getTranslations("settings");
+
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <div className="mb-8">
         <div className="text-[11px] font-semibold text-on-surface-variant/50 uppercase tracking-wider mb-1">
-          Settings
+          {tSettings("title")}
         </div>
-        <h1 className="text-2xl font-semibold text-on-surface">Axiom Intelligence Quota</h1>
+        <h1 className="text-2xl font-semibold text-on-surface">{t("quotaPageTitle")}</h1>
         <p className="text-[14px] text-on-surface-variant mt-1">
-          Daily AI request limit for workspace <strong className="text-on-surface">{workspace.name}</strong>.
+          {t("quotaPageDesc")} <strong className="text-on-surface">{workspace.name}</strong>.
         </p>
       </div>
 
@@ -67,7 +71,7 @@ export default async function AIQuotaPage({ params }: Props) {
         <div className="flex items-end justify-between mb-4">
           <div>
             <div className="text-[11px] font-semibold text-on-surface-variant/50 uppercase tracking-wider mb-1">
-              Today&apos;s Usage
+              {t("todaysUsage")}
             </div>
             <div className={`text-4xl font-semibold ${statusColor}`}>
               {used}
@@ -77,7 +81,7 @@ export default async function AIQuotaPage({ params }: Props) {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[12px] text-on-surface-variant/60">Resets in</div>
+            <div className="text-[12px] text-on-surface-variant/60">{t("resetsIn")}</div>
             <div className="text-[14px] font-medium text-on-surface">
               {hoursUntilReset}h
             </div>
@@ -91,8 +95,8 @@ export default async function AIQuotaPage({ params }: Props) {
           />
         </div>
         <div className="flex items-center justify-between mt-2 text-[11px] text-on-surface-variant/50">
-          <span>{pct}% used</span>
-          <span>{AI_DAILY_LIMIT - used} remaining</span>
+          <span>{pct}{t("pctUsed")}</span>
+          <span>{AI_DAILY_LIMIT - used} {t("remainingLabel")}</span>
         </div>
       </div>
 
@@ -102,14 +106,10 @@ export default async function AIQuotaPage({ params }: Props) {
             <circle cx="12" cy="12" r="10" /><path d="M12 16v-4" /><path d="M12 8h.01" />
           </svg>
           <div className="space-y-2 text-[13px] text-on-surface-variant">
+            <p>{t("infoLine1")}</p>
+            <p>{t("infoLine2")}</p>
             <p>
-              The daily limit applies across all AI features — priority, estimation, description, blocker detection, and smart assignment.
-            </p>
-            <p>
-              The counter resets automatically at <strong className="text-on-surface">midnight UTC</strong> every day.
-            </p>
-            <p>
-              To adjust the limit, set the <code className="font-mono text-[12px] bg-surface-container-highest px-1.5 py-0.5 rounded">AI_DAILY_LIMIT</code> environment variable and redeploy.
+              {t("infoLine3")}
             </p>
           </div>
         </div>

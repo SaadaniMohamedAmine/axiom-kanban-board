@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { APIKeyManager } from "@/components/settings/api-key-manager";
 import { WebhookManager } from "@/components/settings/webhook-manager";
 
@@ -41,16 +42,17 @@ export default async function DevelopersPage({ params }: Props) {
     select: { role: true },
   });
   const canManage = currentMember?.role === "OWNER" || currentMember?.role === "ADMIN";
+  const t = await getTranslations("settings");
 
   return (
     <div className="p-8 max-w-3xl mx-auto space-y-10">
       <div className="mb-8">
         <div className="text-[11px] font-semibold text-on-surface-variant/50 uppercase tracking-wider mb-1">
-          Settings
+          {t("title")}
         </div>
-        <h1 className="text-2xl font-semibold text-on-surface">Developers</h1>
+        <h1 className="text-2xl font-semibold text-on-surface">{t("developers")}</h1>
         <p className="text-[14px] text-on-surface-variant mt-1">
-          Manage API keys and webhook integrations for{" "}
+          {t("developersPageDesc")}{" "}
           <strong className="text-on-surface">{workspace.name}</strong>.
         </p>
       </div>
@@ -61,9 +63,8 @@ export default async function DevelopersPage({ params }: Props) {
           <polyline points="14 2 14 8 20 8" />
         </svg>
         <span className="text-on-surface-variant">
-          View the{" "}
           <a href="/docs/api" target="_blank" className="text-primary hover:underline font-medium">
-            API Reference →
+            {t("viewApiReference")}
           </a>
         </span>
       </div>
