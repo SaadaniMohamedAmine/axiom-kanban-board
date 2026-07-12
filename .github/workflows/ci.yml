@@ -10,6 +10,11 @@ jobs:
   quality:
     name: Lint & Type Check
     runs-on: ubuntu-latest
+    env:
+      # prisma.config.ts resolves this eagerly via env() even for a schema-only
+      # `prisma generate` — no real DB connection is made, so a placeholder is
+      # enough. Without it, PrismaConfigEnvError aborts type-check before tsc runs.
+      DATABASE_URL_UNPOOLED: "postgresql://ci:ci@localhost:5432/ci"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
