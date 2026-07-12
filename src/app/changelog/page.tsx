@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getAllChangelogEntries } from "@/lib/changelog";
 
 export const metadata: Metadata = {
@@ -15,6 +16,8 @@ export const dynamic = "force-static";
 
 export default async function ChangelogPage() {
   const entries = await getAllChangelogEntries();
+  const t = await getTranslations("changelog");
+  const locale = await getLocale();
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
@@ -27,20 +30,20 @@ export default async function ChangelogPage() {
             Axiom
           </Link>
           <span className="text-on-surface-variant/30">/</span>
-          <span className="text-[13px] text-on-surface">Changelog</span>
+          <span className="text-[13px] text-on-surface">{t("breadcrumb")}</span>
         </div>
       </nav>
 
       <main className="max-w-4xl mx-auto px-6 py-16">
         <div className="mb-16">
           <div className="text-[11px] font-semibold text-on-surface-variant/40 uppercase tracking-widest mb-3">
-            Release History
+            {t("eyebrow")}
           </div>
           <h1 className="text-4xl font-semibold text-on-surface tracking-tight mb-3">
-            Changelog
+            {t("title")}
           </h1>
           <p className="text-[15px] text-on-surface-variant">
-            New features, improvements, and bug fixes for every Axiom release.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -58,11 +61,11 @@ export default async function ChangelogPage() {
                   </span>
                   {index === 0 && (
                     <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-green-500/10 text-green-400 text-[11px] font-semibold border border-green-500/20">
-                      Latest
+                      {t("latest")}
                     </span>
                   )}
                   <span className="text-[13px] text-on-surface-variant">
-                    {new Date(entry.date).toLocaleDateString("en-US", {
+                    {new Date(entry.date).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",

@@ -1,15 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { createWebhook, deleteWebhook } from "@/lib/actions/webhook.actions";
-
-const AVAILABLE_EVENTS = [
-  { id: "task.created", label: "Task created" },
-  { id: "task.updated", label: "Task updated" },
-  { id: "task.deleted", label: "Task deleted" },
-  { id: "sprint.completed", label: "Sprint completed" },
-  { id: "ai.suggestion.applied", label: "AI suggestion applied" },
-];
 
 interface WebhookRecord {
   id: string;
@@ -26,6 +19,14 @@ interface Props {
 }
 
 export function WebhookManager({ workspaceId, webhooks, canManage }: Props) {
+  const t = useTranslations("devManagers");
+  const AVAILABLE_EVENTS = [
+    { id: "task.created", label: t("eventTaskCreated") },
+    { id: "task.updated", label: t("eventTaskUpdated") },
+    { id: "task.deleted", label: t("eventTaskDeleted") },
+    { id: "sprint.completed", label: t("eventSprintCompleted") },
+    { id: "ai.suggestion.applied", label: t("eventAiSuggestionApplied") },
+  ];
   const [url, setUrl] = useState("");
   const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
   const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
@@ -48,7 +49,7 @@ export function WebhookManager({ workspaceId, webhooks, canManage }: Props) {
         setUrl("");
         setSelectedEvents([]);
       } catch {
-        setError("Could not create the webhook. You may not have permission.");
+        setError(t("createWebhookError"));
       }
     });
   }
@@ -59,16 +60,16 @@ export function WebhookManager({ workspaceId, webhooks, canManage }: Props) {
       try {
         await deleteWebhook(workspaceId, webhookId);
       } catch {
-        setError("Could not delete the webhook. You may not have permission.");
+        setError(t("deleteWebhookError"));
       }
     });
   }
 
   return (
     <section>
-      <h2 className="text-[16px] font-semibold text-on-surface mb-1">Webhooks</h2>
+      <h2 className="text-[16px] font-semibold text-on-surface mb-1">{t("webhooks")}</h2>
       <p className="text-[13px] text-on-surface-variant/70 mb-5">
-        Receive HTTP POST requests when events happen. Payloads are signed with HMAC-SHA256.
+        {t("webhooksDesc")}
       </p>
 
       {error && (
@@ -80,7 +81,7 @@ export function WebhookManager({ workspaceId, webhooks, canManage }: Props) {
       {revealedSecret && (
         <div className="mb-5 p-4 rounded-xl border border-green-500/30 bg-green-500/5">
           <div className="text-[12px] font-semibold text-green-400 mb-2">
-            Webhook signing secret — copy now, not shown again.
+            {t("copySecretNow")}
           </div>
           <code className="block font-mono text-[12px] text-on-surface bg-surface-container-highest px-3 py-2 rounded-lg break-all">
             {revealedSecret}
@@ -117,18 +118,18 @@ export function WebhookManager({ workspaceId, webhooks, canManage }: Props) {
             disabled={!url || selectedEvents.length === 0 || isPending}
             className="w-full py-2.5 bg-primary text-white rounded-xl text-[13px] font-medium hover:brightness-110 transition-all disabled:opacity-50"
           >
-            Add Webhook
+            {t("addWebhook")}
           </button>
         </div>
       ) : (
         <p className="text-[12px] text-on-surface-variant/50 mb-5">
-          Only workspace admins can add or remove webhooks.
+          {t("adminsOnlyWebhooks")}
         </p>
       )}
 
       {webhooks.length === 0 ? (
         <p className="text-[13px] text-on-surface-variant/50 text-center py-4">
-          No webhooks configured.
+          {t("noWebhooksYet")}
         </p>
       ) : (
         <div className="space-y-2">
@@ -156,7 +157,7 @@ export function WebhookManager({ workspaceId, webhooks, canManage }: Props) {
                   disabled={isPending}
                   className="shrink-0 text-[12px] text-red-400 hover:text-red-300 transition-colors mt-0.5 disabled:opacity-50"
                 >
-                  Delete
+                  {t("delete")}
                 </button>
               )}
             </div>
