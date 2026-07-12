@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import { ROADMAP, type RoadmapStatus } from "@/content/roadmap";
 
 export const metadata: Metadata = {
@@ -13,33 +14,35 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-static";
 
-const STATUS_CONFIG: Record<
-  RoadmapStatus,
-  { label: string; dotClass: string; badgeClass: string }
-> = {
-  shipped: {
-    label: "Shipped",
-    dotClass: "bg-green-400",
-    badgeClass: "bg-green-500/10 text-green-400 border-green-500/20",
-  },
-  "in-progress": {
-    label: "In Progress",
-    dotClass: "bg-[#22D3EE] animate-pulse",
-    badgeClass: "bg-[#22D3EE]/10 text-[#22D3EE] border-[#22D3EE]/20",
-  },
-  planned: {
-    label: "Planned",
-    dotClass: "bg-primary",
-    badgeClass: "bg-primary/10 text-primary border-primary/20",
-  },
-  considering: {
-    label: "Considering",
-    dotClass: "bg-on-surface-variant/40",
-    badgeClass: "bg-surface-container-high text-on-surface-variant border-outline-variant/30",
-  },
-};
+export default async function RoadmapPage() {
+  const t = await getTranslations("roadmapPage");
 
-export default function RoadmapPage() {
+  const STATUS_CONFIG: Record<
+    RoadmapStatus,
+    { label: string; dotClass: string; badgeClass: string }
+  > = {
+    shipped: {
+      label: t("shipped"),
+      dotClass: "bg-green-400",
+      badgeClass: "bg-green-500/10 text-green-400 border-green-500/20",
+    },
+    "in-progress": {
+      label: t("inProgress"),
+      dotClass: "bg-[#22D3EE] animate-pulse",
+      badgeClass: "bg-[#22D3EE]/10 text-[#22D3EE] border-[#22D3EE]/20",
+    },
+    planned: {
+      label: t("planned"),
+      dotClass: "bg-primary",
+      badgeClass: "bg-primary/10 text-primary border-primary/20",
+    },
+    considering: {
+      label: t("considering"),
+      dotClass: "bg-on-surface-variant/40",
+      badgeClass: "bg-surface-container-high text-on-surface-variant border-outline-variant/30",
+    },
+  };
+
   return (
     <div className="min-h-screen bg-background text-on-surface">
       <nav className="border-b border-outline-variant/20 bg-background/80 backdrop-blur-md">
@@ -51,21 +54,20 @@ export default function RoadmapPage() {
             Axiom
           </Link>
           <span className="text-on-surface-variant/30">/</span>
-          <span className="text-[13px] text-on-surface">Roadmap</span>
+          <span className="text-[13px] text-on-surface">{t("breadcrumb")}</span>
         </div>
       </nav>
 
       <main className="max-w-6xl mx-auto px-6 py-16">
         <div className="mb-16 max-w-2xl">
           <div className="text-[11px] font-semibold text-on-surface-variant/40 uppercase tracking-widest mb-3">
-            Product Vision
+            {t("eyebrow")}
           </div>
           <h1 className="text-4xl font-semibold text-on-surface tracking-tight mb-3">
-            Public Roadmap
+            {t("title")}
           </h1>
           <p className="text-[15px] text-on-surface-variant leading-relaxed">
-            Where Axiom is headed. This is a living document — priorities evolve as we learn from
-            real usage. Shipped items are locked; everything else is subject to change.
+            {t("subtitle")}
           </p>
         </div>
 
@@ -122,10 +124,10 @@ export default function RoadmapPage() {
 
       <footer className="border-t border-outline-variant/20 mt-16 py-8 px-6">
         <div className="max-w-6xl mx-auto flex items-center justify-between text-[12px] text-on-surface-variant/50">
-          <span>Last updated July 2026</span>
+          <span>{t("lastUpdated")}</span>
           <div className="flex items-center gap-6">
-            <Link href="/changelog" className="hover:text-on-surface-variant transition-colors">Changelog</Link>
-            <Link href="/" className="hover:text-on-surface-variant transition-colors">Back to Axiom</Link>
+            <Link href="/changelog" className="hover:text-on-surface-variant transition-colors">{t("breadcrumb")}</Link>
+            <Link href="/" className="hover:text-on-surface-variant transition-colors">{t("backToAxiom")}</Link>
           </div>
         </div>
       </footer>

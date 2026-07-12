@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/contexts/toast-context";
 
@@ -11,6 +12,8 @@ interface AccountSettingsFormProps {
 
 export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
   const { toast } = useToast();
+  const t = useTranslations("accountForm");
+  const tActions = useTranslations("actions");
 
   const [displayName, setDisplayName] = useState(name);
   const [isSavingName, setIsSavingName] = useState(false);
@@ -26,10 +29,10 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
     setIsSavingName(true);
     try {
       const { error } = await authClient.updateUser({ name: displayName.trim() });
-      if (error) throw new Error(error.message ?? "Failed to update profile");
-      toast("Profile updated");
+      if (error) throw new Error(error.message ?? t("profileUpdateFailed"));
+      toast(t("profileUpdated"));
     } catch (err) {
-      toast(err instanceof Error ? err.message : "Failed to update profile", "error");
+      toast(err instanceof Error ? err.message : t("profileUpdateFailed"), "error");
     } finally {
       setIsSavingName(false);
     }
@@ -46,12 +49,12 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
         newPassword,
         revokeOtherSessions: true,
       });
-      if (error) throw new Error(error.message ?? "Failed to change password");
-      toast("Password changed");
+      if (error) throw new Error(error.message ?? t("passwordChangeFailed"));
+      toast(t("passwordChanged"));
       setCurrentPassword("");
       setNewPassword("");
     } catch (err) {
-      toast(err instanceof Error ? err.message : "Failed to change password", "error");
+      toast(err instanceof Error ? err.message : t("passwordChangeFailed"), "error");
     } finally {
       setIsSavingPassword(false);
     }
@@ -63,9 +66,9 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
         onSubmit={handleNameSubmit}
         className="p-6 bg-surface-container border border-outline-variant rounded-lg space-y-4"
       >
-        <h2 className="text-h3 text-on-surface">Profile</h2>
+        <h2 className="text-h3 text-on-surface">{t("profile")}</h2>
         <div>
-          <label className="block text-label-md text-on-surface-variant mb-1">Email</label>
+          <label className="block text-label-md text-on-surface-variant mb-1">{t("email")}</label>
           <input
             type="email"
             value={email}
@@ -74,7 +77,7 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
           />
         </div>
         <div>
-          <label className="block text-label-md text-on-surface-variant mb-1">Name</label>
+          <label className="block text-label-md text-on-surface-variant mb-1">{t("name")}</label>
           <input
             type="text"
             value={displayName}
@@ -87,7 +90,7 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
           disabled={isSavingName || !displayName.trim()}
           className="px-6 py-2 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          {isSavingName ? "Saving..." : "Save"}
+          {isSavingName ? t("saving") : tActions("save")}
         </button>
       </form>
 
@@ -95,9 +98,9 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
         onSubmit={handlePasswordSubmit}
         className="p-6 bg-surface-container border border-outline-variant rounded-lg space-y-4"
       >
-        <h2 className="text-h3 text-on-surface">Password</h2>
+        <h2 className="text-h3 text-on-surface">{t("password")}</h2>
         <div>
-          <label className="block text-label-md text-on-surface-variant mb-1">Current password</label>
+          <label className="block text-label-md text-on-surface-variant mb-1">{t("currentPassword")}</label>
           <input
             type="password"
             value={currentPassword}
@@ -106,7 +109,7 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
           />
         </div>
         <div>
-          <label className="block text-label-md text-on-surface-variant mb-1">New password</label>
+          <label className="block text-label-md text-on-surface-variant mb-1">{t("newPassword")}</label>
           <input
             type="password"
             value={newPassword}
@@ -119,7 +122,7 @@ export function AccountSettingsForm({ name, email }: AccountSettingsFormProps) {
           disabled={isSavingPassword || !currentPassword || !newPassword}
           className="px-6 py-2 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         >
-          {isSavingPassword ? "Saving..." : "Change password"}
+          {isSavingPassword ? t("saving") : t("changePassword")}
         </button>
       </form>
     </div>

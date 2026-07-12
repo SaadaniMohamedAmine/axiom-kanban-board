@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations, getLocale } from "next-intl/server";
 import { markNotificationRead, markAllNotificationsRead } from "@/lib/actions/notification.actions";
 
 interface Props {
@@ -29,15 +30,18 @@ export default async function NotificationsPage({ params }: Props) {
   });
 
   const unreadCount = notifications.filter((n) => !n.readAt).length;
+  const t = await getTranslations("settings");
+  const tNav = await getTranslations("nav");
+  const locale = await getLocale();
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-semibold text-on-surface">Notifications</h1>
+          <h1 className="text-2xl font-semibold text-on-surface">{tNav("notifications")}</h1>
           {unreadCount > 0 && (
             <p className="text-[13px] text-on-surface-variant/60 mt-1">
-              {unreadCount} unread
+              {unreadCount} {t("unread")}
             </p>
           )}
         </div>
@@ -49,7 +53,7 @@ export default async function NotificationsPage({ params }: Props) {
               type="submit"
               className="text-[13px] text-primary hover:text-primary/80 transition-colors"
             >
-              Mark all as read
+              {t("markAllRead")}
             </button>
           </form>
         )}
@@ -63,7 +67,7 @@ export default async function NotificationsPage({ params }: Props) {
               <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
           </div>
-          <p className="text-[14px] text-on-surface-variant">Nothing here yet.</p>
+          <p className="text-[14px] text-on-surface-variant">{t("nothingHereYet")}</p>
         </div>
       ) : (
         <div className="space-y-1">
@@ -95,7 +99,7 @@ export default async function NotificationsPage({ params }: Props) {
                       </p>
                     )}
                     <p className="text-[11px] text-on-surface-variant/40 mt-1">
-                      {new Date(n.createdAt).toLocaleDateString("fr-FR", {
+                      {new Date(n.createdAt).toLocaleDateString(locale === "fr" ? "fr-FR" : "en-US", {
                         day: "numeric",
                         month: "short",
                         hour: "2-digit",

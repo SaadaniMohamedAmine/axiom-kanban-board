@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { LandingPage } from "@/components/marketing/landing-page";
 
 export default async function Home() {
@@ -23,5 +24,6 @@ export default async function Home() {
   }
 
   // Not authenticated → show public landing page
-  return <LandingPage />;
+  const locale = await getLocale();
+  return <LandingPage currentLocale={locale as "fr" | "en"} />;
 }

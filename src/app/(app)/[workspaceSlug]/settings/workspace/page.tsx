@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { WorkspaceSettingsForm } from "@/components/workspace/workspace-settings-form";
 
 interface Props {
@@ -27,13 +28,14 @@ export default async function WorkspaceSettingsPage({ params }: Props) {
   if (!workspace) redirect("/");
 
   const canEdit = workspace.members[0]?.role === "OWNER";
+  const t = await getTranslations("settings");
 
   return (
     <div className="p-8 max-w-2xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-h2 text-on-surface">Workspace</h1>
+        <h1 className="text-h2 text-on-surface">{t("workspace")}</h1>
         <p className="text-body-md text-on-surface-variant mt-1">
-          Name, slug, preferences
+          {t("workspaceDesc")}
         </p>
       </div>
       <WorkspaceSettingsForm

@@ -198,3 +198,46 @@ Ce `output` custom existait depuis la Phase 2 (commit `8c83039`, tout début du 
 6. Si tout est vert sur la preview → merger/déployer en production, puis refaire le même test rapide sur `https://axiom-kanban-board.vercel.app` pour confirmer
 
 ---
+
+## Phase E — US2/US3/US4 : scénarios de test détaillés (US1 i18n déjà validé)
+
+### US2 — Billing / Stripe
+
+**Statut** : ⚠️ Backend fonctionnel, un bouton UI cassé bloque le test de bout en bout du checkout.
+
+1. Connecté, va sur `/{workspace}/settings/billing`. Tu trouveras le plan actuel ("Free"), un bloc d'usage "Boards X / 3" et "Members X / 10", et un lien "Upgrade to Pro" (visible seulement en plan Free).
+2. Clique "Upgrade to Pro" → amène sur `/pricing` (3 cartes Free/Pro/Team).
+3. **Bug connu** : le bouton "Upgrade to Pro" de la carte Pro est une ancre morte (`href="#upgrade-pro"`), pas branchée à `/api/billing/checkout`. Cliquer ne fait rien. Idem pour la carte Team. **Le flow Stripe Checkout complet ne peut pas être testé depuis l'UI tant que ce n'est pas corrigé.**
+4. Ce qui marche déjà et est testable : plan-limit enforcement. Crée des tableaux jusqu'à 3 sur un workspace Free → le 4ème doit lever `PLAN_LIMIT_BOARDS:FREE` (vérifier si un message on-brand s'affiche ou si c'est une erreur brute non gérée côté UI).
+5. Pareil sur `/settings/members` : inviter jusqu'à 10 membres en Free → le 11ème doit lever `PLAN_LIMIT_MEMBERS:FREE`.
+6. Webhook Stripe (`/api/billing/webhook`) : déjà créé côté Stripe Dashboard (test mode, endpoint `https://axiom-kanban-board.vercel.app/api/billing/webhook`, events `checkout.session.completed`/`customer.subscription.updated`/`customer.subscription.deleted`), mais jamais déclenché faute de checkout fonctionnel — non testé de bout en bout.
+
+**À faire avant de considérer US2 validée** : brancher les CTA de `/pricing` (Pro/Team) sur `POST /api/billing/checkout` avec le bon `workspaceId`/`plan`, puis tester un paiement réel en carte test Stripe (`4242 4242 4242 4242`) et vérifier que `Workspace.plan` passe à `PRO` après webhook.
+
+### US3 — Audit Log
+
+**Statut** : ✅ Fonctionnel pour les 6 actions câblées ; 13/19 types d'action ne se déclenchent jamais (fonctions correspondantes absentes du code).
+
+1. Va sur `/{workspace}/audit-log` (lien "Journal d'audit" en bas de la sidebar). Si tu n'es pas OWNER/ADMIN, tu trouveras un écran "Access restricted" — pas de 500, comportement correct.
+2. En tant qu'OWNER/ADMIN, tu trouveras un tableau avec colonnes Date/Actor/Action/Target, des filtres (email, action, période 7/30/90 jours), et un bouton "Export CSV".
+3. Pour générer une vraie entrée : renomme le workspace (`WORKSPACE_RENAMED`), invite un membre (`MEMBER_INVITED`), crée un board (`BOARD_CREATED`), supprime une tâche (`TASK_DELETED`). Ces 4 actions + `BILLING_UPGRADED`/`BILLING_CANCELLED` (via webhook Stripe) sont les seules réellement instrumentées.
+4. Les 13 autres types d'action du enum (`MEMBER_REMOVED`, `BOARD_DELETED`, `API_KEY_CREATED`, `AUTH_LOGIN`, etc.) ne peuvent pas être testés : soit la fonction correspondante n'existe pas encore dans le code (`removeMember`, `deleteBoard`, `createAPIKey` côté audit), soit elle existe mais n'appelle pas `createAuditLog()`.
+5. Teste l'export CSV : clique le bouton, vérifie que le fichier téléchargé a les colonnes Date/Actor/Action/Target Type/Target/IP Address.
+6. Vérifie qu'aucune route ne permet de supprimer une entrée (pas de `DELETE` sur `/api/audit-log/*`) — confirmé déjà par audit de code, pas de UI à tester ici.
+
+**À faire avant de considérer US3 totalement validée** : soit accepter que seuls 6/19 types soient couverts pour cette phase, soit instrumenter les fonctions manquantes (`removeMember`, `deleteBoard`, `createAPIKey`, `revokeAPIKey`, événements auth) avec `createAuditLog()`.
+
+### US4 — Recruiter-Ready Packaging
+
+**Statut** : ⚠️ Contenu présent mais avec des placeholders non remplacés + une incohérence de statut.
+
+1. Ouvre `README.md` à la racine du repo. Tu trouveras les badges (CI, demo, Next.js, TypeScript), une table "What it does", une section "Why this stack", l'arborescence technique, les instructions de setup local, la section tests.
+2. **Bug connu** : les liens `https://github.com/YOUR_GITHUB/axiom-kanban-board` (badge CI + commande `git clone`) et `https://your-portfolio.com` (lien portfolio) sont des placeholders jamais remplacés par les vraies URLs.
+3. Va sur l'onglet Actions du repo GitHub : le badge CI dans le README doit pointer vers un run réellement vert. Avec les fixes CI de cette session, ça devrait être le cas maintenant — à reconfirmer après le merge de cette PR.
+4. En local, lance `pnpm db:seed` : doit créer sans erreur le workspace `axiom-demo` + 12 tâches (AX-1 à AX-12) + un sprint actif.
+5. Vérifie que la démo publique Vercel (`https://axiom-kanban-board.vercel.app`) a bien ces données de seed peuplées — pas vérifiable depuis le code, à checker manuellement en visitant le site.
+6. Ouvre `PROGRESS.md` : la ligne finale a été corrigée cette session pour refléter l'état réel (Phase E code écrit mais pas 100% fonctionnel) plutôt que le claim erroné "24/24 — 100%" d'avant.
+
+**À faire avant de considérer US4 validée** : remplacer les 2 placeholders dans le README avec les vraies URLs (github.com/SaadaniMohamedAmine/axiom-kanban-board et l'URL du portfolio), confirmer le badge CI vert après merge, et peupler/vérifier la démo Vercel.
+
+---

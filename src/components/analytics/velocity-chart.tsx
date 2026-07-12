@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   BarChart,
   Bar,
@@ -28,10 +29,12 @@ const TOOLTIP_STYLE = {
 };
 
 export function VelocityChart({ data }: VelocityChartProps) {
+  const t = useTranslations("analytics");
+
   if (data.length === 0) {
     return (
       <div className="h-[220px] flex items-center justify-center text-[13px] text-on-surface-variant/50">
-        No completed sprints yet.
+        {t("noCompletedSprints")}
       </div>
     );
   }
@@ -42,10 +45,10 @@ export function VelocityChart({ data }: VelocityChartProps) {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-[13px] font-medium text-on-surface-variant">
-          Velocity (last {data.length} sprints)
+          {t("velocityLastSprints", { count: data.length })}
         </h3>
         <span className="text-[12px] text-on-surface-variant/60">
-          Avg {Math.round(avg)} pts/sprint
+          {t("avgPtsSprint", { avg: Math.round(avg) })}
         </span>
       </div>
       <ResponsiveContainer height={220} width="100%">
@@ -61,7 +64,7 @@ export function VelocityChart({ data }: VelocityChartProps) {
             tick={{ fontSize: 11, fill: "#6B7A99" }}
           />
           <Tooltip contentStyle={TOOLTIP_STYLE} />
-          <Bar dataKey="points" name="Story Points" fill="#3B82F6" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="points" name={t("storyPoints")} fill="#3B82F6" radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>

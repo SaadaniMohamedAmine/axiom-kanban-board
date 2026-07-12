@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import {
   LineChart,
   Line,
@@ -31,10 +32,12 @@ const TOOLTIP_STYLE = {
 };
 
 export function BurndownChart({ data, sprintName }: BurndownChartProps) {
+  const t = useTranslations("analytics");
+
   if (data.length === 0) {
     return (
       <div className="h-[280px] flex items-center justify-center text-[13px] text-on-surface-variant/50">
-        No data for this sprint yet.
+        {t("noDataForSprint")}
       </div>
     );
   }
@@ -42,7 +45,7 @@ export function BurndownChart({ data, sprintName }: BurndownChartProps) {
   return (
     <div>
       <h3 className="text-[13px] font-medium text-on-surface-variant mb-4">
-        Burndown — {sprintName}
+        {t("burndownFor", { sprintName })}
       </h3>
       <ResponsiveContainer height={280} width="100%">
         <LineChart data={data} margin={{ top: 4, right: 16, bottom: 4, left: 0 }}>
@@ -55,7 +58,7 @@ export function BurndownChart({ data, sprintName }: BurndownChartProps) {
           <YAxis
             stroke="rgba(255,255,255,0.2)"
             tick={{ fontSize: 11, fill: "#6B7A99" }}
-            label={{ value: "Points", angle: -90, position: "insideLeft", fill: "#6B7A99", fontSize: 11 }}
+            label={{ value: t("points"), angle: -90, position: "insideLeft", fill: "#6B7A99", fontSize: 11 }}
           />
           <Tooltip contentStyle={TOOLTIP_STYLE} />
           <Legend
@@ -64,7 +67,7 @@ export function BurndownChart({ data, sprintName }: BurndownChartProps) {
           <Line
             type="monotone"
             dataKey="remaining"
-            name="Remaining"
+            name={t("remaining")}
             stroke="#3B82F6"
             strokeWidth={2}
             dot={false}
@@ -73,7 +76,7 @@ export function BurndownChart({ data, sprintName }: BurndownChartProps) {
           <Line
             type="monotone"
             dataKey="ideal"
-            name="Ideal"
+            name={t("ideal")}
             stroke="rgba(255,255,255,0.15)"
             strokeWidth={1.5}
             strokeDasharray="5 5"

@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { BurndownChart } from "@/components/analytics/burndown-chart";
 import { VelocityChart } from "@/components/analytics/velocity-chart";
 import { SprintHealthSummary } from "@/components/analytics/sprint-health-summary";
@@ -30,6 +31,9 @@ export default async function AnalyticsPage({ params }: Props) {
   });
 
   if (!board) notFound();
+
+  const t = await getTranslations("analytics");
+  const tNav = await getTranslations("nav");
 
   const sprints = await prisma.sprint.findMany({
     where: { boardId },
@@ -106,7 +110,7 @@ export default async function AnalyticsPage({ params }: Props) {
         <div className="text-[11px] font-semibold text-on-surface-variant/50 uppercase tracking-wider mb-1">
           {board.name}
         </div>
-        <h1 className="text-2xl font-semibold text-on-surface">Analytics</h1>
+        <h1 className="text-2xl font-semibold text-on-surface">{tNav("analytics")}</h1>
       </div>
 
       {!activeSprint && velocityData.length === 0 ? (
@@ -130,7 +134,7 @@ export default async function AnalyticsPage({ params }: Props) {
                 <BurndownChart data={burndownData} sprintName={activeSprint.name} />
               ) : (
                 <div className="h-[280px] flex items-center justify-center text-[13px] text-on-surface-variant/50">
-                  No active sprint.
+                  {t("noActiveSprint")}
                 </div>
               )}
             </div>

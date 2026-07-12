@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useTranslations } from "next-intl";
 import { createAPIKey, revokeAPIKey, type CreatedAPIKey } from "@/lib/actions/api-key.actions";
 
 interface APIKeyRecord {
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
+  const t = useTranslations("devManagers");
   const [newKeyName, setNewKeyName] = useState("");
   const [createdKey, setCreatedKey] = useState<CreatedAPIKey | null>(null);
   const [copied, setCopied] = useState(false);
@@ -34,7 +36,7 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
         setCreatedKey(result);
         setNewKeyName("");
       } catch {
-        setError("Could not create the API key. You may not have permission.");
+        setError(t("createKeyError"));
       }
     });
   }
@@ -52,16 +54,16 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
       try {
         await revokeAPIKey(workspaceId, keyId);
       } catch {
-        setError("Could not revoke the API key. You may not have permission.");
+        setError(t("revokeKeyError"));
       }
     });
   }
 
   return (
     <section>
-      <h2 className="text-[16px] font-semibold text-on-surface mb-1">API Keys</h2>
+      <h2 className="text-[16px] font-semibold text-on-surface mb-1">{t("apiKeys")}</h2>
       <p className="text-[13px] text-on-surface-variant/70 mb-5">
-        Keys authenticate requests to <code className="font-mono text-[12px]">/api/v1/</code>. Store them securely — they are shown only once.
+        {t("apiKeysDesc")} <code className="font-mono text-[12px]">/api/v1/</code>.
       </p>
 
       {error && (
@@ -73,7 +75,7 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
       {createdKey && (
         <div className="mb-5 p-4 rounded-xl border border-green-500/30 bg-green-500/5">
           <div className="text-[12px] font-semibold text-green-400 mb-2">
-            Copy your key now — it will not be shown again.
+            {t("copyKeyNow")}
           </div>
           <div className="flex items-center gap-2">
             <code className="flex-1 font-mono text-[12px] text-on-surface bg-surface-container-highest px-3 py-2 rounded-lg truncate">
@@ -83,7 +85,7 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
               onClick={handleCopy}
               className="shrink-0 px-3 py-2 text-[12px] bg-primary text-white rounded-lg hover:brightness-110 transition-all"
             >
-              {copied ? "Copied!" : "Copy"}
+              {copied ? t("copied") : t("copy")}
             </button>
           </div>
         </div>
@@ -96,7 +98,7 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
             value={newKeyName}
             onChange={(e) => setNewKeyName(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleCreate()}
-            placeholder="Key name (e.g. GitHub Actions)"
+            placeholder={t("keyNamePlaceholder")}
             className="flex-1 px-4 py-2.5 rounded-xl border border-outline-variant/30 bg-surface-container text-[13px] text-on-surface placeholder:text-on-surface-variant/40 outline-none focus:ring-1 focus:ring-primary/50"
           />
           <button
@@ -104,18 +106,18 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
             disabled={!newKeyName.trim() || isPending}
             className="shrink-0 px-4 py-2.5 bg-primary text-white rounded-xl text-[13px] font-medium hover:brightness-110 transition-all disabled:opacity-50"
           >
-            Generate
+            {t("generate")}
           </button>
         </div>
       ) : (
         <p className="text-[12px] text-on-surface-variant/50 mb-5">
-          Only workspace admins can generate or revoke API keys.
+          {t("adminsOnlyKeys")}
         </p>
       )}
 
       {apiKeys.length === 0 ? (
         <p className="text-[13px] text-on-surface-variant/50 text-center py-6">
-          No API keys yet.
+          {t("noKeysYet")}
         </p>
       ) : (
         <div className="space-y-2">
@@ -130,7 +132,7 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
                   {key.prefix}••••••••••••••
                   {key.lastUsedAt && (
                     <span className="ml-3 font-sans">
-                      Last used {new Date(key.lastUsedAt).toLocaleDateString()}
+                      {t("lastUsed")} {new Date(key.lastUsedAt).toLocaleDateString()}
                     </span>
                   )}
                 </div>
@@ -141,7 +143,7 @@ export function APIKeyManager({ workspaceId, apiKeys, canManage }: Props) {
                   disabled={isPending}
                   className="text-[12px] text-red-400 hover:text-red-300 transition-colors disabled:opacity-50"
                 >
-                  Revoke
+                  {t("revoke")}
                 </button>
               )}
             </div>

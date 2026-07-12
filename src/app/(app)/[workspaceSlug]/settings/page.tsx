@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 interface Props {
@@ -24,13 +25,16 @@ export default async function SettingsPage({ params }: Props) {
 
   if (!workspace) redirect("/");
 
+  const t = await getTranslations("settings");
+  const tNav = await getTranslations("nav");
+
   const SETTINGS_SECTIONS = [
-    { label: "Account", href: `/${workspaceSlug}/settings/account`, description: "Profile, avatar, password" },
-    { label: "Members", href: `/${workspaceSlug}/settings/members`, description: "Invite and manage team members" },
-    { label: "Workspace", href: `/${workspaceSlug}/settings/workspace`, description: "Name, slug, preferences" },
-    { label: "Notifications", href: `/${workspaceSlug}/notifications`, description: "Notification center and preferences" },
-    { label: "AI Quota", href: `/${workspaceSlug}/settings/ai-quota`, description: "Daily Axiom Intelligence usage and limits" },
-    { label: "Developers", href: `/${workspaceSlug}/settings/developers`, description: "API keys and webhook integrations" },
+    { label: t("account"), href: `/${workspaceSlug}/settings/account`, description: t("accountDesc") },
+    { label: t("members"), href: `/${workspaceSlug}/settings/members`, description: t("membersDesc") },
+    { label: t("workspace"), href: `/${workspaceSlug}/settings/workspace`, description: t("workspaceDesc") },
+    { label: t("notifications"), href: `/${workspaceSlug}/notifications`, description: t("notificationsDesc") },
+    { label: tNav("aiQuota"), href: `/${workspaceSlug}/settings/ai-quota`, description: t("aiQuotaDesc") },
+    { label: t("developers"), href: `/${workspaceSlug}/settings/developers`, description: t("developersDesc") },
   ];
 
   return (
@@ -39,7 +43,7 @@ export default async function SettingsPage({ params }: Props) {
         <div className="text-[11px] font-semibold text-on-surface-variant/50 uppercase tracking-wider mb-1">
           {workspace.name}
         </div>
-        <h1 className="text-2xl font-semibold text-on-surface">Settings</h1>
+        <h1 className="text-2xl font-semibold text-on-surface">{t("title")}</h1>
       </div>
 
       <div className="space-y-2">

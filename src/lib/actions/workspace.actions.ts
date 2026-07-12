@@ -3,6 +3,8 @@
 import { randomBytes } from "crypto";
 import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
+import { getPlanLimits } from "../billing/plan-limits";
+import { createAuditLog } from "../audit/log";
 import {
   createWorkspaceSchema,
   renameWorkspaceSchema,
@@ -75,6 +77,19 @@ export async function renameWorkspace(input: RenameWorkspaceInput) {
     data: { name, slug },
   });
 
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "WORKSPACE_RENAMED",
+      targetType: "workspace",
+      targetId: workspaceId,
+      targetLabel: name,
+    });
+  }
+
   revalidatePath("/", "layout");
   return { success: true };
 }
@@ -98,6 +113,16 @@ export async function inviteMember(input: InviteMemberInput) {
   if (!session) throw new Error("Not authenticated");
 
   await requireRole(workspaceId, "ADMIN");
+
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { name: true, plan: true, _count: { select: { members: true } } },
+  });
+  if (!workspace) throw new Error("Workspace not found");
+  const limits = getPlanLimits(workspace.plan);
+  if (workspace._count.members >= limits.maxMembers) {
+    throw new Error(`PLAN_LIMIT_MEMBERS:${workspace.plan}`);
+  }
 
   const existingMember = await prisma.workspaceMember.findFirst({
     where: {
@@ -127,13 +152,6 @@ export async function inviteMember(input: InviteMemberInput) {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + 7);
 
-  const workspace = await prisma.workspace.findUnique({
-    where: { id: workspaceId },
-    select: { name: true },
-  });
-
-  if (!workspace) throw new Error("Workspace not found");
-
   await prisma.invitation.create({
     data: {
       workspaceId,
@@ -143,6 +161,16 @@ export async function inviteMember(input: InviteMemberInput) {
       status: "PENDING",
       expiresAt,
     },
+  });
+
+  void createAuditLog({
+    workspaceId,
+    actorId: session.user.id,
+    actorEmail: session.user.email,
+    action: "MEMBER_INVITED",
+    targetType: "user",
+    targetLabel: email,
+    metadata: { role },
   });
 
   void sendInvitationEmail({

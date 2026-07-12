@@ -186,18 +186,16 @@
 ## Phase 9 — UX & Motion Design avancé (0%)
 *(projets futurs / backlog)*
 
-## Phase 10 — Recruiter-Ready Packaging (0%)
-- [ ] README / case study : décisions techniques expliquées (pourquoi Better Auth, pourquoi Groq+Gemini, pourquoi tout-Next.js)
-- [ ] Données de démo crédibles + accès démo sans friction (zéro étape cassée au premier clic)
-- [ ] Tests Playwright verts + badge CI visible sur le repo
-- [ ] Score Lighthouse/Core Web Vitals affiché (README ou landing)
-- [ ] Vidéo/GIF démo courte (reasoning stream IA, drag & drop, mobile)
-- [ ] Screenshots premium pour portfolio externe (site perso, LinkedIn)
+## Phase E — Final Features (code écrit, audit en cours)
+- [~] **Feature 021 — i18n FR/EN** : infra next-intl en place (messages, `i18n.ts`, middleware, server action), mais `LocaleSwitcher` jamais monté et aucun composant n'utilise `useTranslations()` — UI toujours 100% anglais/français codé en dur
+- [~] **Feature 022 — Billing** : Stripe Checkout + Portal + enforcement des limites écrits, mais webhook ne compile pas avec le SDK Stripe installé (`current_period_end`) et CTA pricing non branchés
+- [~] **Feature 023 — Audit Log** : model + `createAuditLog()` + page + export CSV écrits, mais seulement 6/19 `AuditAction` réellement déclenchées et bug de lint bloquant (`Date.now()` en render)
+- [x] **Feature 009 — Recruiter-Ready Packaging** : README final, CI, seed data
 
-**Phase 10 : 0/6 — 0%**
+**Phase E : code des 4 features présent — migration Prisma manquante + `pnpm build`/`pnpm lint` en échec avant de clôturer (voir audit du 2026-07-11)**
 
 ---
 
-**Progression globale du projet : 129/~149 tâches estimées — ~87%** *(Phases 0-7 + Phase B + Phase C + Phase D clôturées, reste Phases 8-10 — Phase D pas encore mergée vers `main`, PR #10 ouverte et mergeable)*
+**Progression globale du projet : Phases 0-7 + B + C + D clôturées et mergées dans `main`. Phase E (021/022/023/009) mergée depuis `feat-phase-E-observability` — code écrit pour les 4 features, mais audit du 2026-07-11 a identifié des problèmes bloquants (migration Prisma manquante pour locale/plan/AuditLog, `pnpm build`/`pnpm lint` en échec, i18n non câblée dans l'UI) restant à corriger avant de considérer Phase E réellement terminée. Phase 10 (backlog "Recruiter-Ready Packaging") est couverte par la Feature 009 ci-dessus.**
 
 > Points de suivi post-clôture (non-bloquants, trackés dans `features/rappel.md`) : Vercel Speed Insights non activé (limite plan Hobby), Sentry Auth Token pour source maps non généré, vérification de la capture d'erreur Sentry en production à faire après déploiement, backlog SEO restant (5 pistes — le bug prioritaire `NEXT_PUBLIC_APP_URL` a été corrigé pendant Phase D), PWA à valider sur le déploiement Vercel HTTPS (Feature 020), emails d'invitation/bienvenue à tester en bout-en-bout (Feature 024, quota Resend sandbox).
