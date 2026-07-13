@@ -56,7 +56,22 @@
   "notFound": {
     "title": "Page not found",
     "description": "The requested URL could not be retrieved. This link may have moved or no longer exists.",
-    "backHome": "Back to Axiom"
+    "backHome": "Back to Axiom",
+    "backToApp": "Back to workspace"
+  },
+  "accessRestricted": {
+    "title": "Access restricted",
+    "description": "I cannot grant access to this action.",
+    "roleBadge": "Permission required. Your current role is set to {role}.",
+    "requestAccess": "Request access",
+    "requesting": "Sending request…",
+    "requestSent": "Request sent",
+    "backToDashboard": "Back to dashboard",
+    "statusCode": "Status code: 403",
+    "notification": {
+      "title": "Access requested",
+      "message": "{name} requested access to {resource}."
+    }
   },
   "legal": {
     "eyebrow": "Legal",

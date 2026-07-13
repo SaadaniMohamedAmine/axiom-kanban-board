@@ -56,7 +56,22 @@
   "notFound": {
     "title": "Page introuvable",
     "description": "L'URL demandée n'a pas pu être récupérée. Ce lien a peut-être été déplacé ou n'existe plus.",
-    "backHome": "Retour à Axiom"
+    "backHome": "Retour à Axiom",
+    "backToApp": "Retour à l'espace de travail"
+  },
+  "accessRestricted": {
+    "title": "Accès restreint",
+    "description": "Je ne peux pas accorder l'accès à cette action.",
+    "roleBadge": "Permission requise. Votre rôle actuel est défini sur {role}.",
+    "requestAccess": "Demander l'accès",
+    "requesting": "Envoi de la demande…",
+    "requestSent": "Demande envoyée",
+    "backToDashboard": "Retour au tableau de bord",
+    "statusCode": "Code de statut : 403",
+    "notification": {
+      "title": "Demande d'accès",
+      "message": "{name} a demandé l'accès à {resource}."
+    }
   },
   "legal": {
     "eyebrow": "Mentions légales",

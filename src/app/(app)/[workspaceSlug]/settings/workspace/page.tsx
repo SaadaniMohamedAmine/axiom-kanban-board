@@ -1,9 +1,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { WorkspaceSettingsForm } from "@/components/workspace/workspace-settings-form";
+import { AccessRestricted } from "@/components/layout/access-restricted";
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
@@ -25,10 +26,32 @@ export default async function WorkspaceSettingsPage({ params }: Props) {
     },
   });
 
-  if (!workspace) redirect("/");
+  if (!workspace) notFound();
 
-  const canEdit = workspace.members[0]?.role === "OWNER";
+  const currentRole = workspace.members[0]?.role ?? "VIEWER";
+  const canEdit = currentRole === "OWNER";
   const t = await getTranslations("settings");
+
+  if (!canEdit) {
+    const tAccess = await getTranslations("accessRestricted");
+    return (
+      <AccessRestricted
+        workspaceId={workspace.id}
+        resourceLabel={`${t("workspace")} — ${workspace.name}`}
+        backHref={`/${workspace.slug}`}
+        labels={{
+          title: tAccess("title"),
+          description: tAccess("description"),
+          roleBadge: tAccess("roleBadge", { role: currentRole }),
+          requestAccess: tAccess("requestAccess"),
+          requesting: tAccess("requesting"),
+          requestSent: tAccess("requestSent"),
+          backToDashboard: tAccess("backToDashboard"),
+          statusCode: tAccess("statusCode"),
+        }}
+      />
+    );
+  }
 
   return (
     <div className="p-8 max-w-2xl mx-auto">

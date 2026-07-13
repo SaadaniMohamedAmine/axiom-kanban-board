@@ -17,6 +17,12 @@ const ICON_PATHS: Record<string, React.ReactNode> = {
     <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
   ),
   sprint_started: <polygon points="5 3 19 12 5 21 5 3" />,
+  access_requested: (
+    <>
+      <path d="M20 13c0 5-3.5 7.5-7.35 8.95a1 1 0 0 1-1.3 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.79 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
   blocker_detected: (
     <>
       <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
@@ -44,7 +50,7 @@ export function notificationBadgeClass(type: string): string {
   return NOTIFICATION_BADGE_CLASS[type] ?? "bg-surface-container-high text-on-surface-variant border border-outline-variant/20";
 }
 
-export function NotificationIcon({ type, className = "w-[18px] h-[18px]" }: NotificationIconProps) {
+export function NotificationIcon({ type, className = "w-4.5 h-4.5" }: NotificationIconProps) {
   return (
     <svg
       className={className}

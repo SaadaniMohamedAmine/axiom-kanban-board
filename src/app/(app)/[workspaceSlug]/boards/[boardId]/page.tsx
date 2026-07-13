@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import { BoardViewWithModal } from "./board-view-with-modal";
 import { CreateTaskForm } from "./create-task-form";
 import { SprintPanel } from "@/components/sprint/sprint-panel";
@@ -30,7 +30,7 @@ export default async function BoardPage({
   });
 
   if (!workspace || workspace.members.length === 0) {
-    redirect("/");
+    notFound();
   }
 
   const canEdit = workspace.members[0].role !== "VIEWER";
@@ -68,7 +68,7 @@ export default async function BoardPage({
   });
 
   if (!board || board.workspaceId !== workspace.id) {
-    redirect(`/${workspaceSlug}`);
+    notFound();
   }
 
   const taskCounts = await prisma.taskAssignee.groupBy({
