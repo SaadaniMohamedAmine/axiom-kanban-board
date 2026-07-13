@@ -6,6 +6,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { signUpSchema, type SignUpInput } from "@/lib/validations/auth";
 import { RippleButton } from "@/components/ui/ripple-button";
+import { SPLASH_EVENT } from "@/components/app-splash";
 
 export function SignUpClient() {
   return (
@@ -80,6 +81,7 @@ function SignUpForm() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: formData.email, name: formData.name }),
         }).catch(() => {});
+        window.dispatchEvent(new Event(SPLASH_EVENT));
         router.push("/");
       }
     } catch {

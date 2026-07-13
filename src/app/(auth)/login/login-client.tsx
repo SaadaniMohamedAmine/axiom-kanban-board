@@ -6,6 +6,7 @@ import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { signInSchema, type SignInInput } from "@/lib/validations/auth";
 import { RippleButton } from "@/components/ui/ripple-button";
+import { SPLASH_EVENT } from "@/components/app-splash";
 
 export function LoginClient() {
   const router = useRouter();
@@ -37,6 +38,7 @@ export function LoginClient() {
       if (error) {
         setError(error.message || "Sign in failed");
       } else {
+        window.dispatchEvent(new Event(SPLASH_EVENT));
         router.push("/");
       }
     } catch {
