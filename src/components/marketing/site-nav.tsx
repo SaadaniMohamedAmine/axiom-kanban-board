@@ -4,6 +4,7 @@ import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { MobileNav } from "@/components/marketing/mobile-nav";
 import { HomeLogo } from "@/components/marketing/home-logo";
+import { MotionCta } from "@/components/marketing/motion-cta";
 
 interface Props {
   currentLocale: "fr" | "en";
@@ -40,12 +41,12 @@ export async function SiteNav({ currentLocale }: Props) {
           >
             {t("signIn")}
           </Link>
-          <Link
+          <MotionCta
             href="/sign-up"
             className="text-[13px] px-4 py-2 bg-primary text-white rounded-md hover:brightness-110 transition-all font-medium"
           >
             {t("getStarted")}
-          </Link>
+          </MotionCta>
         </div>
 
         <MobileNav

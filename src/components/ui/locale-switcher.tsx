@@ -7,9 +7,33 @@ interface Props {
   currentLocale: "fr" | "en";
 }
 
+// Rendered as inline SVGs rather than Unicode flag emoji — Windows Chrome has
+// no bundled color-flag font and falls back to plain "GB"/"FR" text boxes.
+function FlagGB() {
+  return (
+    <svg viewBox="0 0 20 14" width="15" height="11" className="rounded-xs shrink-0">
+      <rect width="20" height="14" fill="#012169" />
+      <path d="M0 0 20 14M20 0 0 14" stroke="#fff" strokeWidth="2.4" />
+      <path d="M0 0 20 14M20 0 0 14" stroke="#C8102E" strokeWidth="1" />
+      <path d="M10 0V14M0 7H20" stroke="#fff" strokeWidth="4" />
+      <path d="M10 0V14M0 7H20" stroke="#C8102E" strokeWidth="2.4" />
+    </svg>
+  );
+}
+
+function FlagFR() {
+  return (
+    <svg viewBox="0 0 3 2" width="15" height="11" className="rounded-xs shrink-0">
+      <rect width="1" height="2" fill="#0055A4" />
+      <rect x="1" width="1" height="2" fill="#fff" />
+      <rect x="2" width="1" height="2" fill="#EF4135" />
+    </svg>
+  );
+}
+
 const LOCALES = [
-  { code: "en", flag: "🇬🇧", short: "EN", label: "English" },
-  { code: "fr", flag: "🇫🇷", short: "FR", label: "Français" },
+  { code: "en", Flag: FlagGB, short: "EN", label: "English" },
+  { code: "fr", Flag: FlagFR, short: "FR", label: "Français" },
 ] as const;
 
 export function LocaleSwitcher({ currentLocale }: Props) {
@@ -41,7 +65,7 @@ export function LocaleSwitcher({ currentLocale }: Props) {
         aria-expanded={open}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-outline-variant/20 bg-surface-container text-[12px] font-medium text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all disabled:opacity-50 cursor-pointer"
       >
-        <span className="text-[13px]">{current.flag}</span>
+        <current.Flag />
         <span className="uppercase tracking-wide">{current.short}</span>
         {isPending ? (
           <svg className="animate-spin w-3 h-3" fill="none" viewBox="0 0 24 24">
@@ -80,7 +104,7 @@ export function LocaleSwitcher({ currentLocale }: Props) {
                 l.code === currentLocale ? "text-on-surface font-medium" : "text-on-surface-variant"
               }`}
             >
-              <span className="text-[13px]">{l.flag}</span>
+              <l.Flag />
               <span>{l.label}</span>
             </button>
           ))}

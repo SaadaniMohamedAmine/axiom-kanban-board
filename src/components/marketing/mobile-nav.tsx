@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MOTION } from "@/lib/motion";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { MotionCta } from "@/components/marketing/motion-cta";
 
 interface MobileNavProps {
   currentLocale: "fr" | "en";
@@ -104,13 +105,13 @@ export function MobileNav({ currentLocale, labels }: MobileNavProps) {
                       {labels.signIn}
                     </Link>
                   </div>
-                  <Link
+                  <MotionCta
                     href="/sign-up"
                     onClick={() => setOpen(false)}
                     className="mt-2 px-4 py-2.5 bg-primary text-white rounded-md text-[14px] font-medium text-center hover:brightness-110 transition-all"
                   >
                     {labels.getStarted}
-                  </Link>
+                  </MotionCta>
                 </motion.div>
               </>
             )}
