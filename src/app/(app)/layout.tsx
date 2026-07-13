@@ -59,8 +59,15 @@ export default async function AppLayout({
     where: { userId: session.user.id, readAt: null },
   });
 
+  const recentNotifications = await prisma.notification.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: "desc" },
+    take: 6,
+  });
+
   const locale = (await getLocale()) as "fr" | "en";
   const t = await getTranslations("nav");
+  const tSettings = await getTranslations("settings");
 
   const firstBoard = memberships[0]?.workspace?.boards?.[0];
   const workspaceSlugs = memberships.map((m) => m.workspace.slug);
@@ -161,6 +168,14 @@ export default async function AppLayout({
               workspaceSlugs={workspaceSlugs}
               fallbackSlug={memberships[0]?.workspace.slug}
               unreadCount={unreadNotificationCount}
+              notifications={recentNotifications}
+              userId={session.user.id}
+              labels={{
+                title: tSettings("notifications"),
+                markAllRead: tSettings("markAllRead"),
+                nothingHereYet: tSettings("nothingHereYet"),
+                seeAllActivity: tSettings("seeAllActivity"),
+              }}
             />
             <LocaleSwitcher currentLocale={locale} />
             <ThemeToggle />
