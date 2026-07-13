@@ -53,6 +53,16 @@
     "footerPrivacy": "Privacy Policy",
     "footerTerms": "Terms of Service"
   },
+  "notFound": {
+    "eyebrow": "Axiom",
+    "title": "Page not found",
+    "description": "The requested URL could not be retrieved. This link may have moved or no longer exists.",
+    "backHome": "Back to Axiom",
+    "suggestedLabel": "Suggested destinations",
+    "changelog": "Changelog",
+    "roadmap": "Roadmap",
+    "docs": "Documentation"
+  },
   "legal": {
     "eyebrow": "Legal",
     "lastUpdated": "Last updated July 2026",
