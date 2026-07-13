@@ -11,7 +11,8 @@
     "workspaces": "Espaces de travail",
     "auditLog": "Journal d'audit",
     "changelog": "Nouveautés",
-    "roadmap": "Feuille de route"
+    "roadmap": "Feuille de route",
+    "features": "Fonctionnalités"
   },
   "landing": {
     "badge": "Axiom Intelligence Engine",
@@ -28,7 +29,24 @@
       "analyticsTitle": "Analytique de sprint",
       "analyticsDesc": "Burndown charts, suivi de vélocité et scores de santé de sprint. Sachez exactement où en est votre équipe à tout moment.",
       "realtimeTitle": "Collaboration en temps réel",
-      "realtimeDesc": "Chaque glisser-déposer, chaque changement de statut, chaque commentaire apparaît instantanément dans toute l'équipe. Propulsé par Pusher Channels."
+      "realtimeDesc": "Chaque glisser-déposer, chaque changement de statut, chaque commentaire apparaît instantanément dans toute l'équipe. Propulsé par Pusher Channels.",
+      "designTitle": "Design sobre",
+      "designDesc": "L'attention est une ressource limitée. L'interface d'Axiom est pensée pour s'effacer et ne laisser que l'essentiel.",
+      "paletteTitle": "Palette de commandes",
+      "paletteDesc": "Accédez instantanément à n'importe quel tableau, tâche ou paramètre. Sans souris."
+    },
+    "mockup": {
+      "url": "axiom.app/axiom-demo",
+      "backlog": "Backlog",
+      "inProgress": "En cours",
+      "done": "Terminé",
+      "taskTitle": "Refactoriser le middleware d'auth",
+      "taskBlocker": "Possiblement bloqué par des changements d'API en amont dans le Sprint 4.",
+      "resolve": "Résoudre"
+    },
+    "cta": {
+      "title": "Prêt à dégager la voie ?",
+      "subtitle": "Configurez votre espace de travail et commencez à prioriser avec Axiom Intelligence."
     },
     "stackLabel": "Construit avec une stack de niveau production",
     "footerCopyright": "© 2026 Axiom. Open source."

@@ -11,7 +11,8 @@
     "workspaces": "Workspaces",
     "auditLog": "Audit Log",
     "changelog": "Changelog",
-    "roadmap": "Roadmap"
+    "roadmap": "Roadmap",
+    "features": "Features"
   },
   "landing": {
     "badge": "Axiom Intelligence Engine",
@@ -28,7 +29,24 @@
       "analyticsTitle": "Sprint Analytics",
       "analyticsDesc": "Burndown charts, velocity tracking, and sprint health scores. Know exactly where your team stands at any moment.",
       "realtimeTitle": "Real-time collaboration",
-      "realtimeDesc": "Every drag, every status change, every comment appears instantly across your team. Powered by Pusher Channels."
+      "realtimeDesc": "Every drag, every status change, every comment appears instantly across your team. Powered by Pusher Channels.",
+      "designTitle": "Restrained design",
+      "designDesc": "Focus is a finite resource. Axiom's interface is built to disappear, leaving only what matters most.",
+      "paletteTitle": "Command palette",
+      "paletteDesc": "Jump to any board, task, or setting instantly. No mouse required."
+    },
+    "mockup": {
+      "url": "axiom.app/axiom-demo",
+      "backlog": "Backlog",
+      "inProgress": "In Progress",
+      "done": "Done",
+      "taskTitle": "Refactor auth middleware",
+      "taskBlocker": "May be blocked by upstream API changes in Sprint 4.",
+      "resolve": "Resolve"
+    },
+    "cta": {
+      "title": "Ready to clear the path?",
+      "subtitle": "Set up your workspace and start prioritizing with Axiom Intelligence."
     },
     "stackLabel": "Built with a production-grade stack",
     "footerCopyright": "© 2026 Axiom. Open source."
