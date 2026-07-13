@@ -12,13 +12,9 @@ export default async function NotFound() {
     <div className="min-h-screen bg-background text-on-surface flex flex-col">
       <SiteNav currentLocale={locale as "fr" | "en"} />
 
-      <main className="flex-1 flex items-center justify-center relative overflow-hidden px-6 pt-32 pb-16">
-        <div className="max-w-xl w-full text-center relative z-10">
-          <div className="text-[11px] font-semibold text-on-surface-variant/50 uppercase tracking-widest mb-8">
-            {t("eyebrow")}
-          </div>
-
-          <div className="mb-10">
+      <main className="flex-1 relative overflow-hidden px-6 pt-44 pb-16">
+        <div className="max-w-xl w-full mx-auto text-center relative z-10">
+          <div className="mb-20">
             <NotFoundOrb />
           </div>
 
@@ -39,23 +35,6 @@ export default async function NotFound() {
               <path d="m12 5 7 7-7 7" />
             </svg>
           </Link>
-
-          <div className="mt-16 pt-10 border-t border-outline-variant/20 flex flex-col items-center gap-4">
-            <p className="text-on-surface-variant/50 text-[11px] uppercase tracking-[0.2em] font-semibold">
-              {t("suggestedLabel")}
-            </p>
-            <div className="flex flex-wrap justify-center gap-8">
-              <Link href="/changelog" className="text-[13px] text-on-surface-variant hover:text-primary transition-colors">
-                {t("changelog")}
-              </Link>
-              <Link href="/roadmap" className="text-[13px] text-on-surface-variant hover:text-primary transition-colors">
-                {t("roadmap")}
-              </Link>
-              <Link href="/docs/api" className="text-[13px] text-on-surface-variant hover:text-primary transition-colors">
-                {t("docs")}
-              </Link>
-            </div>
-          </div>
         </div>
       </main>
 

@@ -54,14 +54,9 @@
     "footerTerms": "Conditions d'utilisation"
   },
   "notFound": {
-    "eyebrow": "Axiom",
     "title": "Page introuvable",
     "description": "L'URL demandée n'a pas pu être récupérée. Ce lien a peut-être été déplacé ou n'existe plus.",
-    "backHome": "Retour à Axiom",
-    "suggestedLabel": "Destinations suggérées",
-    "changelog": "Nouveautés",
-    "roadmap": "Feuille de route",
-    "docs": "Documentation"
+    "backHome": "Retour à Axiom"
   },
   "legal": {
     "eyebrow": "Mentions légales",
