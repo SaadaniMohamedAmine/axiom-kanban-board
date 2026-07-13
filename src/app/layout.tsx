@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "next-themes";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { AppSplash } from "@/components/app-splash";
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app";
 
@@ -65,9 +66,9 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <head>
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        {/* apple-touch-icon is auto-registered by src/app/apple-icon.tsx */}
         <meta name="theme-color" content="#0f131d" />
       </head>
       <body suppressHydrationWarning>
@@ -81,6 +82,7 @@ export default async function RootLayout({
             {children}
           </ThemeProvider>
         </NextIntlClientProvider>
+        <AppSplash />
         <Analytics />
         <SpeedInsights />
       </body>

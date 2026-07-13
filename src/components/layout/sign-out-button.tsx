@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { SPLASH_EVENT } from "@/components/app-splash";
 
 export function SignOutButton() {
   const router = useRouter();
@@ -11,6 +12,7 @@ export function SignOutButton() {
   async function handleSignOut() {
     if (isSigningOut) return;
     setIsSigningOut(true);
+    window.dispatchEvent(new Event(SPLASH_EVENT));
     await authClient.signOut();
     router.push("/login");
     router.refresh();

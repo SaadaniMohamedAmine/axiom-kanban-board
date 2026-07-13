@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { ROADMAP, type RoadmapStatus } from "@/content/roadmap";
+import { SiteNav } from "@/components/marketing/site-nav";
+import { SiteFooter } from "@/components/marketing/site-footer";
 
 export const metadata: Metadata = {
   title: "Roadmap",
@@ -12,10 +13,9 @@ export const metadata: Metadata = {
   },
 };
 
-export const dynamic = "force-static";
-
 export default async function RoadmapPage() {
   const t = await getTranslations("roadmapPage");
+  const locale = await getLocale();
 
   const STATUS_CONFIG: Record<
     RoadmapStatus,
@@ -45,20 +45,9 @@ export default async function RoadmapPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
-      <nav className="border-b border-outline-variant/20 bg-background/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 h-14 flex items-center gap-4">
-          <Link href="/" className="text-[13px] text-on-surface-variant hover:text-on-surface transition-colors flex items-center gap-1.5">
-            <svg fill="none" height="12" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="12">
-              <path d="m15 18-6-6 6-6" />
-            </svg>
-            Axiom
-          </Link>
-          <span className="text-on-surface-variant/30">/</span>
-          <span className="text-[13px] text-on-surface">{t("breadcrumb")}</span>
-        </div>
-      </nav>
+      <SiteNav currentLocale={locale as "fr" | "en"} />
 
-      <main className="max-w-6xl mx-auto px-6 py-16">
+      <main className="max-w-6xl mx-auto px-6 pt-32 pb-16">
         <div className="mb-16 max-w-2xl">
           <div className="text-[11px] font-semibold text-on-surface-variant/40 uppercase tracking-widest mb-3">
             {t("eyebrow")}
@@ -66,9 +55,10 @@ export default async function RoadmapPage() {
           <h1 className="text-4xl font-semibold text-on-surface tracking-tight mb-3">
             {t("title")}
           </h1>
-          <p className="text-[15px] text-on-surface-variant leading-relaxed">
+          <p className="text-[15px] text-on-surface-variant leading-relaxed mb-3">
             {t("subtitle")}
           </p>
+          <p className="text-[12px] text-on-surface-variant/50">{t("lastUpdated")}</p>
         </div>
 
         <div className="flex items-center gap-4 flex-wrap mb-12">
@@ -122,15 +112,7 @@ export default async function RoadmapPage() {
         </div>
       </main>
 
-      <footer className="border-t border-outline-variant/20 mt-16 py-8 px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-[12px] text-on-surface-variant/50">
-          <span>{t("lastUpdated")}</span>
-          <div className="flex items-center gap-6">
-            <Link href="/changelog" className="hover:text-on-surface-variant transition-colors">{t("breadcrumb")}</Link>
-            <Link href="/" className="hover:text-on-surface-variant transition-colors">{t("backToAxiom")}</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
