@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getAllChangelogEntries } from "@/lib/changelog";
 import { SiteNav } from "@/components/marketing/site-nav";
+import { SiteFooter } from "@/components/marketing/site-footer";
 
 export const metadata: Metadata = {
   title: "Changelog",
@@ -73,6 +74,8 @@ export default async function ChangelogPage() {
           </div>
         </div>
       </main>
+
+      <SiteFooter />
     </div>
   );
 }

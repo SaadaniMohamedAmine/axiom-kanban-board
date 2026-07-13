@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { ROADMAP, type RoadmapStatus } from "@/content/roadmap";
 import { SiteNav } from "@/components/marketing/site-nav";
+import { SiteFooter } from "@/components/marketing/site-footer";
 
 export const metadata: Metadata = {
   title: "Roadmap",
@@ -55,9 +55,10 @@ export default async function RoadmapPage() {
           <h1 className="text-4xl font-semibold text-on-surface tracking-tight mb-3">
             {t("title")}
           </h1>
-          <p className="text-[15px] text-on-surface-variant leading-relaxed">
+          <p className="text-[15px] text-on-surface-variant leading-relaxed mb-3">
             {t("subtitle")}
           </p>
+          <p className="text-[12px] text-on-surface-variant/50">{t("lastUpdated")}</p>
         </div>
 
         <div className="flex items-center gap-4 flex-wrap mb-12">
@@ -111,15 +112,7 @@ export default async function RoadmapPage() {
         </div>
       </main>
 
-      <footer className="border-t border-outline-variant/20 mt-16 py-8 px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-[12px] text-on-surface-variant/50">
-          <span>{t("lastUpdated")}</span>
-          <div className="flex items-center gap-6">
-            <Link href="/changelog" className="hover:text-on-surface-variant transition-colors">{t("breadcrumb")}</Link>
-            <Link href="/" className="hover:text-on-surface-variant transition-colors">{t("backToAxiom")}</Link>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

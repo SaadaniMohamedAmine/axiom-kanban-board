@@ -269,8 +269,8 @@ function SignUpForm() {
         <footer className="mt-8 text-center space-y-2">
           <p className="text-xs text-[#c2c6d6] opacity-40">
             By signing up, you agree to our{" "}
-            <a href="#" className="underline underline-offset-4 hover:opacity-100 transition-opacity">Terms of Service</a> and{" "}
-            <a href="#" className="underline underline-offset-4 hover:opacity-100 transition-opacity">Privacy Policy</a>.
+            <Link href="/terms" className="underline underline-offset-4 hover:opacity-100 transition-opacity">Terms of Service</Link> and{" "}
+            <Link href="/privacy" className="underline underline-offset-4 hover:opacity-100 transition-opacity">Privacy Policy</Link>.
           </p>
           <p className="text-xs text-[#c2c6d6] opacity-30">© 2024 Axiom AI. All rights reserved.</p>
         </footer>

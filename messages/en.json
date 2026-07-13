@@ -49,7 +49,121 @@
       "subtitle": "Set up your workspace and start prioritizing with Axiom Intelligence."
     },
     "stackLabel": "Built with a production-grade stack",
-    "footerCopyright": "© 2026 Axiom. Open source."
+    "footerCopyright": "© 2026 Axiom. Open source.",
+    "footerPrivacy": "Privacy Policy",
+    "footerTerms": "Terms of Service"
+  },
+  "legal": {
+    "eyebrow": "Legal",
+    "lastUpdated": "Last updated July 2026",
+    "terms": {
+      "title": "Terms of Service",
+      "intro": "These Terms of Service (\"Terms\") govern access to and use of Axiom, an AI-powered Kanban platform. By creating an account or using Axiom, you agree to these Terms.",
+      "sections": [
+        {
+          "heading": "1. Accepting these Terms",
+          "body": "By accessing or using Axiom you confirm that you can form a binding contract, that you accept these Terms, and that you agree to comply with them. If you use Axiom on behalf of an organization, you represent that you have authority to bind that organization."
+        },
+        {
+          "heading": "2. The Service",
+          "body": "Axiom provides Kanban boards, sprint analytics, real-time collaboration, and AI-assisted features under the Axiom Intelligence Engine. Features vary by plan, and Axiom may add, change, or remove functionality as the product evolves."
+        },
+        {
+          "heading": "3. Accounts",
+          "body": "You are responsible for the accuracy of your account information and for safeguarding your credentials. Notify us promptly if you suspect unauthorized access to your account."
+        },
+        {
+          "heading": "4. Acceptable Use",
+          "body": "You agree not to misuse the service: no reverse engineering, no attempts to bypass rate limits or security controls, no uploading of unlawful content, and no use that disrupts other workspaces or infrastructure."
+        },
+        {
+          "heading": "5. Axiom Intelligence",
+          "body": "AI-generated suggestions — prioritization, estimation, blocker detection, and assignment — are decision support, not guaranteed outcomes. Review AI output before relying on it for critical decisions. Daily AI request limits apply per plan, as described in Settings → AI Quota."
+        },
+        {
+          "heading": "6. Subscriptions & Billing",
+          "body": "Paid plans are billed in advance on a recurring basis as described at axiom.app/pricing. You may cancel at any time; cancellation takes effect at the end of the current billing period."
+        },
+        {
+          "heading": "7. Intellectual Property",
+          "body": "Axiom and its original content, features, and functionality are owned by the Axiom team. Content you create in your workspace — boards, tasks, comments — remains yours."
+        },
+        {
+          "heading": "8. Termination",
+          "body": "We may suspend or terminate access for violation of these Terms. You may stop using Axiom and delete your workspace at any time from Settings."
+        },
+        {
+          "heading": "9. Disclaimers",
+          "body": "Axiom is provided \"as is\" without warranties of any kind, express or implied, including fitness for a particular purpose or non-infringement."
+        },
+        {
+          "heading": "10. Limitation of Liability",
+          "body": "To the maximum extent permitted by law, Axiom is not liable for indirect, incidental, or consequential damages arising from use of the service."
+        },
+        {
+          "heading": "11. Changes to these Terms",
+          "body": "We may update these Terms from time to time. Material changes will be reflected on this page with an updated date; continued use after a change constitutes acceptance."
+        },
+        {
+          "heading": "12. Contact",
+          "body": "Questions about these Terms can be sent to legal@axiom.app."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "This Privacy Policy explains what information Axiom collects, how it is used, and the choices available to you.",
+      "sections": [
+        {
+          "heading": "1. Overview",
+          "body": "Axiom collects the minimum information needed to operate the product: account details, workspace content, and usage data that keeps boards fast and reliable."
+        },
+        {
+          "heading": "2. Information We Collect",
+          "body": "Account information (name, email, authentication provider), workspace content (boards, tasks, comments), and technical data (device, browser, log data) collected automatically when you use the service."
+        },
+        {
+          "heading": "3. How We Use Your Information",
+          "body": "To provide and maintain the service, authenticate sign-in, power real-time collaboration, generate sprint analytics, and — where you invoke it — run Axiom Intelligence features."
+        },
+        {
+          "heading": "4. AI Processing",
+          "body": "Axiom Intelligence requests (prioritization, estimation, description generation, blocker detection, assignment) are processed by Groq (Llama 3.1), with Gemini Flash as a fallback provider. Task content relevant to the specific request is sent to these providers solely to generate that response; it is not used by Axiom to train models."
+        },
+        {
+          "heading": "5. Data Sharing",
+          "body": "We do not sell personal data. Information is shared only with service providers necessary to run Axiom — hosting, authentication, email delivery, and the AI providers described above — under contractual confidentiality obligations."
+        },
+        {
+          "heading": "6. Data Retention",
+          "body": "Workspace content is retained for as long as your workspace exists. Deleting your workspace or account removes associated content within a reasonable operational window."
+        },
+        {
+          "heading": "7. Your Rights",
+          "body": "Depending on your location, you may have the right to access, correct, export, or delete your personal data. Requests can be made from Settings → Account or by contacting privacy@axiom.app."
+        },
+        {
+          "heading": "8. Cookies",
+          "body": "Axiom uses essential cookies for authentication and locale preference. No third-party advertising or tracking cookies are used."
+        },
+        {
+          "heading": "9. Security",
+          "body": "Data is encrypted in transit and at rest. Access to production systems is limited and audited. No method of transmission or storage is 100% secure, but Axiom follows industry-standard practices to protect your data."
+        },
+        {
+          "heading": "10. Children's Privacy",
+          "body": "Axiom is not directed at children under 16, and we do not knowingly collect personal data from them."
+        },
+        {
+          "heading": "11. Changes to this Policy",
+          "body": "We may update this Policy from time to time. Material changes will be reflected on this page with an updated date."
+        },
+        {
+          "heading": "12. Contact",
+          "body": "Questions about this Policy can be sent to privacy@axiom.app."
+        }
+      ]
+    }
   },
   "auth": {
     "signIn": "Sign in",

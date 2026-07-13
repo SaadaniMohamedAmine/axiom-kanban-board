@@ -49,7 +49,121 @@
       "subtitle": "Configurez votre espace de travail et commencez à prioriser avec Axiom Intelligence."
     },
     "stackLabel": "Construit avec une stack de niveau production",
-    "footerCopyright": "© 2026 Axiom. Open source."
+    "footerCopyright": "© 2026 Axiom. Open source.",
+    "footerPrivacy": "Politique de confidentialité",
+    "footerTerms": "Conditions d'utilisation"
+  },
+  "legal": {
+    "eyebrow": "Mentions légales",
+    "lastUpdated": "Dernière mise à jour : juillet 2026",
+    "terms": {
+      "title": "Conditions d'utilisation",
+      "intro": "Les présentes Conditions d'utilisation (les « Conditions ») régissent l'accès et l'utilisation d'Axiom, une plateforme Kanban propulsée par l'IA. En créant un compte ou en utilisant Axiom, vous acceptez ces Conditions.",
+      "sections": [
+        {
+          "heading": "1. Acceptation des présentes Conditions",
+          "body": "En accédant à Axiom ou en l'utilisant, vous confirmez être en mesure de conclure un contrat contraignant, accepter ces Conditions et vous engager à les respecter. Si vous utilisez Axiom pour le compte d'une organisation, vous garantissez disposer de l'autorité nécessaire pour l'engager."
+        },
+        {
+          "heading": "2. Le service",
+          "body": "Axiom propose des tableaux Kanban, des analyses de sprint, une collaboration en temps réel et des fonctionnalités assistées par IA via l'Axiom Intelligence Engine. Les fonctionnalités varient selon le plan, et Axiom peut ajouter, modifier ou retirer des fonctionnalités à mesure que le produit évolue."
+        },
+        {
+          "heading": "3. Comptes",
+          "body": "Vous êtes responsable de l'exactitude des informations de votre compte et de la protection de vos identifiants. Signalez-nous rapidement tout accès non autorisé suspecté à votre compte."
+        },
+        {
+          "heading": "4. Utilisation acceptable",
+          "body": "Vous vous engagez à ne pas détourner le service : pas d'ingénierie inverse, pas de tentative de contournement des limites de débit ou des contrôles de sécurité, pas de contenu illicite, et pas d'usage perturbant d'autres espaces de travail ou l'infrastructure."
+        },
+        {
+          "heading": "5. Axiom Intelligence",
+          "body": "Les suggestions générées par l'IA — priorisation, estimation, détection de blocages, assignation — sont une aide à la décision, non un résultat garanti. Vérifiez les résultats de l'IA avant de vous y fier pour des décisions critiques. Des limites quotidiennes de requêtes IA s'appliquent selon le plan, comme indiqué dans Paramètres → Quota IA."
+        },
+        {
+          "heading": "6. Abonnements et facturation",
+          "body": "Les plans payants sont facturés à l'avance de façon récurrente, comme décrit sur axiom.app/pricing. Vous pouvez annuler à tout moment ; l'annulation prend effet à la fin de la période de facturation en cours."
+        },
+        {
+          "heading": "7. Propriété intellectuelle",
+          "body": "Axiom ainsi que son contenu original, ses fonctionnalités et son fonctionnement appartiennent à l'équipe Axiom. Le contenu que vous créez dans votre espace de travail — tableaux, tâches, commentaires — reste le vôtre."
+        },
+        {
+          "heading": "8. Résiliation",
+          "body": "Nous pouvons suspendre ou résilier l'accès en cas de violation des présentes Conditions. Vous pouvez cesser d'utiliser Axiom et supprimer votre espace de travail à tout moment depuis les Paramètres."
+        },
+        {
+          "heading": "9. Avertissements",
+          "body": "Axiom est fourni « tel quel », sans garantie d'aucune sorte, expresse ou implicite, y compris d'adéquation à un usage particulier ou d'absence de contrefaçon."
+        },
+        {
+          "heading": "10. Limitation de responsabilité",
+          "body": "Dans la mesure permise par la loi, Axiom ne saurait être tenu responsable des dommages indirects, accessoires ou consécutifs liés à l'utilisation du service."
+        },
+        {
+          "heading": "11. Modifications des présentes Conditions",
+          "body": "Nous pouvons mettre à jour ces Conditions de temps à autre. Les modifications importantes seront reflétées sur cette page avec une date mise à jour ; la poursuite de l'utilisation après une modification vaut acceptation."
+        },
+        {
+          "heading": "12. Contact",
+          "body": "Pour toute question concernant ces Conditions, écrivez à legal@axiom.app."
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Politique de confidentialité",
+      "intro": "Cette Politique de confidentialité explique quelles informations Axiom collecte, comment elles sont utilisées, et les choix qui s'offrent à vous.",
+      "sections": [
+        {
+          "heading": "1. Aperçu",
+          "body": "Axiom collecte le minimum d'informations nécessaire au fonctionnement du produit : les détails du compte, le contenu de l'espace de travail, et des données d'usage qui gardent les tableaux rapides et fiables."
+        },
+        {
+          "heading": "2. Informations collectées",
+          "body": "Informations de compte (nom, email, fournisseur d'authentification), contenu de l'espace de travail (tableaux, tâches, commentaires), et données techniques (appareil, navigateur, journaux) collectées automatiquement lors de l'utilisation du service."
+        },
+        {
+          "heading": "3. Utilisation de vos informations",
+          "body": "Pour fournir et maintenir le service, authentifier la connexion, permettre la collaboration en temps réel, générer les analyses de sprint, et — lorsque vous les sollicitez — exécuter les fonctionnalités d'Axiom Intelligence."
+        },
+        {
+          "heading": "4. Traitement par IA",
+          "body": "Les requêtes Axiom Intelligence (priorisation, estimation, génération de description, détection de blocages, assignation) sont traitées par Groq (Llama 3.1), avec Gemini Flash comme fournisseur de secours. Le contenu de tâche pertinent à la requête spécifique leur est transmis uniquement pour générer cette réponse ; il n'est pas utilisé par Axiom pour entraîner des modèles."
+        },
+        {
+          "heading": "5. Partage des données",
+          "body": "Nous ne vendons pas de données personnelles. Les informations ne sont partagées qu'avec les prestataires nécessaires au fonctionnement d'Axiom — hébergement, authentification, envoi d'emails, et les fournisseurs d'IA mentionnés ci-dessus — sous obligation contractuelle de confidentialité."
+        },
+        {
+          "heading": "6. Conservation des données",
+          "body": "Le contenu de l'espace de travail est conservé tant que celui-ci existe. La suppression de votre espace de travail ou de votre compte entraîne la suppression du contenu associé dans un délai opérationnel raisonnable."
+        },
+        {
+          "heading": "7. Vos droits",
+          "body": "Selon votre localisation, vous pouvez disposer d'un droit d'accès, de rectification, d'export ou de suppression de vos données personnelles. Les demandes peuvent être faites depuis Paramètres → Compte ou en contactant privacy@axiom.app."
+        },
+        {
+          "heading": "8. Cookies",
+          "body": "Axiom utilise des cookies essentiels pour l'authentification et la préférence de langue. Aucun cookie publicitaire ou de traçage tiers n'est utilisé."
+        },
+        {
+          "heading": "9. Sécurité",
+          "body": "Les données sont chiffrées en transit et au repos. L'accès aux systèmes de production est limité et audité. Aucune méthode de transmission ou de stockage n'est sûre à 100 %, mais Axiom applique des pratiques conformes aux standards du secteur pour protéger vos données."
+        },
+        {
+          "heading": "10. Confidentialité des mineurs",
+          "body": "Axiom ne s'adresse pas aux enfants de moins de 16 ans, et nous ne collectons pas sciemment de données personnelles les concernant."
+        },
+        {
+          "heading": "11. Modifications de cette Politique",
+          "body": "Nous pouvons mettre à jour cette Politique de temps à autre. Les modifications importantes seront reflétées sur cette page avec une date mise à jour."
+        },
+        {
+          "heading": "12. Contact",
+          "body": "Pour toute question concernant cette Politique, écrivez à privacy@axiom.app."
+        }
+      ]
+    }
   },
   "auth": {
     "signIn": "Se connecter",

@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ScrollToTop } from "@/components/marketing/scroll-to-top";
 import { SiteNav } from "@/components/marketing/site-nav";
+import { SiteFooter } from "@/components/marketing/site-footer";
 import { HeroContent } from "@/components/marketing/hero-content";
 import { MouseGlow } from "@/components/marketing/mouse-glow";
 import { FeatureTile } from "@/components/marketing/feature-tile";
@@ -14,7 +14,6 @@ interface Props {
 
 export async function LandingPage({ currentLocale }: Props) {
   const t = await getTranslations("landing");
-  const tNav = await getTranslations("nav");
   const tAi = await getTranslations("ai");
 
   return (
@@ -254,17 +253,7 @@ export async function LandingPage({ currentLocale }: Props) {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-outline-variant/20 py-8 px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-[12px] text-on-surface-variant/50">
-          <span>{t("footerCopyright")}</span>
-          <div className="flex items-center gap-6">
-            <Link href="/changelog" className="hover:text-on-surface-variant transition-colors">{tNav("changelog")}</Link>
-            <Link href="/roadmap" className="hover:text-on-surface-variant transition-colors">{tNav("roadmap")}</Link>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-on-surface-variant transition-colors">GitHub</a>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
 
       <ScrollToTop />
     </div>
