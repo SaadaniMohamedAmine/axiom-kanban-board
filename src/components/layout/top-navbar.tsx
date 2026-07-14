@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useCommandPalette } from "@/contexts/command-palette-context";
+import { useCreateTask } from "@/contexts/create-task-context";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -18,6 +19,7 @@ interface NotificationItem {
 }
 
 interface Membership {
+  role: string;
   workspace: {
     slug: string;
     boards: { id: string }[];
@@ -51,8 +53,12 @@ export function TopNavbar({
   notificationLabels,
 }: TopNavbarProps) {
   const t = useTranslations("nav");
+  const tBoard = useTranslations("board");
   const pathname = usePathname();
   const { open: openCommandPalette } = useCommandPalette();
+  const { open: openCreateTask } = useCreateTask();
+
+  const isOnBoardPage = /^\/[^/]+\/boards\/[^/]+$/.test(pathname);
 
   const workspaceSlugs = memberships.map((m) => m.workspace.slug);
   const currentSlug = pathname.split("/")[1];
@@ -95,6 +101,14 @@ export function TopNavbar({
         </nav>
 
         <div className="flex items-center gap-2 ml-auto shrink-0">
+          {isOnBoardPage && current?.role !== "VIEWER" && (
+            <button
+              onClick={openCreateTask}
+              className="px-4 py-2 bg-primary text-on-primary rounded-lg text-[13px] font-semibold hover:brightness-110 active:scale-95 transition-all cursor-pointer shrink-0"
+            >
+              {tBoard("addTask")}
+            </button>
+          )}
           <button
             onClick={openCommandPalette}
             className="w-64 flex items-center gap-2 px-3.5 py-2 rounded-lg border border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant/60 hover:border-outline-variant/50 hover:text-on-surface-variant transition-colors cursor-pointer text-left"

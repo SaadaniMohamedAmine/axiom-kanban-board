@@ -17,6 +17,7 @@ import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
 import { OnboardingTour } from "@/components/onboarding/onboarding-tour";
 import { CommandPaletteProvider } from "@/contexts/command-palette-context";
 import { CommandPalette } from "@/components/command-palette/command-palette";
+import { CreateTaskProvider } from "@/contexts/create-task-context";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 
 export default async function AppLayout({
@@ -76,6 +77,7 @@ export default async function AppLayout({
     <ShortcutsProvider>
     <CommandPaletteProvider>
     <SidebarProvider>
+    <CreateTaskProvider>
     <div className="flex flex-col h-screen bg-background dot-grid-bg">
       <TopNavbar
         memberships={memberships}
@@ -115,6 +117,7 @@ export default async function AppLayout({
     {!user?.onboardingCompleted && (
       <OnboardingTour boardId={firstBoard?.id} />
     )}
+    </CreateTaskProvider>
     </SidebarProvider>
     </CommandPaletteProvider>
     </ShortcutsProvider>
