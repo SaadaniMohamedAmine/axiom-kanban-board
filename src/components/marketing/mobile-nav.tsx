@@ -13,6 +13,7 @@ interface MobileNavProps {
   currentLocale: "fr" | "en";
   labels: {
     features: string;
+    pricing: string;
     changelog: string;
     roadmap: string;
     signIn: string;
@@ -74,6 +75,13 @@ export function MobileNav({ currentLocale, labels }: MobileNavProps) {
                     className="px-3 py-2.5 rounded-md text-[14px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
                   >
                     {labels.features}
+                  </Link>
+                  <Link
+                    href="/pricing"
+                    onClick={() => setOpen(false)}
+                    className="px-3 py-2.5 rounded-md text-[14px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
+                  >
+                    {labels.pricing}
                   </Link>
                   <Link
                     href="/changelog"

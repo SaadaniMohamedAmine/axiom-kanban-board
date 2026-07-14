@@ -58,7 +58,7 @@ export default async function PricingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-on-surface">
+    <div className="min-h-screen bg-background text-on-surface stardust-bg">
       <SiteNav currentLocale={locale as "fr" | "en"} />
 
       <main className="max-w-6xl mx-auto px-6 pt-32 pb-24">
@@ -167,7 +167,7 @@ export default async function PricingPage() {
           <h2 className="text-2xl font-semibold text-on-surface text-center mb-10">
             {t("comparisonTitle")}
           </h2>
-          <div className="overflow-x-auto rounded-2xl border border-outline-variant/20 bg-surface-container/60 backdrop-blur-sm">
+          <div className="overflow-x-auto rounded-2xl border border-outline-variant/20 bg-surface-container/80 backdrop-blur-sm">
             <table className="w-full text-left border-collapse min-w-[480px]">
               <thead>
                 <tr className="bg-surface-container-high/50">
