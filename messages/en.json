@@ -27,7 +27,9 @@
     "aiInsights": "AI Insights",
     "archive": "Archive",
     "trash": "Trash",
-    "comingSoon": "Soon"
+    "comingSoon": "Soon",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar"
   },
   "landing": {
     "badge": "Axiom Intelligence Engine",

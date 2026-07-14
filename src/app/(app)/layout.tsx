@@ -8,7 +8,10 @@ import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { WorkspaceSidebarNav } from "@/components/layout/workspace-sidebar-nav";
 import { TopNavbar } from "@/components/layout/top-navbar";
 import { PlanCard } from "@/components/layout/plan-card";
+import { CollapsibleSidebar } from "@/components/layout/collapsible-sidebar";
+import { SidebarToggleButton } from "@/components/layout/sidebar-toggle-button";
 import { ToastProvider } from "@/contexts/toast-context";
+import { SidebarProvider } from "@/contexts/sidebar-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
 import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
 import { OnboardingTour } from "@/components/onboarding/onboarding-tour";
@@ -72,6 +75,7 @@ export default async function AppLayout({
     <ToastProvider>
     <ShortcutsProvider>
     <CommandPaletteProvider>
+    <SidebarProvider>
     <div className="flex flex-col h-screen bg-background dot-grid-bg">
       <TopNavbar
         memberships={memberships}
@@ -89,15 +93,20 @@ export default async function AppLayout({
         }}
       />
       <div className="flex flex-1 overflow-hidden">
-        <aside className="hidden md:flex w-[260px] bg-surface-container/95 backdrop-blur-sm border-r border-outline-variant/50 flex-col">
+        <CollapsibleSidebar>
           <WorkspaceSidebarNav memberships={memberships} />
           <PlanCard memberships={memberships} />
-        </aside>
+        </CollapsibleSidebar>
 
         <MobileSidebar memberships={memberships} userName={session.user.name} />
 
-        <main className="flex-1 overflow-auto scroll-smooth">
-          <ErrorBoundary>{children}</ErrorBoundary>
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="hidden md:block shrink-0 p-3">
+            <SidebarToggleButton />
+          </div>
+          <div className="flex-1 overflow-auto scroll-smooth">
+            <ErrorBoundary>{children}</ErrorBoundary>
+          </div>
         </main>
       </div>
     </div>
@@ -106,6 +115,7 @@ export default async function AppLayout({
     {!user?.onboardingCompleted && (
       <OnboardingTour boardId={firstBoard?.id} />
     )}
+    </SidebarProvider>
     </CommandPaletteProvider>
     </ShortcutsProvider>
     </ToastProvider>
