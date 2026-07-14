@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import * as Sentry from "@sentry/nextjs";
 import { getLocale, getTranslations } from "next-intl/server";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
-import { SidebarNav } from "@/components/layout/sidebar-nav";
+import { WorkspaceSidebarNav } from "@/components/layout/workspace-sidebar-nav";
 import { TopNavbar } from "@/components/layout/top-navbar";
 import { WorkspaceSwitcherCard } from "@/components/layout/workspace-switcher-card";
 import { PlanCard } from "@/components/layout/plan-card";
@@ -65,7 +65,6 @@ export default async function AppLayout({
   });
 
   const locale = (await getLocale()) as "fr" | "en";
-  const t = await getTranslations("nav");
   const tSettings = await getTranslations("settings");
 
   const firstBoard = memberships[0]?.workspace?.boards?.[0];
@@ -93,12 +92,7 @@ export default async function AppLayout({
       <div className="flex flex-1 overflow-hidden">
         <aside className="hidden md:flex w-[260px] bg-surface-container/95 backdrop-blur-sm border-r border-outline-variant/50 flex-col">
           <WorkspaceSwitcherCard memberships={memberships} />
-          <SidebarNav
-            memberships={memberships}
-            workspacesLabel={t("workspaces")}
-            newWorkspaceLabel={t("newWorkspace")}
-            analyticsLabel={t("analytics")}
-          />
+          <WorkspaceSidebarNav memberships={memberships} />
           <PlanCard memberships={memberships} />
         </aside>
 

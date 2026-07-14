@@ -15,13 +15,19 @@
     "features": "Fonctionnalités",
     "pricing": "Tarifs",
     "dashboard": "Dashboard",
+    "overview": "Aperçu",
     "projects": "Projets",
     "team": "Équipe",
     "search": "Rechercher",
     "searchPlaceholder": "Rechercher tableaux et tâches…",
     "membersCount": "{count} membres",
     "switchWorkspace": "Changer d'espace de travail",
-    "myAccount": "Mon compte"
+    "myAccount": "Mon compte",
+    "myTasks": "Mes tâches",
+    "aiInsights": "AI Insights",
+    "archive": "Archive",
+    "trash": "Corbeille",
+    "comingSoon": "Bientôt"
   },
   "landing": {
     "badge": "Axiom Intelligence Engine",

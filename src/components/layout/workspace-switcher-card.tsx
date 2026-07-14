@@ -56,17 +56,15 @@ export function WorkspaceSwitcherCard({ memberships }: WorkspaceSwitcherCardProp
             {t("membersCount", { count: current.workspace._count.members })}
           </p>
         </div>
-        {others.length > 0 && (
-          <svg
-            className={`text-on-surface-variant/50 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
-            fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="14"
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        )}
+        <svg
+          className={`text-on-surface-variant/50 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+          fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="14"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
       </button>
 
-      {open && others.length > 0 && (
+      {open && (
         <div
           role="listbox"
           aria-label={t("switchWorkspace")}
@@ -85,6 +83,17 @@ export function WorkspaceSwitcherCard({ memberships }: WorkspaceSwitcherCardProp
               <span className="truncate">{m.workspace.name}</span>
             </Link>
           ))}
+          <Link
+            href="/workspaces/new"
+            onClick={() => setOpen(false)}
+            className={`flex items-center gap-2.5 px-3 py-2.5 text-[13px] text-primary hover:bg-surface-container-highest transition-colors ${others.length > 0 ? "border-t border-outline-variant/20" : ""}`}
+          >
+            <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14" className="shrink-0 ml-1">
+              <line x1="12" x2="12" y1="5" y2="19" />
+              <line x1="5" x2="19" y1="12" y2="12" />
+            </svg>
+            {t("newWorkspace")}
+          </Link>
         </div>
       )}
     </div>
