@@ -423,7 +423,16 @@
     "overdue": "Overdue",
     "blocked": "Blocked",
     "aiSprintSummary": "Axiom Intelligence — Sprint summary",
-    "generateHealthSummary": "Generate AI health summary →"
+    "generateHealthSummary": "Generate AI health summary →",
+    "completionRate": "Completion Rate",
+    "velocity": "Velocity",
+    "activeBlockers": "Active Blockers",
+    "pointsAheadOfSchedule": "{points} pts ahead of pace",
+    "pointsBehindSchedule": "{points} pts behind pace",
+    "onPace": "On pace",
+    "workloadBalance": "Workload Balance",
+    "noActiveWorkload": "No assigned work in this sprint.",
+    "exportCsv": "Export CSV"
   },
   "devManagers": {
     "apiKeys": "API Keys",
