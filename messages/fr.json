@@ -13,7 +13,15 @@
     "changelog": "Nouveautés",
     "roadmap": "Feuille de route",
     "features": "Fonctionnalités",
-    "pricing": "Tarifs"
+    "pricing": "Tarifs",
+    "dashboard": "Dashboard",
+    "projects": "Projets",
+    "team": "Équipe",
+    "search": "Rechercher",
+    "searchPlaceholder": "Rechercher tableaux et tâches…",
+    "membersCount": "{count} membres",
+    "switchWorkspace": "Changer d'espace de travail",
+    "myAccount": "Mon compte"
   },
   "landing": {
     "badge": "Axiom Intelligence Engine",
@@ -535,6 +543,7 @@
     "copied": "Copié",
     "export": "Exporter",
     "showPassword": "Afficher le mot de passe",
-    "hidePassword": "Masquer le mot de passe"
+    "hidePassword": "Masquer le mot de passe",
+    "signOut": "Se déconnecter"
   }
 }

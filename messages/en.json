@@ -13,7 +13,15 @@
     "changelog": "Changelog",
     "roadmap": "Roadmap",
     "features": "Features",
-    "pricing": "Pricing"
+    "pricing": "Pricing",
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "team": "Team",
+    "search": "Search",
+    "searchPlaceholder": "Search boards and tasks…",
+    "membersCount": "{count} members",
+    "switchWorkspace": "Switch workspace",
+    "myAccount": "My account"
   },
   "landing": {
     "badge": "Axiom Intelligence Engine",
@@ -535,6 +543,7 @@
     "copied": "Copied",
     "export": "Export",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "signOut": "Sign out"
   }
 }
