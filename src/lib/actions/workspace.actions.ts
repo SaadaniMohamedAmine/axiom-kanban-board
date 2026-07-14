@@ -182,7 +182,7 @@ export async function inviteMember(input: InviteMemberInput) {
     expiresInDays: 7,
   }).catch(() => {});
 
-  revalidatePath(`/[workspaceSlug]/settings/members`, "page");
+  revalidatePath(`/[workspaceSlug]/settings`, "page");
   return { success: true };
 }
 

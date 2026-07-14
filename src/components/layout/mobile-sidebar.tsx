@@ -89,11 +89,24 @@ export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-outline-variant flex items-center justify-between">
-          <div className="text-[13px] text-on-surface-variant px-3 py-2">
-            {userName}
+        <div className="p-4 border-t border-outline-variant">
+          <Link
+            href="/pricing"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-3 py-2 mb-2 text-[13px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
+          >
+            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+              <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+              <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+            </svg>
+            Pricing
+          </Link>
+          <div className="flex items-center justify-between">
+            <div className="text-[13px] text-on-surface-variant px-3 py-2">
+              {userName}
+            </div>
+            <SignOutButton />
           </div>
-          <SignOutButton />
         </div>
       </aside>
     </>

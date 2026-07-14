@@ -40,6 +40,47 @@ body {
   font-family: Geist, system-ui, sans-serif;
 }
 
+/* Scattered-dust background texture — self-hosted SVG tile (the reference
+   design linked an external transparenttextures.com asset; this avoids the
+   third-party dependency while matching the same effect). */
+.stardust-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Ccircle cx='18' cy='24' r='1' fill='%238c909f' opacity='0.35'/%3E%3Ccircle cx='64' cy='12' r='0.6' fill='%238c909f' opacity='0.25'/%3E%3Ccircle cx='112' cy='48' r='1.1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='150' cy='20' r='0.7' fill='%238c909f' opacity='0.2'/%3E%3Ccircle cx='201' cy='55' r='0.9' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='245' cy='18' r='0.6' fill='%238c909f' opacity='0.25'/%3E%3Ccircle cx='280' cy='70' r='1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='30' cy='95' r='0.7' fill='%238c909f' opacity='0.2'/%3E%3Ccircle cx='85' cy='110' r='1.1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='140' cy='88' r='0.6' fill='%238c909f' opacity='0.2'/%3E%3Ccircle cx='185' cy='125' r='0.9' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='230' cy='100' r='0.7' fill='%238c909f' opacity='0.25'/%3E%3Ccircle cx='270' cy='140' r='1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='10' cy='160' r='0.8' fill='%238c909f' opacity='0.25'/%3E%3Ccircle cx='55' cy='180' r='0.6' fill='%238c909f' opacity='0.2'/%3E%3Ccircle cx='105' cy='165' r='1.1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='160' cy='190' r='0.7' fill='%238c909f' opacity='0.25'/%3E%3Ccircle cx='210' cy='170' r='0.9' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='255' cy='205' r='0.6' fill='%238c909f' opacity='0.2'/%3E%3Ccircle cx='290' cy='185' r='1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='25' cy='230' r='0.7' fill='%238c909f' opacity='0.25'/%3E%3Ccircle cx='75' cy='250' r='1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='125' cy='235' r='0.6' fill='%238c909f' opacity='0.2'/%3E%3Ccircle cx='175' cy='265' r='0.9' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='220' cy='245' r='0.7' fill='%238c909f' opacity='0.25'/%3E%3Ccircle cx='265' cy='280' r='1.1' fill='%238c909f' opacity='0.3'/%3E%3Ccircle cx='45' cy='285' r='0.6' fill='%238c909f' opacity='0.2'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 300px 300px;
+}
+
+/* Faint dot-grid texture for the authenticated app shell. */
+.dot-grid-bg {
+  background-image: radial-gradient(circle at 1px 1px, rgba(140, 144, 159, 0.18) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+/* Gradient-outline card — a subtle primary→cyan hairline border on a flat
+   panel, used across settings pages. */
+.gradient-border {
+  position: relative;
+  border-radius: 0.75rem;
+  background: var(--surface-container);
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.25), rgba(47, 217, 244, 0.12), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Focus glow for form inputs — pairs with the gradient-border card style. */
+.input-glow:focus {
+  box-shadow: 0 0 0 1px var(--primary), 0 0 12px rgba(59, 130, 246, 0.15);
+}
+
 /* Axiom-branded scrollbar — gradient thumb (primary → AI violet), no track background */
 * {
   scrollbar-width: thin;

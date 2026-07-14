@@ -6,6 +6,7 @@ import Link from "next/link";
 import * as Sentry from "@sentry/nextjs";
 import { getLocale, getTranslations } from "next-intl/server";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
+import { SidebarNav } from "@/components/layout/sidebar-nav";
 import { SettingsLink } from "@/components/layout/settings-link";
 import { NotificationBell } from "@/components/layout/notification-bell";
 import { SignOutButton } from "@/components/layout/sign-out-button";
@@ -59,8 +60,15 @@ export default async function AppLayout({
     where: { userId: session.user.id, readAt: null },
   });
 
+  const recentNotifications = await prisma.notification.findMany({
+    where: { userId: session.user.id },
+    orderBy: { createdAt: "desc" },
+    take: 6,
+  });
+
   const locale = (await getLocale()) as "fr" | "en";
   const t = await getTranslations("nav");
+  const tSettings = await getTranslations("settings");
 
   const firstBoard = memberships[0]?.workspace?.boards?.[0];
   const workspaceSlugs = memberships.map((m) => m.workspace.slug);
@@ -69,72 +77,36 @@ export default async function AppLayout({
     <ToastProvider>
     <ShortcutsProvider>
     <CommandPaletteProvider>
-    <div className="flex h-screen bg-background">
-      <aside className="hidden md:flex w-[260px] bg-surface-container border-r border-outline-variant flex flex-col">
-        <div className="p-6 border-b border-outline-variant">
-          <h1 className="text-h3 font-semibold text-on-surface">Axiom</h1>
-        </div>
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <div id="sidebar-workspaces" className="text-label-md text-on-surface-variant uppercase tracking-wider mb-2">
-            {t("workspaces")}
-          </div>
-          {memberships.map((membership) => (
-            <div key={membership.workspace.id} className="mb-4">
-              <Link
-                href={`/${membership.workspace.slug}`}
-                className="flex items-center gap-2 px-3 py-2 text-body-md text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
-              >
-                <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-                  <rect height="7" width="7" x="3" y="3"></rect>
-                  <rect height="7" width="7" x="14" y="3"></rect>
-                  <rect height="7" width="7" x="14" y="14"></rect>
-                  <rect height="7" width="7" x="3" y="14"></rect>
-                </svg>
-                {membership.workspace.name}
-              </Link>
-              <div className="ml-6 mt-1 space-y-1">
-                {membership.workspace.boards.map((board) => (
-                  <div key={board.id}>
-                    <Link
-                      href={`/${membership.workspace.slug}/boards/${board.id}`}
-                      className="flex items-center gap-2 px-3 py-1.5 text-label-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
-                    >
-                      <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M4 11l2-2 2 2"></path>
-                        <path d="M4 19h16"></path>
-                        <path d="M4 5h16"></path>
-                        <path d="M4 12h16"></path>
-                      </svg>
-                      {board.name}
-                    </Link>
-                    <Link
-                      href={`/${membership.workspace.slug}/boards/${board.id}/analytics`}
-                      className="flex items-center gap-2 pl-7 pr-3 py-1 text-[12px] text-on-surface-variant/60 hover:text-on-surface-variant hover:bg-surface-container-high rounded transition-colors"
-                    >
-                      <svg fill="none" height="12" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="12">
-                        <line x1="18" x2="18" y1="20" y2="10" />
-                        <line x1="12" x2="12" y1="20" y2="4" />
-                        <line x1="6" x2="6" y1="20" y2="14" />
-                      </svg>
-                      {t("analytics")}
-                    </Link>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-          <Link
-            href="/workspaces/new"
-            className="flex items-center gap-2 px-3 py-2 text-body-md text-primary hover:bg-primary/10 rounded-lg transition-colors mt-4"
-          >
-            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
-              <line x1="12" x2="12" y1="5" y2="19"></line>
-              <line x1="5" x2="19" y1="12" y2="12"></line>
+    <div className="flex h-screen bg-background dot-grid-bg">
+      <aside className="hidden md:flex w-[260px] bg-surface-container/95 backdrop-blur-sm border-r border-outline-variant/50 flex flex-col">
+        <div className="p-6 border-b border-outline-variant/50 flex items-center gap-3">
+          <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+            <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
+              <rect height="7" width="7" x="3" y="3"></rect>
+              <rect height="7" width="7" x="14" y="3"></rect>
+              <rect height="7" width="7" x="14" y="14"></rect>
+              <rect height="7" width="7" x="3" y="14"></rect>
             </svg>
-            {t("newWorkspace")}
+          </div>
+          <h1 className="text-h3 font-semibold text-on-surface tracking-tight">Axiom</h1>
+        </div>
+        <SidebarNav
+          memberships={memberships}
+          workspacesLabel={t("workspaces")}
+          newWorkspaceLabel={t("newWorkspace")}
+          analyticsLabel={t("analytics")}
+        />
+        <div className="p-4 border-t border-outline-variant/50 space-y-1">
+          <Link
+            href="/pricing"
+            className="flex items-center justify-center gap-2 w-full py-2.5 mb-3 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg text-label-md font-semibold transition-all"
+          >
+            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+              <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
+              <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
+            </svg>
+            {t("pricing")}
           </Link>
-        </nav>
-        <div className="p-4 border-t border-outline-variant">
           <Link
             href={`/${memberships[0]?.workspace.slug}/audit-log`}
             className="flex items-center gap-2 px-3 py-2 text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
@@ -154,13 +126,21 @@ export default async function AppLayout({
       <MobileSidebar memberships={memberships} userName={session.user.name} />
 
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="hidden md:flex h-16 bg-surface-container border-b border-outline-variant items-center px-6">
+        <header className="hidden md:flex h-16 bg-surface-container/80 backdrop-blur-md border-b border-outline-variant/50 items-center px-6 shadow-sm">
           <div className="flex-1" />
           <div className="flex items-center gap-3">
             <NotificationBell
               workspaceSlugs={workspaceSlugs}
               fallbackSlug={memberships[0]?.workspace.slug}
               unreadCount={unreadNotificationCount}
+              notifications={recentNotifications}
+              userId={session.user.id}
+              labels={{
+                title: tSettings("notifications"),
+                markAllRead: tSettings("markAllRead"),
+                nothingHereYet: tSettings("nothingHereYet"),
+                seeAllActivity: tSettings("seeAllActivity"),
+              }}
             />
             <LocaleSwitcher currentLocale={locale} />
             <ThemeToggle />
@@ -170,7 +150,7 @@ export default async function AppLayout({
             <SignOutButton />
           </div>
         </header>
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto scroll-smooth">
           <ErrorBoundary>{children}</ErrorBoundary>
         </div>
       </main>

@@ -24,6 +24,9 @@ export async function SiteNav({ currentLocale }: Props) {
             <Link href="/#features" className="text-[13px] text-on-surface-variant hover:text-on-surface transition-colors">
               {tNav("features")}
             </Link>
+            <Link href="/pricing" className="text-[13px] text-on-surface-variant hover:text-on-surface transition-colors">
+              {tNav("pricing")}
+            </Link>
             <Link href="/changelog" className="text-[13px] text-on-surface-variant hover:text-on-surface transition-colors">
               {tNav("changelog")}
             </Link>
@@ -53,6 +56,7 @@ export async function SiteNav({ currentLocale }: Props) {
           currentLocale={currentLocale}
           labels={{
             features: tNav("features"),
+            pricing: tNav("pricing"),
             changelog: tNav("changelog"),
             roadmap: tNav("roadmap"),
             signIn: t("signIn"),

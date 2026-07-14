@@ -47,7 +47,7 @@ export async function createAPIKey(
     select: { id: true, name: true, prefix: true, createdAt: true },
   });
 
-  revalidatePath(`/[workspaceSlug]/settings/developers`, "page");
+  revalidatePath(`/[workspaceSlug]/settings`, "page");
 
   return { ...apiKey, rawKey: raw };
 }
@@ -60,5 +60,5 @@ export async function revokeAPIKey(workspaceId: string, keyId: string): Promise<
     data: { revokedAt: new Date() },
   });
 
-  revalidatePath(`/[workspaceSlug]/settings/developers`, "page");
+  revalidatePath(`/[workspaceSlug]/settings`, "page");
 }

@@ -12,7 +12,8 @@
     "auditLog": "Audit Log",
     "changelog": "Changelog",
     "roadmap": "Roadmap",
-    "features": "Features"
+    "features": "Features",
+    "pricing": "Pricing"
   },
   "landing": {
     "badge": "Axiom Intelligence Engine",
@@ -56,7 +57,22 @@
   "notFound": {
     "title": "Page not found",
     "description": "The requested URL could not be retrieved. This link may have moved or no longer exists.",
-    "backHome": "Back to Axiom"
+    "backHome": "Back to Axiom",
+    "backToApp": "Back to workspace"
+  },
+  "accessRestricted": {
+    "title": "Access restricted",
+    "description": "I cannot grant access to this action.",
+    "roleBadge": "Permission required. Your current role is set to {role}.",
+    "requestAccess": "Request access",
+    "requesting": "Sending request…",
+    "requestSent": "Request sent",
+    "backToDashboard": "Back to dashboard",
+    "statusCode": "Status code: 403",
+    "notification": {
+      "title": "Access requested",
+      "message": "{name} requested access to {resource}."
+    }
   },
   "legal": {
     "eyebrow": "Legal",
@@ -170,6 +186,84 @@
       ]
     }
   },
+  "pricing": {
+    "badge": "Pricing",
+    "titleLine1": "Predictable pricing for",
+    "titleHighlight": "unpredictable challenges.",
+    "subtitle": "Simple, transparent tiers designed for elite engineering teams. Start free, upgrade when you need more.",
+    "mostPopular": "Most popular",
+    "forever": "forever",
+    "comparisonTitle": "Detailed comparison",
+    "comparisonFeature": "Feature",
+    "questionsTitle": "Questions",
+    "processing": "Redirecting…",
+    "plans": [
+      {
+        "name": "Free",
+        "description": "For individuals and small experiments.",
+        "cta": "Start free",
+        "features": [
+          "3 boards",
+          "10 members",
+          "20 AI requests/day",
+          "Realtime collaboration",
+          "Sprint analytics"
+        ],
+        "limits": ["No webhooks", "No audit log", "Community support"]
+      },
+      {
+        "name": "Pro",
+        "description": "For professional teams who need the full Axiom Intelligence stack.",
+        "cta": "Upgrade to Pro",
+        "features": [
+          "Unlimited boards",
+          "50 members",
+          "200 AI requests/day",
+          "Webhooks & Public API",
+          "Audit log (90 days)",
+          "Email notifications",
+          "PWA (offline access)"
+        ],
+        "limits": []
+      },
+      {
+        "name": "Team",
+        "description": "For scaling organizations with enterprise governance needs.",
+        "cta": "Upgrade to Team",
+        "features": [
+          "Everything in Pro",
+          "Unlimited members",
+          "500 AI requests/day",
+          "Audit log (365 days)",
+          "Priority support",
+          "Advanced webhook retry",
+          "SSO (coming soon)"
+        ],
+        "limits": []
+      }
+    ],
+    "comparisonRows": [
+      { "label": "Boards", "free": "3", "pro": "Unlimited", "team": "Unlimited" },
+      { "label": "Members", "free": "10", "pro": "50", "team": "Unlimited" },
+      { "label": "AI requests / day", "free": "20", "pro": "200", "team": "500" },
+      { "label": "Webhooks & Public API", "free": "—", "pro": "✓", "team": "✓" },
+      { "label": "Audit log retention", "free": "—", "pro": "90 days", "team": "365 days" }
+    ],
+    "faq": [
+      {
+        "q": "Can I cancel anytime?",
+        "a": "Yes. Cancel from Settings → Billing. You keep your plan's access until the end of the current billing period."
+      },
+      {
+        "q": "What happens when I hit a limit on the Free plan?",
+        "a": "You see a clear message with an upgrade prompt. No crashes, no data loss — just a hard stop on the blocked action."
+      },
+      {
+        "q": "Is there a trial?",
+        "a": "The Free plan is a permanent tier — no time limit. Try Pro or Team features by upgrading and cancelling within the billing period."
+      }
+    ]
+  },
   "auth": {
     "signIn": "Sign in",
     "signOut": "Sign out",
@@ -252,6 +346,7 @@
     "unread": "unread",
     "markAllRead": "Mark all as read",
     "nothingHereYet": "Nothing here yet.",
+    "seeAllActivity": "See all activity",
     "aiQuotaDesc": "Daily Axiom Intelligence usage and limits",
     "language": "Language",
     "theme": "Theme",
@@ -360,18 +455,28 @@
     "expires": "Expires"
   },
   "accountForm": {
-    "profile": "Profile",
-    "email": "Email",
-    "name": "Name",
+    "profile": "Personal profile",
+    "email": "Email address",
+    "name": "Full name",
     "saving": "Saving...",
+    "saveChanges": "Save changes",
     "profileUpdated": "Profile updated",
     "profileUpdateFailed": "Failed to update profile",
-    "password": "Password",
+    "password": "Security credentials",
     "currentPassword": "Current password",
     "newPassword": "New password",
-    "changePassword": "Change password",
+    "newPasswordPlaceholder": "Min. 12 characters",
+    "confirmPassword": "Confirm new password",
+    "confirmPasswordPlaceholder": "Match new password",
+    "passwordMismatch": "Passwords don't match",
+    "passwordHint": "We recommend using a unique password to protect your account security.",
+    "changePassword": "Update password",
     "passwordChanged": "Password changed",
-    "passwordChangeFailed": "Failed to change password"
+    "passwordChangeFailed": "Failed to change password",
+    "generalBadge": "General",
+    "protectedBadge": "Protected",
+    "securityTipTitle": "Security tip",
+    "securityTipStale": "Your password hasn't been rotated in {days} days. Consider updating your credentials to keep your account secure."
   },
   "auditActions": {
     "WORKSPACE_CREATED": "Workspace created",
@@ -428,6 +533,8 @@
     "loading": "Loading...",
     "copy": "Copy",
     "copied": "Copied",
-    "export": "Export"
+    "export": "Export",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   }
 }

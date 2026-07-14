@@ -4,18 +4,11 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { markNotificationRead, markAllNotificationsRead } from "@/lib/actions/notification.actions";
+import { NotificationIcon, notificationBadgeClass } from "@/components/layout/notification-icon";
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
 }
-
-const NOTIFICATION_ICONS: Record<string, string> = {
-  task_assigned: "👤",
-  comment_added: "💬",
-  ai_suggestion: "◈",
-  sprint_started: "▶",
-  blocker_detected: "⚠",
-};
 
 export default async function NotificationsPage({ params }: Props) {
   await params;
@@ -86,9 +79,9 @@ export default async function NotificationsPage({ params }: Props) {
                       : "bg-primary/5 hover:bg-primary/8"
                   }`}
                 >
-                  <span className="text-[18px] shrink-0 mt-0.5">
-                    {NOTIFICATION_ICONS[n.type] ?? "◆"}
-                  </span>
+                  <div className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center ${notificationBadgeClass(n.type)}`}>
+                    <NotificationIcon type={n.type} className="w-4 h-4" />
+                  </div>
                   <div className="flex-1 min-w-0 text-left">
                     <p className="text-[13px] font-medium text-on-surface">
                       {payload.title ?? n.type}

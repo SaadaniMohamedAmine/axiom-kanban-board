@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import { WorkspaceBoardsWithModal } from "./workspace-boards-with-modal";
 import { TestErrorButton } from "@/components/ui/test-error-button";
 
@@ -32,7 +32,7 @@ export default async function WorkspacePage({
   });
 
   if (!workspace || workspace.members.length === 0) {
-    redirect("/");
+    notFound();
   }
 
   const canCreateBoard = workspace.members[0].role === "OWNER" || workspace.members[0].role === "ADMIN";
