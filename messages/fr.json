@@ -185,6 +185,84 @@
       ]
     }
   },
+  "pricing": {
+    "badge": "Tarifs",
+    "titleLine1": "Une tarification prévisible pour",
+    "titleHighlight": "des défis imprévisibles.",
+    "subtitle": "Des formules simples et transparentes pensées pour les équipes d'ingénierie d'élite. Commencez gratuitement, évoluez quand vous en avez besoin.",
+    "mostPopular": "Le plus populaire",
+    "forever": "à vie",
+    "comparisonTitle": "Comparaison détaillée",
+    "comparisonFeature": "Fonctionnalité",
+    "questionsTitle": "Questions",
+    "processing": "Redirection…",
+    "plans": [
+      {
+        "name": "Free",
+        "description": "Pour les particuliers et les petits projets.",
+        "cta": "Commencer gratuitement",
+        "features": [
+          "3 tableaux",
+          "10 membres",
+          "20 requêtes IA/jour",
+          "Collaboration en temps réel",
+          "Analytique de sprint"
+        ],
+        "limits": ["Pas de webhooks", "Pas de journal d'audit", "Support communautaire"]
+      },
+      {
+        "name": "Pro",
+        "description": "Pour les équipes professionnelles qui ont besoin de toute la stack Axiom Intelligence.",
+        "cta": "Passer à Pro",
+        "features": [
+          "Tableaux illimités",
+          "50 membres",
+          "200 requêtes IA/jour",
+          "Webhooks & API publique",
+          "Journal d'audit (90 jours)",
+          "Notifications par email",
+          "PWA (accès hors ligne)"
+        ],
+        "limits": []
+      },
+      {
+        "name": "Team",
+        "description": "Pour les organisations en croissance avec des besoins de gouvernance d'entreprise.",
+        "cta": "Passer à Team",
+        "features": [
+          "Tout ce qui est inclus dans Pro",
+          "Membres illimités",
+          "500 requêtes IA/jour",
+          "Journal d'audit (365 jours)",
+          "Support prioritaire",
+          "Relance avancée des webhooks",
+          "SSO (bientôt disponible)"
+        ],
+        "limits": []
+      }
+    ],
+    "comparisonRows": [
+      { "label": "Tableaux", "free": "3", "pro": "Illimité", "team": "Illimité" },
+      { "label": "Membres", "free": "10", "pro": "50", "team": "Illimité" },
+      { "label": "Requêtes IA / jour", "free": "20", "pro": "200", "team": "500" },
+      { "label": "Webhooks & API publique", "free": "—", "pro": "✓", "team": "✓" },
+      { "label": "Rétention du journal d'audit", "free": "—", "pro": "90 jours", "team": "365 jours" }
+    ],
+    "faq": [
+      {
+        "q": "Puis-je annuler à tout moment ?",
+        "a": "Oui. Annulez depuis Paramètres → Facturation. Vous gardez l'accès à votre formule jusqu'à la fin de la période de facturation en cours."
+      },
+      {
+        "q": "Que se passe-t-il si j'atteins une limite du plan Free ?",
+        "a": "Un message clair s'affiche avec une invitation à passer à un plan supérieur. Aucun crash, aucune perte de données — juste un blocage net de l'action concernée."
+      },
+      {
+        "q": "Y a-t-il un essai gratuit ?",
+        "a": "Le plan Free est un palier permanent, sans limite de temps. Testez les fonctionnalités Pro ou Team en mettant à niveau puis en annulant dans la période de facturation."
+      }
+    ]
+  },
   "auth": {
     "signIn": "Se connecter",
     "signOut": "Se déconnecter",
