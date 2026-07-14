@@ -538,6 +538,33 @@
     "accessRestricted": "Accès restreint",
     "ownersOnly": "Le journal d'audit est réservé aux propriétaires et administrateurs de l'espace de travail."
   },
+  "commandPalette": {
+    "searchPlaceholder": "Rechercher tâches, tableaux ou personnes…",
+    "boards": "Tableaux",
+    "tasks": "Tâches",
+    "people": "Personnes",
+    "actions": "Actions",
+    "openSettings": "Ouvrir les paramètres",
+    "noResultsFor": "Aucun résultat pour « {query} »",
+    "typeToSearch": "Tapez pour rechercher tâches, tableaux et personnes",
+    "navigate": "Naviguer",
+    "select": "Sélectionner",
+    "close": "Fermer"
+  },
+  "dashboard": {
+    "greeting": "Bon retour, {name}",
+    "needsAttention": "À traiter",
+    "needsAttentionDesc": "Tâches qui vous sont assignées, dues ou en retard, tous espaces de travail confondus",
+    "nothingDueToday": "Rien ne demande votre attention aujourd'hui.",
+    "overdue": "En retard",
+    "dueToday": "Dû aujourd'hui",
+    "aiRequestsToday": "Requêtes IA aujourd'hui",
+    "suggestionsAppliedWeek": "Suggestions appliquées cette semaine",
+    "yourWorkspaces": "Vos espaces de travail",
+    "activeSprint": "Sprint actif",
+    "noActiveSprint": "Aucun sprint actif",
+    "recentActivity": "Activité récente"
+  },
   "actions": {
     "save": "Enregistrer",
     "cancel": "Annuler",

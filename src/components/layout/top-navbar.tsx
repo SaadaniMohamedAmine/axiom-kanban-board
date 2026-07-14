@@ -62,14 +62,14 @@ export function TopNavbar({
 
   const navItems = slug
     ? [
-        { href: "/workspaces", label: t("dashboard"), active: pathname === "/workspaces" },
+        { href: "/dashboard", label: t("dashboard"), active: pathname === "/dashboard" },
         { href: `/${slug}`, label: t("projects"), active: pathname === `/${slug}` || pathname.startsWith(`/${slug}/boards`) },
         { href: `/${slug}/settings#members`, label: t("team"), active: false },
         ...(firstBoardId
           ? [{ href: `/${slug}/boards/${firstBoardId}/analytics`, label: t("analytics"), active: pathname.endsWith("/analytics") }]
           : []),
       ]
-    : [{ href: "/workspaces", label: t("dashboard"), active: pathname === "/workspaces" }];
+    : [{ href: "/dashboard", label: t("dashboard"), active: pathname === "/dashboard" }];
 
   return (
     <header className="hidden md:flex h-16 bg-surface-container/95 backdrop-blur-md border-b border-outline-variant/50 items-center px-6 gap-6 shrink-0">

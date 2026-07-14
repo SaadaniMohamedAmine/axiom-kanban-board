@@ -538,6 +538,33 @@
     "accessRestricted": "Access restricted",
     "ownersOnly": "Audit log is only available to workspace Owners and Admins."
   },
+  "commandPalette": {
+    "searchPlaceholder": "Search tasks, boards, or people…",
+    "boards": "Boards",
+    "tasks": "Tasks",
+    "people": "People",
+    "actions": "Actions",
+    "openSettings": "Open Settings",
+    "noResultsFor": "No results for \"{query}\"",
+    "typeToSearch": "Type to search tasks, boards, and people",
+    "navigate": "Navigate",
+    "select": "Select",
+    "close": "Close"
+  },
+  "dashboard": {
+    "greeting": "Welcome back, {name}",
+    "needsAttention": "Needs your attention",
+    "needsAttentionDesc": "Tasks assigned to you that are due or overdue, across every workspace",
+    "nothingDueToday": "Nothing needs your attention today.",
+    "overdue": "Overdue",
+    "dueToday": "Due today",
+    "aiRequestsToday": "AI requests today",
+    "suggestionsAppliedWeek": "Suggestions applied this week",
+    "yourWorkspaces": "Your workspaces",
+    "activeSprint": "Active sprint",
+    "noActiveSprint": "No active sprint",
+    "recentActivity": "Recent activity"
+  },
   "actions": {
     "save": "Save",
     "cancel": "Cancel",

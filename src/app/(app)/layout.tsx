@@ -7,7 +7,6 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { MobileSidebar } from "@/components/layout/mobile-sidebar";
 import { WorkspaceSidebarNav } from "@/components/layout/workspace-sidebar-nav";
 import { TopNavbar } from "@/components/layout/top-navbar";
-import { WorkspaceSwitcherCard } from "@/components/layout/workspace-switcher-card";
 import { PlanCard } from "@/components/layout/plan-card";
 import { ToastProvider } from "@/contexts/toast-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
@@ -91,7 +90,6 @@ export default async function AppLayout({
       />
       <div className="flex flex-1 overflow-hidden">
         <aside className="hidden md:flex w-[260px] bg-surface-container/95 backdrop-blur-sm border-r border-outline-variant/50 flex-col">
-          <WorkspaceSwitcherCard memberships={memberships} />
           <WorkspaceSidebarNav memberships={memberships} />
           <PlanCard memberships={memberships} />
         </aside>
@@ -104,7 +102,7 @@ export default async function AppLayout({
       </div>
     </div>
     <ShortcutsPanel />
-    <CommandPalette />
+    <CommandPalette memberships={memberships} />
     {!user?.onboardingCompleted && (
       <OnboardingTour boardId={firstBoard?.id} />
     )}
