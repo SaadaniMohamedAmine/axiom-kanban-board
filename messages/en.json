@@ -455,18 +455,28 @@
     "expires": "Expires"
   },
   "accountForm": {
-    "profile": "Profile",
-    "email": "Email",
-    "name": "Name",
+    "profile": "Personal profile",
+    "email": "Email address",
+    "name": "Full name",
     "saving": "Saving...",
+    "saveChanges": "Save changes",
     "profileUpdated": "Profile updated",
     "profileUpdateFailed": "Failed to update profile",
-    "password": "Password",
+    "password": "Security credentials",
     "currentPassword": "Current password",
     "newPassword": "New password",
-    "changePassword": "Change password",
+    "newPasswordPlaceholder": "Min. 12 characters",
+    "confirmPassword": "Confirm new password",
+    "confirmPasswordPlaceholder": "Match new password",
+    "passwordMismatch": "Passwords don't match",
+    "passwordHint": "We recommend using a unique password to protect your account security.",
+    "changePassword": "Update password",
     "passwordChanged": "Password changed",
-    "passwordChangeFailed": "Failed to change password"
+    "passwordChangeFailed": "Failed to change password",
+    "generalBadge": "General",
+    "protectedBadge": "Protected",
+    "securityTipTitle": "Security tip",
+    "securityTipStale": "Your password hasn't been rotated in {days} days. Consider updating your credentials to keep your account secure."
   },
   "auditActions": {
     "WORKSPACE_CREATED": "Workspace created",
@@ -523,6 +533,8 @@
     "loading": "Loading...",
     "copy": "Copy",
     "copied": "Copied",
-    "export": "Export"
+    "export": "Export",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   }
 }

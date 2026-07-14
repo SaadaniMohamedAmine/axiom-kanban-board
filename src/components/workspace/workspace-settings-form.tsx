@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { renameWorkspace } from "@/lib/actions/workspace.actions";
 import { useToast } from "@/contexts/toast-context";
+import { SettingsCard } from "@/components/settings/settings-card";
+import { RippleButton } from "@/components/ui/ripple-button";
 
 interface WorkspaceSettingsFormProps {
   workspaceId: string;
@@ -25,7 +27,6 @@ export function WorkspaceSettingsForm({ workspaceId, name, slug, canEdit }: Work
   const { toast } = useToast();
   const t = useTranslations("settings");
   const tAccount = useTranslations("accountForm");
-  const tActions = useTranslations("actions");
   const [value, setValue] = useState(name);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -37,7 +38,7 @@ export function WorkspaceSettingsForm({ workspaceId, name, slug, canEdit }: Work
     try {
       await renameWorkspace({ workspaceId, name: value.trim() });
       toast(t("workspaceUpdated"));
-      router.push(`/${generateSlug(value.trim())}/settings/workspace`);
+      router.push(`/${generateSlug(value.trim())}/settings#workspace`);
       router.refresh();
     } catch (err) {
       toast(err instanceof Error ? err.message : t("workspaceUpdateFailed"), "error");
@@ -46,46 +47,41 @@ export function WorkspaceSettingsForm({ workspaceId, name, slug, canEdit }: Work
     }
   }
 
+  const inputClass =
+    "w-full bg-surface-container-lowest border border-outline-variant/30 rounded px-4 py-2.5 text-on-surface focus:outline-none input-glow transition-all text-body-md";
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-6 bg-surface-container border border-outline-variant rounded-lg space-y-4"
-    >
-      <div>
-        <label className="block text-label-md text-on-surface-variant mb-1">{t("slug")}</label>
-        <input
-          type="text"
-          value={slug}
-          disabled
-          className="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface-variant opacity-60"
-        />
-        <p className="text-label-md text-on-surface-variant/60 mt-1">
-          {t("slugHint")}
-        </p>
-      </div>
-      <div>
-        <label className="block text-label-md text-on-surface-variant mb-1">{tAccount("name")}</label>
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          disabled={!canEdit}
-          className="w-full px-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-60"
-        />
-      </div>
-      {canEdit ? (
-        <button
-          type="submit"
-          disabled={isSaving || !value.trim() || value.trim() === name}
-          className="px-6 py-2 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-        >
-          {isSaving ? tAccount("saving") : tActions("save")}
-        </button>
-      ) : (
-        <p className="text-label-md text-on-surface-variant/60">
-          {t("ownerOnlyRename")}
-        </p>
-      )}
-    </form>
+    <SettingsCard title={t("workspace")} badge={{ label: tAccount("generalBadge"), tone: "primary" }}>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="space-y-2">
+          <label className="font-label-md text-label-md text-on-surface-variant ml-1">{t("slug")}</label>
+          <input type="text" value={slug} disabled className={`${inputClass} opacity-60`} />
+          <p className="text-label-md text-on-surface-variant/60 ml-1">{t("slugHint")}</p>
+        </div>
+        <div className="space-y-2">
+          <label className="font-label-md text-label-md text-on-surface-variant ml-1">{tAccount("name")}</label>
+          <input
+            type="text"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            disabled={!canEdit}
+            className={`${inputClass} disabled:opacity-60`}
+          />
+        </div>
+        <div className="flex justify-end pt-2">
+          {canEdit ? (
+            <RippleButton
+              type="submit"
+              disabled={isSaving || !value.trim() || value.trim() === name}
+              className="px-6 py-2 bg-primary text-on-primary rounded font-label-md text-label-md hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all"
+            >
+              {isSaving ? tAccount("saving") : tAccount("saveChanges")}
+            </RippleButton>
+          ) : (
+            <p className="text-label-md text-on-surface-variant/60">{t("ownerOnlyRename")}</p>
+          )}
+        </div>
+      </form>
+    </SettingsCard>
   );
 }

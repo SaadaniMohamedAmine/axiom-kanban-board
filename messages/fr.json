@@ -455,18 +455,28 @@
     "expires": "Expire le"
   },
   "accountForm": {
-    "profile": "Profil",
-    "email": "Email",
-    "name": "Nom",
+    "profile": "Profil personnel",
+    "email": "Adresse email",
+    "name": "Nom complet",
     "saving": "Enregistrement...",
+    "saveChanges": "Enregistrer les modifications",
     "profileUpdated": "Profil mis à jour",
     "profileUpdateFailed": "Échec de la mise à jour du profil",
-    "password": "Mot de passe",
+    "password": "Identifiants de sécurité",
     "currentPassword": "Mot de passe actuel",
     "newPassword": "Nouveau mot de passe",
-    "changePassword": "Changer le mot de passe",
+    "newPasswordPlaceholder": "12 caractères min.",
+    "confirmPassword": "Confirmer le nouveau mot de passe",
+    "confirmPasswordPlaceholder": "Doit correspondre",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "passwordHint": "Nous recommandons d'utiliser un mot de passe unique pour protéger votre compte.",
+    "changePassword": "Mettre à jour le mot de passe",
     "passwordChanged": "Mot de passe changé",
-    "passwordChangeFailed": "Échec du changement de mot de passe"
+    "passwordChangeFailed": "Échec du changement de mot de passe",
+    "generalBadge": "Général",
+    "protectedBadge": "Protégé",
+    "securityTipTitle": "Conseil de sécurité",
+    "securityTipStale": "Votre mot de passe n'a pas été changé depuis {days} jours. Pensez à le mettre à jour pour protéger votre compte."
   },
   "auditActions": {
     "WORKSPACE_CREATED": "Espace de travail créé",
@@ -523,6 +533,8 @@
     "loading": "Chargement...",
     "copy": "Copier",
     "copied": "Copié",
-    "export": "Exporter"
+    "export": "Exporter",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe"
   }
 }

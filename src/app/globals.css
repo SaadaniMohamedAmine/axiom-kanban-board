@@ -49,6 +49,38 @@ body {
   background-size: 300px 300px;
 }
 
+/* Faint dot-grid texture for the authenticated app shell. */
+.dot-grid-bg {
+  background-image: radial-gradient(circle at 1px 1px, rgba(140, 144, 159, 0.18) 1px, transparent 0);
+  background-size: 32px 32px;
+}
+
+/* Gradient-outline card — a subtle primary→cyan hairline border on a flat
+   panel, used across settings pages. */
+.gradient-border {
+  position: relative;
+  border-radius: 0.75rem;
+  background: var(--surface-container);
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(to bottom right, rgba(59, 130, 246, 0.25), rgba(47, 217, 244, 0.12), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Focus glow for form inputs — pairs with the gradient-border card style. */
+.input-glow:focus {
+  box-shadow: 0 0 0 1px var(--primary), 0 0 12px rgba(59, 130, 246, 0.15);
+}
+
 /* Axiom-branded scrollbar — gradient thumb (primary → AI violet), no track background */
 * {
   scrollbar-width: thin;

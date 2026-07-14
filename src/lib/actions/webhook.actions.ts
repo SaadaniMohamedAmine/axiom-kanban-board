@@ -54,7 +54,7 @@ export async function createWebhook(
     },
   });
 
-  revalidatePath(`/[workspaceSlug]/settings/developers`, "page");
+  revalidatePath(`/[workspaceSlug]/settings`, "page");
 
   return { secret };
 }
@@ -66,5 +66,5 @@ export async function deleteWebhook(workspaceId: string, webhookId: string): Pro
     where: { id: webhookId, workspaceId },
   });
 
-  revalidatePath(`/[workspaceSlug]/settings/developers`, "page");
+  revalidatePath(`/[workspaceSlug]/settings`, "page");
 }
