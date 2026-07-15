@@ -45,5 +45,10 @@ export const MOTION = {
       visible: { opacity: 1, x: 0 },
       exit: { opacity: 0, x: 6 },
     },
+    panelLeft: {
+      hidden: { opacity: 0, x: -12 },
+      visible: { opacity: 1, x: 0, transition: { duration: 0.18, ease: [0, 0, 0.2, 1] } },
+      exit: { opacity: 0, x: -8, transition: { duration: 0.12, ease: [0.4, 0, 1, 1] } },
+    },
   },
 } as const;

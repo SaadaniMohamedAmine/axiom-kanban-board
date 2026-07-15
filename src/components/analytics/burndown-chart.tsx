@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import {
-  LineChart,
+  ComposedChart,
+  Area,
   Line,
   XAxis,
   YAxis,
@@ -48,7 +49,13 @@ export function BurndownChart({ data, sprintName }: BurndownChartProps) {
         {t("burndownFor", { sprintName })}
       </h3>
       <ResponsiveContainer height={280} width="100%">
-        <LineChart data={data} margin={{ top: 4, right: 16, bottom: 4, left: 0 }}>
+        <ComposedChart data={data} margin={{ top: 4, right: 16, bottom: 4, left: 0 }}>
+          <defs>
+            <linearGradient id="burndown-fill" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#3B82F6" stopOpacity={0.25} />
+              <stop offset="100%" stopColor="#3B82F6" stopOpacity={0} />
+            </linearGradient>
+          </defs>
           <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" />
           <XAxis
             dataKey="date"
@@ -63,6 +70,14 @@ export function BurndownChart({ data, sprintName }: BurndownChartProps) {
           <Tooltip contentStyle={TOOLTIP_STYLE} />
           <Legend
             wrapperStyle={{ fontSize: "12px", color: "#6B7A99", paddingTop: "12px" }}
+          />
+          <Area
+            type="monotone"
+            dataKey="remaining"
+            fill="url(#burndown-fill)"
+            stroke="none"
+            legendType="none"
+            tooltipType="none"
           />
           <Line
             type="monotone"
@@ -82,7 +97,7 @@ export function BurndownChart({ data, sprintName }: BurndownChartProps) {
             strokeDasharray="5 5"
             dot={false}
           />
-        </LineChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );

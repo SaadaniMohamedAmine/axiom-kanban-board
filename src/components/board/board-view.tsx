@@ -11,6 +11,7 @@ import { ConnectionIndicator } from "@/components/realtime/connection-indicator"
 import { moveTask } from "@/lib/actions/task.actions";
 import { useBoardChannel } from "@/hooks/use-board-channel";
 import { getPusherClient } from "@/lib/pusher-client";
+import { useCreateTask } from "@/contexts/create-task-context";
 import type { Board, Column as ColumnType } from "@/types/board.types";
 import type { Task } from "@/types/task.types";
 import type { PresenceMember, BoardEvent, ConflictEvent } from "@/types/realtime.types";
@@ -142,10 +143,7 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
   );
 
   const hasTasks = columns.some((col) => col.tasks.length > 0);
-
-  if (!hasTasks && columns.length === 0) {
-    return <EmptyBoardState />;
-  }
+  const { open: openCreateTask } = useCreateTask();
 
   function handleDragStart(event: DragStartEvent) {
     if (!canEdit) return;
@@ -225,12 +223,15 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
           <PresenceAvatars members={members} currentUserId={currentUser.id} />
         </div>
       </div>
-      <div className="flex gap-3 p-6 overflow-x-auto snap-x snap-mandatory md:overflow-x-visible min-h-0 flex-1">
-        {optimisticColumns.map((column) => (
-          <div key={column.id} className="snap-center shrink-0 w-[300px] md:w-auto md:shrink md:flex-1">
-            <Column column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} />
-          </div>
-        ))}
+      <div className="relative min-h-0 flex-1">
+        <div className="flex gap-3 p-6 overflow-x-auto snap-x snap-mandatory md:overflow-x-visible h-full">
+          {optimisticColumns.map((column) => (
+            <div key={column.id} className="snap-center shrink-0 w-[300px] md:w-auto md:shrink md:flex-1">
+              <Column column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} />
+            </div>
+          ))}
+        </div>
+        {!hasTasks && <EmptyBoardState onCreateTask={canEdit ? openCreateTask : undefined} />}
       </div>
       <DragOverlay>
         {activeTask ? <TaskCard task={activeTask} canEdit={canEdit} /> : null}

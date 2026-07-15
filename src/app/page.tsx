@@ -9,18 +9,16 @@ export default async function Home() {
   const session = await auth.api.getSession({ headers: await headers() });
 
   if (session) {
-    // Authenticated → redirect to first workspace
+    // Authenticated → redirect to the dashboard
     const membership = await prisma.workspaceMember.findFirst({
       where: { userId: session.user.id },
-      orderBy: { invitedAt: "asc" },
-      include: { workspace: { select: { slug: true } } },
     });
 
     if (!membership) {
       redirect("/workspaces/new");
     }
 
-    redirect(`/${membership.workspace.slug}`);
+    redirect("/dashboard");
   }
 
   // Not authenticated → show public landing page

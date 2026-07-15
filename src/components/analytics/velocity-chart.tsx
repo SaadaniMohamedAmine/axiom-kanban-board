@@ -41,15 +41,38 @@ export function VelocityChart({ data }: VelocityChartProps) {
 
   const avg = data.reduce((s, d) => s + d.points, 0) / data.length;
 
+  function handleExport() {
+    const rows = [["Sprint", "Points"], ...data.map((d) => [d.sprint, String(d.points)])];
+    const csv = rows.map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "velocity.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-[13px] font-medium text-on-surface-variant">
-          {t("velocityLastSprints", { count: data.length })}
-        </h3>
-        <span className="text-[12px] text-on-surface-variant/60">
-          {t("avgPtsSprint", { avg: Math.round(avg) })}
-        </span>
+        <div>
+          <h3 className="text-[13px] font-medium text-on-surface-variant">
+            {t("velocityLastSprints", { count: data.length })}
+          </h3>
+          <span className="text-[12px] text-on-surface-variant/60">
+            {t("avgPtsSprint", { avg: Math.round(avg) })}
+          </span>
+        </div>
+        <button
+          onClick={handleExport}
+          className="flex items-center gap-1.5 text-[12px] text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer"
+        >
+          <svg fill="none" height="13" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="13">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" />
+          </svg>
+          {t("exportCsv")}
+        </button>
       </div>
       <ResponsiveContainer height={220} width="100%">
         <BarChart data={data} margin={{ top: 4, right: 16, bottom: 4, left: 0 }}>

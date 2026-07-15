@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
 
   const q = req.nextUrl.searchParams.get("q")?.trim();
   if (!q || q.length < 2) {
-    return new Response(JSON.stringify({ tasks: [], boards: [] }));
+    return new Response(JSON.stringify({ tasks: [], boards: [], people: [] }));
   }
 
   const memberships = await prisma.workspaceMember.findMany({
@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
   });
   const workspaceIds = memberships.map((m) => m.workspaceId);
 
-  const [tasks, boards] = await Promise.all([
+  const [tasks, boards, people] = await Promise.all([
     prisma.task.findMany({
       where: {
         board: { workspaceId: { in: workspaceIds } },
@@ -41,6 +41,23 @@ export async function GET(req: NextRequest) {
       include: { workspace: { select: { slug: true } } },
       take: 4,
     }),
+    prisma.workspaceMember.findMany({
+      where: {
+        workspaceId: { in: workspaceIds },
+        user: {
+          OR: [
+            { name: { contains: q, mode: "insensitive" } },
+            { email: { contains: q, mode: "insensitive" } },
+          ],
+        },
+      },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        workspace: { select: { slug: true, name: true } },
+      },
+      distinct: ["userId"],
+      take: 5,
+    }),
   ]);
 
   return new Response(
@@ -56,6 +73,13 @@ export async function GET(req: NextRequest) {
         id: b.id,
         name: b.name,
         href: `/${b.workspace.slug}/boards/${b.id}`,
+      })),
+      people: people.map((m) => ({
+        id: m.user.id,
+        name: m.user.name,
+        email: m.user.email,
+        role: m.role,
+        href: `/${m.workspace.slug}/settings#members`,
       })),
     }),
     { headers: { "Content-Type": "application/json" } }

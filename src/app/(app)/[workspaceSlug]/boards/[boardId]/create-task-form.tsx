@@ -4,6 +4,7 @@ import { useState } from "react";
 import { createTask } from "@/lib/actions/task.actions";
 import { getPusherClient } from "@/lib/pusher-client";
 import { useToast } from "@/contexts/toast-context";
+import { useCreateTask } from "@/contexts/create-task-context";
 import type { Column } from "@/types/board.types";
 
 interface CreateTaskFormProps {
@@ -12,7 +13,7 @@ interface CreateTaskFormProps {
 }
 
 export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, open, close } = useCreateTask();
   const [title, setTitle] = useState("");
   const [columnId, setColumnId] = useState(columns[0]?.id ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -31,7 +32,7 @@ export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
       }, getPusherClient().connection.socket_id ?? undefined);
       toast("Task created");
       setTitle("");
-      setIsOpen(false);
+      close();
     } catch (error) {
       console.error("Failed to create task:", error);
       toast("Failed to create task", "error");
@@ -45,7 +46,7 @@ export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
       <div className="p-4 border-t border-outline-variant">
         <button
           id="create-task-btn"
-          onClick={() => setIsOpen(true)}
+          onClick={open}
           className="w-full py-2 px-4 bg-primary/10 hover:bg-primary/20 text-primary rounded-lg text-label-md font-semibold transition-colors"
         >
           + New Task
@@ -86,7 +87,7 @@ export function CreateTaskForm({ boardId, columns }: CreateTaskFormProps) {
           </button>
           <button
             type="button"
-            onClick={() => setIsOpen(false)}
+            onClick={close}
             className="px-6 py-2 bg-surface-container-high text-on-surface-variant rounded-lg text-label-md font-semibold hover:bg-surface-container-highest transition-colors"
           >
             Cancel
