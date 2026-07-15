@@ -604,6 +604,16 @@
     "noActiveSprint": "No active sprint",
     "recentActivity": "Recent activity"
   },
+  "onboarding": {
+    "title": "Create your workspace",
+    "description": "Give your workspace a name. This is where your team will collaborate and manage projects.",
+    "nameLabel": "Workspace Name",
+    "namePlaceholder": "Acme Corp",
+    "continue": "Continue",
+    "creating": "Creating…",
+    "footerNote": "You can always change this later in settings.",
+    "createFailed": "Failed to create workspace"
+  },
   "actions": {
     "save": "Save",
     "cancel": "Cancel",

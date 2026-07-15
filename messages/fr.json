@@ -604,6 +604,16 @@
     "noActiveSprint": "Aucun sprint actif",
     "recentActivity": "Activité récente"
   },
+  "onboarding": {
+    "title": "Créez votre espace de travail",
+    "description": "Donnez un nom à votre espace de travail. C'est ici que votre équipe collaborera et gérera ses projets.",
+    "nameLabel": "Nom de l'espace de travail",
+    "namePlaceholder": "Acme Corp",
+    "continue": "Continuer",
+    "creating": "Création…",
+    "footerNote": "Vous pourrez toujours le modifier plus tard dans les paramètres.",
+    "createFailed": "Échec de la création de l'espace de travail"
+  },
   "actions": {
     "save": "Enregistrer",
     "cancel": "Annuler",
