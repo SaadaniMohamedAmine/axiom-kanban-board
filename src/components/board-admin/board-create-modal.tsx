@@ -1,13 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import { createBoard } from "@/lib/actions/board.actions";
+import { MOTION } from "@/lib/motion";
 
 interface BoardCreateModalProps {
   workspaceId: string;
   onClose: () => void;
 }
+
+const TEMPLATES = [
+  { value: "KANBAN", label: "Kanban" },
+  { value: "SCRUM", label: "Scrum" },
+  { value: "BUG_TRACKING", label: "Bug Tracking" },
+  { value: "CUSTOM", label: "Custom" },
+] as const;
 
 export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps) {
   const router = useRouter();
@@ -15,6 +24,24 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
   const [template, setTemplate] = useState<"SCRUM" | "KANBAN" | "BUG_TRACKING" | "CUSTOM">("KANBAN");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [templateOpen, setTemplateOpen] = useState(false);
+  const templateRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (templateRef.current && !templateRef.current.contains(e.target as Node)) setTemplateOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -33,59 +60,116 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
     }
   }
 
+  const inputClass =
+    "w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-2.5 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none input-glow transition-all text-body-md";
+
+  const currentTemplateLabel = TEMPLATES.find((t) => t.value === template)?.label ?? "";
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/60" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-md bg-surface-container-high border border-outline-variant rounded-xl p-8 shadow-2xl">
-        <h2 className="text-h2 text-on-surface mb-6">Create Board</h2>
-        {error && (
-          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-            {error}
-          </div>
-        )}
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
+      <motion.div
+        className="absolute inset-0 bg-surface-container-lowest/90"
+        variants={MOTION.variants.modalOverlay}
+        initial="hidden"
+        animate="visible"
+        onClick={onClose}
+      />
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0) 70%)" }}
+      />
+
+      <motion.section
+        className="onboarding-glass-card relative w-full max-w-md rounded-2xl p-8 shadow-2xl"
+        variants={MOTION.variants.modalContent}
+        initial="hidden"
+        animate="visible"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute top-4 right-4 p-1.5 rounded-lg text-on-surface-variant/60 hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
+        >
+          <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+            <path d="M18 6 6 18" /><path d="m6 6 12 12" />
+          </svg>
+        </button>
+
+        <h2 className="text-h3 text-on-surface mb-6">Create Board</h2>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="text-label-md text-on-surface-variant mb-2 block">Board Name</label>
+          <div className="space-y-2">
+            <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
+              Board Name
+            </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., Sprint Planning"
-              className="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:ring-1 focus:ring-primary"
+              className={inputClass}
               autoFocus
             />
           </div>
-          <div>
-            <label className="text-label-md text-on-surface-variant mb-2 block">Template</label>
-            <select
-              value={template}
-              onChange={(e) => setTemplate(e.target.value as typeof template)}
-              className="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant rounded-lg text-body-md text-on-surface focus:outline-none focus:ring-1 focus:ring-primary"
-            >
-              <option value="KANBAN">Kanban</option>
-              <option value="SCRUM">Scrum</option>
-              <option value="BUG_TRACKING">Bug Tracking</option>
-              <option value="CUSTOM">Custom</option>
-            </select>
+
+          <div className="space-y-2">
+            <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
+              Template
+            </label>
+            <div ref={templateRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setTemplateOpen((v) => !v)}
+                aria-haspopup="listbox"
+                aria-expanded={templateOpen}
+                className={`${inputClass} flex items-center justify-between cursor-pointer`}
+              >
+                <span>{currentTemplateLabel}</span>
+                <svg
+                  fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round"
+                  strokeWidth="2" viewBox="0 0 24 24" width="14"
+                  className={`text-on-surface-variant/60 transition-transform ${templateOpen ? "rotate-180" : ""}`}
+                >
+                  <path d="m6 9 6 6 6-6" />
+                </svg>
+              </button>
+
+              {templateOpen && (
+                <div
+                  role="listbox"
+                  className="absolute left-0 right-0 top-full mt-1.5 rounded-lg border border-outline-variant/30 bg-surface-container-high shadow-lg overflow-hidden z-10"
+                >
+                  {TEMPLATES.map((t) => (
+                    <button
+                      key={t.value}
+                      type="button"
+                      role="option"
+                      aria-selected={t.value === template}
+                      onClick={() => { setTemplate(t.value); setTemplateOpen(false); }}
+                      className={`w-full text-left px-4 py-2.5 text-body-md transition-colors cursor-pointer hover:bg-surface-container-highest ${
+                        t.value === template ? "text-on-surface font-medium" : "text-on-surface-variant"
+                      }`}
+                    >
+                      {t.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex-1 py-3 bg-surface-container-high text-on-surface-variant rounded-lg text-label-md font-semibold hover:bg-surface-container-highest transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting || !name.trim()}
-              className="flex-1 py-3 bg-primary text-on-primary rounded-lg text-label-md font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            >
-              {isSubmitting ? "Creating..." : "Create"}
-            </button>
-          </div>
+
+          {error && <p className="text-[13px] text-error">{error}</p>}
+
+          <button
+            type="submit"
+            disabled={isSubmitting || !name.trim()}
+            className="w-full py-2.5 bg-primary text-on-primary rounded-lg text-[13px] font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all"
+          >
+            {isSubmitting ? "Creating..." : "Create"}
+          </button>
         </form>
-      </div>
+      </motion.section>
     </div>
   );
 }
