@@ -70,7 +70,7 @@ export function TopNavbar({
     ? [
         { href: "/dashboard", label: t("dashboard"), active: pathname === "/dashboard" },
         { href: `/${slug}`, label: t("projects"), active: pathname === `/${slug}` || pathname.startsWith(`/${slug}/boards`) },
-        { href: `/${slug}/settings#members`, label: t("team"), active: false },
+        { href: `/${slug}/team`, label: t("team"), active: pathname === `/${slug}/team` },
         ...(firstBoardId
           ? [{ href: `/${slug}/boards/${firstBoardId}/analytics`, label: t("analytics"), active: pathname.endsWith("/analytics") }]
           : []),

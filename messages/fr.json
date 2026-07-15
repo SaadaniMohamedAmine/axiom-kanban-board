@@ -645,6 +645,22 @@
     "footerNote": "Vous pourrez toujours le modifier plus tard dans les paramètres.",
     "createFailed": "Échec de la création de l'espace de travail"
   },
+  "teamPage": {
+    "breadcrumbWorkspace": "Espace de travail",
+    "breadcrumbTeam": "Équipe",
+    "title": "Équipe",
+    "membersActive": "{count} membres actifs dans {name}.",
+    "inviteTeammate": "Inviter un coéquipier",
+    "activeMembers": "Membres actifs",
+    "colMember": "Membre",
+    "colEmail": "Adresse email",
+    "colRole": "Rôle",
+    "colStatus": "Statut",
+    "online": "En ligne",
+    "offline": "Hors ligne",
+    "pendingInvitations": "Invitations en attente",
+    "noPendingInvitations": "Aucune invitation en attente."
+  },
   "actions": {
     "save": "Enregistrer",
     "cancel": "Annuler",

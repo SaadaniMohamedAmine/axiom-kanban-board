@@ -645,6 +645,22 @@
     "footerNote": "You can always change this later in settings.",
     "createFailed": "Failed to create workspace"
   },
+  "teamPage": {
+    "breadcrumbWorkspace": "Workspace",
+    "breadcrumbTeam": "Team",
+    "title": "Team",
+    "membersActive": "{count} members active in {name}.",
+    "inviteTeammate": "Invite Teammate",
+    "activeMembers": "Active Members",
+    "colMember": "Member",
+    "colEmail": "Email Address",
+    "colRole": "Role",
+    "colStatus": "Status",
+    "online": "Online",
+    "offline": "Offline",
+    "pendingInvitations": "Pending Invitations",
+    "noPendingInvitations": "No pending invitations."
+  },
   "actions": {
     "save": "Save",
     "cancel": "Cancel",
