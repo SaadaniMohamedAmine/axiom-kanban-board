@@ -16,7 +16,8 @@ import { APIKeyManager } from "@/components/settings/api-key-manager";
 import { WebhookManager } from "@/components/settings/webhook-manager";
 import { NotificationIcon, notificationBadgeClass } from "@/components/layout/notification-icon";
 import { timeAgo } from "@/lib/time-ago";
-import { markAllNotificationsRead } from "@/lib/actions/notification.actions";
+import { markAllNotificationsRead, type NotificationPreferences } from "@/lib/actions/notification.actions";
+import { NotificationPreferencesForm } from "@/components/workspace/notification-preferences-form";
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
@@ -117,6 +118,16 @@ export default async function SettingsPage({ params }: Props) {
   const unreadCount = await prisma.notification.count({
     where: { userId: session.user.id, readAt: null },
   });
+
+  const userPrefs = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { emailPreferences: true },
+  });
+  const storedPrefs = (userPrefs?.emailPreferences ?? null) as NotificationPreferences | null;
+  const notificationPreferences: NotificationPreferences = {
+    notify: storedPrefs?.notify ?? {},
+    quietHours: storedPrefs?.quietHours ?? { enabled: false, start: "20:00", end: "08:00" },
+  };
 
   const used = workspace.aiRequestsToday;
   const pct = Math.min(100, Math.round((used / AI_DAILY_LIMIT) * 100));
@@ -241,6 +252,10 @@ export default async function SettingsPage({ params }: Props) {
                 {t("seeAllActivity")}
               </Link>
             </div>
+          </div>
+
+          <div className="mt-6">
+            <NotificationPreferencesForm initialPreferences={notificationPreferences} />
           </div>
         </SettingsSection>
 
