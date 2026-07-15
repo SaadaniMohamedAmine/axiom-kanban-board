@@ -625,6 +625,7 @@
     "ai_suggestionDesc": "Me notifier quand Axiom Intelligence applique une suggestion.",
     "access_requested": "Demandes d'accès",
     "access_requestedDesc": "Me notifier quand quelqu'un demande l'accès à une ressource que je possède.",
+    "allTypes": "Toutes",
     "quietHours": "Heures calmes",
     "quietHoursDesc": "Différer les notifications non critiques pendant cette période.",
     "quietHoursEnable": "Activer les heures calmes",
