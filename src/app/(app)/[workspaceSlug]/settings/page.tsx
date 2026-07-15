@@ -65,6 +65,13 @@ const ICONS = {
       <polyline points="8 6 2 12 8 18" />
     </svg>
   ),
+  dangerZone: (
+    <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
+      <path d="M3 6h18" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </svg>
+  ),
 };
 
 export default async function SettingsPage({ params }: Props) {
@@ -147,6 +154,7 @@ export default async function SettingsPage({ params }: Props) {
     { id: "account", label: t("account") },
     { id: "members", label: t("members") },
     { id: "workspace", label: t("workspace") },
+    ...(canEditWorkspace ? [{ id: "danger-zone", label: t("dangerZone") }] : []),
     { id: "notifications", label: t("notifications") },
     { id: "ai-quota", label: tNav("aiQuota") },
     { id: "developers", label: t("developers") },
@@ -180,19 +188,12 @@ export default async function SettingsPage({ params }: Props) {
 
         <SettingsSection id="workspace" icon={ICONS.workspace} title={t("workspace")} description={t("workspaceDesc")}>
           {canEditWorkspace ? (
-            <div className="space-y-6">
-              <WorkspaceSettingsForm
-                workspaceId={workspace.id}
-                name={workspace.name}
-                slug={workspace.slug}
-                canEdit={canEditWorkspace}
-              />
-              <DangerZoneCard
-                workspaceId={workspace.id}
-                workspaceName={workspace.name}
-                canDelete={canEditWorkspace}
-              />
-            </div>
+            <WorkspaceSettingsForm
+              workspaceId={workspace.id}
+              name={workspace.name}
+              slug={workspace.slug}
+              canEdit={canEditWorkspace}
+            />
           ) : (
             <AccessRestricted
               workspaceId={workspace.id}
@@ -211,6 +212,16 @@ export default async function SettingsPage({ params }: Props) {
             />
           )}
         </SettingsSection>
+
+        {canEditWorkspace && (
+          <SettingsSection id="danger-zone" icon={ICONS.dangerZone} title={t("dangerZone")} description={t("deleteWorkspaceDesc")}>
+            <DangerZoneCard
+              workspaceId={workspace.id}
+              workspaceName={workspace.name}
+              canDelete={canEditWorkspace}
+            />
+          </SettingsSection>
+        )}
 
         <SettingsSection id="notifications" icon={ICONS.notifications} title={t("notifications")} description={t("notificationsDesc")}>
           <div className="gradient-border">
