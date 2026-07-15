@@ -5,6 +5,8 @@ import { redirect, notFound } from "next/navigation";
 import { BoardViewWithModal } from "./board-view-with-modal";
 import { CreateTaskForm } from "./create-task-form";
 import { SprintPanel } from "@/components/sprint/sprint-panel";
+import { SprintHealthSummary } from "@/components/analytics/sprint-health-summary";
+import { BlockedTasksList } from "@/components/board/blocked-tasks-list";
 
 export default async function BoardPage({
   params,
@@ -89,6 +91,28 @@ export default async function BoardPage({
 
   const allTasks = board.columns.flatMap((col) => col.tasks);
 
+  const activeSprint = board.sprints.find((s) => s.status === "ACTIVE");
+  const doneColumnId = board.columns[board.columns.length - 1]?.id;
+  const sprintTasks = activeSprint ? allTasks.filter((t) => t.sprintId === activeSprint.id) : [];
+
+  const now = new Date();
+  const BLOCKED_THRESHOLD_MS = 3 * 24 * 60 * 60 * 1000;
+
+  const completedTasks = sprintTasks.filter((t) => t.columnId === doneColumnId).length;
+
+  const overdueTasks = sprintTasks.filter(
+    (t) => t.dueDate && new Date(t.dueDate) < now && t.columnId !== doneColumnId
+  ).length;
+
+  const blockedTasks = sprintTasks.filter((t) => {
+    if (t.columnId === doneColumnId) return false;
+    const statusChanges = t.activity
+      .filter((a) => a.type === "STATUS_CHANGE")
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    const lastActivityAt = statusChanges[0]?.createdAt ?? t.createdAt;
+    return now.getTime() - new Date(lastActivityAt).getTime() >= BLOCKED_THRESHOLD_MS;
+  });
+
   return (
     <div className="flex flex-col h-full">
       <div className="px-8 py-6 border-b border-outline-variant">
@@ -106,7 +130,22 @@ export default async function BoardPage({
           {canEdit && <CreateTaskForm boardId={board.id} columns={board.columns} />}
         </div>
         {board.template === "SCRUM" && (
-          <aside className="w-96 border-l border-outline-variant overflow-y-auto">
+          <aside className="w-96 border-l border-outline-variant overflow-y-auto p-4 space-y-4">
+            {activeSprint && (
+              <>
+                <SprintHealthSummary
+                  sprintId={activeSprint.id}
+                  sprintName={activeSprint.name}
+                  overdueTasks={overdueTasks}
+                  blockedTasks={blockedTasks.length}
+                  totalTasks={sprintTasks.length}
+                  completedTasks={completedTasks}
+                />
+                <BlockedTasksList
+                  tasks={blockedTasks.map((t) => ({ id: t.id, code: t.code, title: t.title }))}
+                />
+              </>
+            )}
             <SprintPanel boardId={board.id} sprints={board.sprints} tasks={allTasks} />
           </aside>
         )}
