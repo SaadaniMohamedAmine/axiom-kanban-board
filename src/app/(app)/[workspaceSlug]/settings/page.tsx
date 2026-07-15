@@ -10,6 +10,7 @@ import { SettingsSectionNav } from "@/components/settings/settings-section-nav";
 import { AccountSettingsForm } from "@/components/workspace/account-settings-form";
 import { MemberList } from "@/components/workspace/member-list";
 import { WorkspaceSettingsForm } from "@/components/workspace/workspace-settings-form";
+import { DangerZoneCard } from "@/components/workspace/danger-zone-card";
 import { AccessRestricted } from "@/components/layout/access-restricted";
 import { APIKeyManager } from "@/components/settings/api-key-manager";
 import { WebhookManager } from "@/components/settings/webhook-manager";
@@ -168,12 +169,19 @@ export default async function SettingsPage({ params }: Props) {
 
         <SettingsSection id="workspace" icon={ICONS.workspace} title={t("workspace")} description={t("workspaceDesc")}>
           {canEditWorkspace ? (
-            <WorkspaceSettingsForm
-              workspaceId={workspace.id}
-              name={workspace.name}
-              slug={workspace.slug}
-              canEdit={canEditWorkspace}
-            />
+            <div className="space-y-6">
+              <WorkspaceSettingsForm
+                workspaceId={workspace.id}
+                name={workspace.name}
+                slug={workspace.slug}
+                canEdit={canEditWorkspace}
+              />
+              <DangerZoneCard
+                workspaceId={workspace.id}
+                workspaceName={workspace.name}
+                canDelete={canEditWorkspace}
+              />
+            </div>
           ) : (
             <AccessRestricted
               workspaceId={workspace.id}

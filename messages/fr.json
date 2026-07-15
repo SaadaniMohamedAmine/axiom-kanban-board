@@ -370,7 +370,12 @@
     "language": "Langue",
     "theme": "Thème",
     "dangerZone": "Zone de danger",
-    "deleteWorkspace": "Supprimer l'espace de travail"
+    "deleteWorkspace": "Supprimer l'espace de travail",
+    "deleteWorkspaceDesc": "Supprime définitivement cet espace de travail ainsi que tous ses boards, tâches et données. Action irréversible.",
+    "deleteWorkspaceConfirmPrompt": "Tapez {name} pour confirmer.",
+    "deleteWorkspaceConfirming": "Suppression…",
+    "deleteWorkspaceFailed": "Échec de la suppression de l'espace de travail",
+    "ownerOnlyDelete": "Seul le propriétaire peut supprimer cet espace de travail."
   },
   "billing": {
     "currentPlan": "Plan actuel",
