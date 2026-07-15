@@ -644,7 +644,8 @@
     "continue": "Continuer",
     "creating": "Création…",
     "footerNote": "Vous pourrez toujours le modifier plus tard dans les paramètres.",
-    "createFailed": "Échec de la création de l'espace de travail"
+    "createFailed": "Échec de la création de l'espace de travail",
+    "close": "Fermer"
   },
   "teamPage": {
     "breadcrumbWorkspace": "Espace de travail",

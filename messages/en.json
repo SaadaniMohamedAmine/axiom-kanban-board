@@ -644,7 +644,8 @@
     "continue": "Continue",
     "creating": "Creating…",
     "footerNote": "You can always change this later in settings.",
-    "createFailed": "Failed to create workspace"
+    "createFailed": "Failed to create workspace",
+    "close": "Close"
   },
   "teamPage": {
     "breadcrumbWorkspace": "Workspace",

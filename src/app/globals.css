@@ -76,6 +76,29 @@ body {
   pointer-events: none;
 }
 
+/* Onboarding glass card — translucent blurred panel with a white hairline
+   top-highlight border, matches the axiom_onboarding_workspace_name mockup
+   exactly (distinct from .gradient-border's blue/cyan tint). */
+.onboarding-glass-card {
+  position: relative;
+  background: rgba(17, 24, 39, 0.7);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.onboarding-glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
 /* Focus glow for form inputs — pairs with the gradient-border card style. */
 .input-glow:focus {
   box-shadow: 0 0 0 1px var(--primary), 0 0 12px rgba(59, 130, 246, 0.15);
