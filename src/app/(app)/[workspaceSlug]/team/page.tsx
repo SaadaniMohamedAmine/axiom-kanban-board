@@ -2,9 +2,9 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
-import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { TeamMemberTable } from "@/components/workspace/team-member-table";
+import { InviteTeammateButton } from "@/components/workspace/invite-teammate-button";
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
@@ -49,17 +49,7 @@ export default async function TeamPage({ params }: Props) {
             {t("membersActive", { count: workspace.members.length, name: workspace.name })}
           </p>
         </div>
-        {canInvite && (
-          <Link
-            href={`/${workspace.slug}/settings#members`}
-            className="bg-primary hover:brightness-110 text-on-primary px-5 py-2.5 rounded-lg text-[13px] font-semibold flex items-center gap-2 transition-all active:scale-95"
-          >
-            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="19" x2="19" y1="8" y2="14" /><line x1="16" x2="22" y1="11" y2="11" />
-            </svg>
-            {t("inviteTeammate")}
-          </Link>
-        )}
+        {canInvite && <InviteTeammateButton workspaceId={workspace.id} />}
       </div>
 
       <TeamMemberTable workspaceId={workspace.id} members={workspace.members} currentUserId={session.user.id} />

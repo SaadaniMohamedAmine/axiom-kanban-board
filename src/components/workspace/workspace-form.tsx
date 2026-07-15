@@ -38,9 +38,9 @@ export function WorkspaceForm() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center px-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
       <motion.div
-        className="absolute inset-0 bg-surface-container-lowest"
+        className="absolute inset-0 bg-surface-container-lowest/90"
         variants={MOTION.variants.modalOverlay}
         initial="hidden"
         animate="visible"
@@ -49,10 +49,6 @@ export function WorkspaceForm() {
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] pointer-events-none"
         style={{ background: "radial-gradient(circle, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0) 70%)" }}
       />
-
-      <h1 className="relative text-h2 font-semibold tracking-tight text-on-surface mb-10">
-        Axiom
-      </h1>
 
       <motion.section
         className="onboarding-glass-card relative w-full max-w-md rounded-2xl p-8 shadow-2xl"
@@ -64,7 +60,7 @@ export function WorkspaceForm() {
           type="button"
           onClick={() => router.back()}
           aria-label={t("close")}
-          className="absolute top-4 right-4 p-1.5 rounded-lg text-on-surface-variant/60 hover:text-on-surface hover:bg-white/5 transition-colors cursor-pointer"
+          className="absolute top-4 right-4 p-1.5 rounded-lg text-on-surface-variant/60 hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
         >
           <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
             <path d="M18 6 6 18" /><path d="m6 6 12 12" />
@@ -88,7 +84,7 @@ export function WorkspaceForm() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={t("namePlaceholder")}
-                className="w-full px-4 py-3 bg-surface-container-lowest border border-outline-variant/30 rounded-lg text-[14px] text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none input-glow transition-all"
+                className="w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-2.5 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none input-glow transition-all text-body-md"
                 autoFocus
               />
             </div>
@@ -98,15 +94,13 @@ export function WorkspaceForm() {
             <button
               type="submit"
               disabled={isSubmitting || !name.trim()}
-              className="w-full py-3 bg-white text-black rounded-lg text-[13px] font-semibold hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="w-full py-2.5 bg-primary text-on-primary rounded-lg text-[13px] font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all"
             >
               {isSubmitting ? t("creating") : t("continue")}
             </button>
           </form>
         </div>
       </motion.section>
-
-      <p className="relative mt-8 text-[12px] text-on-surface-variant/60">{t("footerNote")}</p>
     </div>
   );
 }
