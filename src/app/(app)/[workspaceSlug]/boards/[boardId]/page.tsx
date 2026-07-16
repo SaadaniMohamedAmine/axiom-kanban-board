@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { BoardViewWithModal } from "./board-view-with-modal";
-import { CreateTaskForm } from "./create-task-form";
+import { CreateTaskModal } from "./create-task-modal";
 import { SprintPanel } from "@/components/sprint/sprint-panel";
 import { SprintHealthSummary } from "@/components/analytics/sprint-health-summary";
 import { BlockedTasksList } from "@/components/board/blocked-tasks-list";
@@ -56,6 +56,9 @@ export default async function BoardPage({
       },
       sprints: {
         orderBy: { startDate: "desc" },
+      },
+      labels: {
+        orderBy: { name: "asc" },
       },
       workspace: {
         include: {
@@ -127,7 +130,7 @@ export default async function BoardPage({
             currentUser={{ id: session.user.id, name: session.user.name, image: session.user.image ?? null }}
             boardMembers={boardMembers}
           />
-          {canEdit && <CreateTaskForm boardId={board.id} columns={board.columns} />}
+          {canEdit && <CreateTaskModal boardId={board.id} columns={board.columns} labels={board.labels} />}
         </div>
         {board.template === "SCRUM" && (
           <aside className="w-96 border-l border-outline-variant overflow-y-auto p-4 space-y-4">
