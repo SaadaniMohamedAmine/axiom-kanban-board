@@ -71,6 +71,10 @@ enum AuditAction {
   WORKSPACE_CREATED
   WORKSPACE_RENAMED
   WORKSPACE_DELETED
+  WORKSPACE_ARCHIVED
+  WORKSPACE_UNARCHIVED
+  WORKSPACE_TRASHED
+  WORKSPACE_RESTORED
   MEMBER_INVITED
   MEMBER_JOINED
   MEMBER_ROLE_CHANGED
@@ -173,6 +177,8 @@ model Workspace {
   planExpiresAt        DateTime?
   aiRequestsToday      Int           @default(0)
   aiRequestsResetAt    DateTime?
+  archivedAt           DateTime?
+  deletedAt            DateTime?
   createdAt            DateTime      @default(now())
 
   owner          User              @relation("WorkspaceOwner", fields: [ownerId], references: [id], onDelete: Cascade)

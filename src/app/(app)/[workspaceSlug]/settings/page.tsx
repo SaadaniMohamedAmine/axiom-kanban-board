@@ -10,12 +10,14 @@ import { SettingsSectionNav } from "@/components/settings/settings-section-nav";
 import { AccountSettingsForm } from "@/components/workspace/account-settings-form";
 import { MemberList } from "@/components/workspace/member-list";
 import { WorkspaceSettingsForm } from "@/components/workspace/workspace-settings-form";
+import { DangerZoneCard } from "@/components/workspace/danger-zone-card";
 import { AccessRestricted } from "@/components/layout/access-restricted";
 import { APIKeyManager } from "@/components/settings/api-key-manager";
 import { WebhookManager } from "@/components/settings/webhook-manager";
 import { NotificationIcon, notificationBadgeClass } from "@/components/layout/notification-icon";
 import { timeAgo } from "@/lib/time-ago";
-import { markAllNotificationsRead } from "@/lib/actions/notification.actions";
+import { markAllNotificationsRead, type NotificationPreferences } from "@/lib/actions/notification.actions";
+import { NotificationPreferencesForm } from "@/components/workspace/notification-preferences-form";
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
@@ -61,6 +63,13 @@ const ICONS = {
     <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
       <polyline points="16 18 22 12 16 6" />
       <polyline points="8 6 2 12 8 18" />
+    </svg>
+  ),
+  dangerZone: (
+    <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
+      <path d="M3 6h18" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
     </svg>
   ),
 };
@@ -117,6 +126,16 @@ export default async function SettingsPage({ params }: Props) {
     where: { userId: session.user.id, readAt: null },
   });
 
+  const userPrefs = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { emailPreferences: true },
+  });
+  const storedPrefs = (userPrefs?.emailPreferences ?? null) as NotificationPreferences | null;
+  const notificationPreferences: NotificationPreferences = {
+    notify: storedPrefs?.notify ?? {},
+    quietHours: storedPrefs?.quietHours ?? { enabled: false, start: "20:00", end: "08:00" },
+  };
+
   const used = workspace.aiRequestsToday;
   const pct = Math.min(100, Math.round((used / AI_DAILY_LIMIT) * 100));
   const resetAt = workspace.aiRequestsResetAt ?? new Date(
@@ -135,6 +154,7 @@ export default async function SettingsPage({ params }: Props) {
     { id: "account", label: t("account") },
     { id: "members", label: t("members") },
     { id: "workspace", label: t("workspace") },
+    ...(canEditWorkspace ? [{ id: "danger-zone", label: t("dangerZone") }] : []),
     { id: "notifications", label: t("notifications") },
     { id: "ai-quota", label: tNav("aiQuota") },
     { id: "developers", label: t("developers") },
@@ -193,6 +213,16 @@ export default async function SettingsPage({ params }: Props) {
           )}
         </SettingsSection>
 
+        {canEditWorkspace && (
+          <SettingsSection id="danger-zone" icon={ICONS.dangerZone} title={t("dangerZone")} description={t("deleteWorkspaceDesc")}>
+            <DangerZoneCard
+              workspaceId={workspace.id}
+              workspaceName={workspace.name}
+              canDelete={canEditWorkspace}
+            />
+          </SettingsSection>
+        )}
+
         <SettingsSection id="notifications" icon={ICONS.notifications} title={t("notifications")} description={t("notificationsDesc")}>
           <div className="gradient-border">
             <div className="p-4 border-b border-outline-variant/20 flex items-center justify-between">
@@ -233,6 +263,10 @@ export default async function SettingsPage({ params }: Props) {
                 {t("seeAllActivity")}
               </Link>
             </div>
+          </div>
+
+          <div className="mt-6">
+            <NotificationPreferencesForm initialPreferences={notificationPreferences} />
           </div>
         </SettingsSection>
 

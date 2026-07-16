@@ -1,0 +1,48 @@
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
+import { ArchivedWorkspaceList } from "./archived-workspace-list";
+
+export default async function ArchivedWorkspacesPage() {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) redirect("/login");
+
+  const memberships = await prisma.workspaceMember.findMany({
+    where: { userId: session.user.id, workspace: { archivedAt: { not: null }, deletedAt: null } },
+    include: { workspace: true },
+    orderBy: { workspace: { name: "asc" } },
+  });
+
+  const t = await getTranslations("nav");
+
+  const workspaces = memberships.map((m) => ({
+    id: m.workspace.id,
+    slug: m.workspace.slug,
+    name: m.workspace.name,
+    role: m.role,
+    archivedAt: m.workspace.archivedAt!.toISOString(),
+  }));
+
+  return (
+    <div className="p-8 max-w-5xl mx-auto">
+      <div className="flex items-center justify-between mb-2">
+        <h1 className="text-h1 text-on-surface">{t("archive")}</h1>
+        <Link href="/workspaces" className="text-[13px] text-primary hover:text-primary/80 transition-colors">
+          Back to Workspaces
+        </Link>
+      </div>
+      <p className="text-[13px] text-on-surface-variant mb-8">Archived workspaces are hidden from your list. Restore one to make it active again.</p>
+
+      {workspaces.length === 0 ? (
+        <div className="border border-dashed border-outline-variant/40 rounded-xl p-12 text-center text-on-surface-variant">
+          Nothing archived yet.
+        </div>
+      ) : (
+        <ArchivedWorkspaceList workspaces={workspaces} />
+      )}
+    </div>
+  );
+}

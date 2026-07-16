@@ -4,13 +4,14 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { WorkspaceGrid } from "./workspace-grid";
 
 export default async function WorkspacesPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
 
   const memberships = await prisma.workspaceMember.findMany({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, workspace: { archivedAt: null, deletedAt: null } },
     include: {
       workspace: {
         include: {
@@ -22,6 +23,16 @@ export default async function WorkspacesPage() {
   });
 
   const t = await getTranslations("nav");
+
+  const workspaces = memberships.map((m) => ({
+    id: m.workspace.id,
+    slug: m.workspace.slug,
+    name: m.workspace.name,
+    plan: m.workspace.plan,
+    role: m.role,
+    memberCount: m.workspace._count.members,
+    boardCount: m.workspace._count.boards,
+  }));
 
   return (
     <div className="p-8 max-w-5xl mx-auto">
@@ -39,28 +50,12 @@ export default async function WorkspacesPage() {
         </Link>
       </div>
 
-      {memberships.length === 0 ? (
+      {workspaces.length === 0 ? (
         <div className="border border-dashed border-outline-variant/40 rounded-xl p-12 text-center text-on-surface-variant">
           {t("newWorkspace")}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {memberships.map((m) => (
-            <Link
-              key={m.workspace.id}
-              href={`/${m.workspace.slug}`}
-              className="p-5 bg-surface-container border border-outline-variant/50 rounded-xl hover:border-primary/50 transition-colors"
-            >
-              <div className="w-10 h-10 rounded-lg bg-primary/15 flex items-center justify-center text-primary font-bold text-[14px] mb-4">
-                {m.workspace.name.slice(0, 2).toUpperCase()}
-              </div>
-              <h2 className="text-h3 text-on-surface font-semibold truncate">{m.workspace.name}</h2>
-              <p className="text-label-md text-on-surface-variant mt-1">
-                {t("membersCount", { count: m.workspace._count.members })} · {m.workspace._count.boards} {t("boards").toLowerCase()}
-              </p>
-            </Link>
-          ))}
-        </div>
+        <WorkspaceGrid workspaces={workspaces} />
       )}
     </div>
   );

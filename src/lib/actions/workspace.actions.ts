@@ -97,12 +97,114 @@ export async function renameWorkspace(input: RenameWorkspaceInput) {
 export async function deleteWorkspace(workspaceId: string) {
   await requireRole(workspaceId, "OWNER");
 
+  const workspace = await prisma.workspace.update({
+    where: { id: workspaceId },
+    data: { deletedAt: new Date() },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "WORKSPACE_TRASHED",
+      targetType: "workspace",
+      targetId: workspaceId,
+      targetLabel: workspace.name,
+    });
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/");
+}
+
+export async function archiveWorkspace(workspaceId: string) {
+  await requireRole(workspaceId, "OWNER");
+
+  const workspace = await prisma.workspace.update({
+    where: { id: workspaceId },
+    data: { archivedAt: new Date() },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "WORKSPACE_ARCHIVED",
+      targetType: "workspace",
+      targetId: workspaceId,
+      targetLabel: workspace.name,
+    });
+  }
+
+  revalidatePath("/workspaces", "page");
+  return { success: true };
+}
+
+export async function unarchiveWorkspace(workspaceId: string) {
+  await requireRole(workspaceId, "OWNER");
+
+  const workspace = await prisma.workspace.update({
+    where: { id: workspaceId },
+    data: { archivedAt: null },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "WORKSPACE_UNARCHIVED",
+      targetType: "workspace",
+      targetId: workspaceId,
+      targetLabel: workspace.name,
+    });
+  }
+
+  revalidatePath("/workspaces", "page");
+  revalidatePath("/workspaces/archived", "page");
+  return { success: true };
+}
+
+export async function restoreWorkspace(workspaceId: string) {
+  await requireRole(workspaceId, "OWNER");
+
+  const workspace = await prisma.workspace.update({
+    where: { id: workspaceId },
+    data: { deletedAt: null },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "WORKSPACE_RESTORED",
+      targetType: "workspace",
+      targetId: workspaceId,
+      targetLabel: workspace.name,
+    });
+  }
+
+  revalidatePath("/workspaces", "page");
+  revalidatePath("/workspaces/trash", "page");
+  return { success: true };
+}
+
+export async function permanentlyDeleteWorkspace(workspaceId: string) {
+  await requireRole(workspaceId, "OWNER");
+
   await prisma.workspace.delete({
     where: { id: workspaceId },
   });
 
-  revalidatePath("/", "layout");
-  redirect("/");
+  revalidatePath("/workspaces/trash", "page");
+  return { success: true };
 }
 
 export async function inviteMember(input: InviteMemberInput) {

@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
-import { NotificationIcon, notificationBadgeClass } from "@/components/layout/notification-icon";
 import { timeAgo } from "@/lib/time-ago";
 
 export default async function DashboardPage() {
@@ -12,7 +11,7 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const memberships = await prisma.workspaceMember.findMany({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, workspace: { archivedAt: null, deletedAt: null } },
     include: {
       workspace: {
         include: {
@@ -30,7 +29,7 @@ export default async function DashboardPage() {
   const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  const [myTasks, activeSprints, aiSuggestionsThisWeek, notifications, unreadCount] = await Promise.all([
+  const [myTasks, activeSprints, aiSuggestionsThisWeek, recentAuditLogs, recentActivityEvents] = await Promise.all([
     prisma.task.findMany({
       where: {
         board: { workspaceId: { in: workspaceIds } },
@@ -53,12 +52,27 @@ export default async function DashboardPage() {
     prisma.auditLog.count({
       where: { workspaceId: { in: workspaceIds }, action: "AI_SUGGESTION_APPLIED", createdAt: { gte: sevenDaysAgo } },
     }),
-    prisma.notification.findMany({
-      where: { userId: session.user.id },
+    prisma.auditLog.findMany({
+      where: { workspaceId: { in: workspaceIds }, actorId: session.user.id },
       orderBy: { createdAt: "desc" },
-      take: 5,
+      take: 10,
+      select: { id: true, action: true, targetLabel: true, workspaceId: true, createdAt: true },
     }),
-    prisma.notification.count({ where: { userId: session.user.id, readAt: null } }),
+    prisma.activityEvent.findMany({
+      where: { actorId: session.user.id, task: { board: { workspaceId: { in: workspaceIds } } } },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: {
+        task: {
+          select: {
+            id: true,
+            title: true,
+            boardId: true,
+            board: { select: { name: true, workspace: { select: { slug: true } } } },
+          },
+        },
+      },
+    }),
   ]);
 
   const aiRequestsToday = memberships.reduce((sum, m) => sum + m.workspace.aiRequestsToday, 0);
@@ -68,8 +82,45 @@ export default async function DashboardPage() {
   const tSettings = await getTranslations("settings");
   const tAi = await getTranslations("ai");
   const tNav = await getTranslations("nav");
+  const tActions = await getTranslations("auditActions");
 
   const todayLabel = now.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" });
+
+  function describeActivityEvent(type: string, payload: unknown, taskTitle: string): string {
+    const p = (payload ?? {}) as Record<string, unknown>;
+    switch (type) {
+      case "STATUS_CHANGE":
+        return p.field === "column" ? `Moved ${taskTitle}` : `Updated ${p.field} on ${taskTitle}`;
+      case "ASSIGNED":
+        return `Updated assignees on ${taskTitle}`;
+      case "COMMENTED":
+        return `Commented on ${taskTitle}`;
+      default:
+        return `Updated ${taskTitle}`;
+    }
+  }
+
+  const recentActivityFeed = [
+    ...recentAuditLogs.map((log) => {
+      const workspace = memberships.find((m) => m.workspaceId === log.workspaceId)?.workspace;
+      return {
+        id: `audit-${log.id}`,
+        createdAt: log.createdAt,
+        label: log.targetLabel ? `${tActions(log.action)}: ${log.targetLabel}` : tActions(log.action),
+        subLabel: workspace?.name,
+        href: workspace ? `/${workspace.slug}` : "/workspaces",
+      };
+    }),
+    ...recentActivityEvents.map((ev) => ({
+      id: `activity-${ev.id}`,
+      createdAt: ev.createdAt,
+      label: describeActivityEvent(ev.type, ev.payload, ev.task.title),
+      subLabel: ev.task.board.name,
+      href: `/${ev.task.board.workspace.slug}/boards/${ev.task.boardId}?task=${ev.task.id}`,
+    })),
+  ]
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 10);
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-10">
@@ -166,35 +217,27 @@ export default async function DashboardPage() {
       </div>
 
       <section>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-h3 text-on-surface">{t("recentActivity")}</h2>
-          {unreadCount > 0 && (
-            <span className="text-[12px] text-primary">{unreadCount} {tSettings("unread")}</span>
-          )}
-        </div>
-        {notifications.length === 0 ? (
+        <h2 className="text-h3 text-on-surface mb-1">{t("recentActivity")}</h2>
+        <p className="text-[13px] text-on-surface-variant mb-4">Your recent actions across every workspace</p>
+        {recentActivityFeed.length === 0 ? (
           <div className="border border-dashed border-outline-variant/40 rounded-xl p-8 text-center text-on-surface-variant">
             {tSettings("nothingHereYet")}
           </div>
         ) : (
           <div className="gradient-border">
-            {notifications.map((n) => {
-              const payload = n.payload as { title?: string; message?: string };
-              return (
-                <div key={n.id} className={`flex gap-3 p-4 border-b border-outline-variant/10 last:border-b-0 ${n.readAt ? "opacity-60" : ""}`}>
-                  <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center ${notificationBadgeClass(n.type)}`}>
-                    <NotificationIcon type={n.type} className="w-4 h-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-[13px] font-medium text-on-surface leading-snug">{payload.title ?? n.type}</p>
-                      <span className="text-[10px] text-on-surface-variant/50 whitespace-nowrap shrink-0">{timeAgo(n.createdAt)}</span>
-                    </div>
-                    {payload.message && <p className="text-[12px] text-on-surface-variant/70 line-clamp-2">{payload.message}</p>}
-                  </div>
+            {recentActivityFeed.map((item) => (
+              <Link
+                key={item.id}
+                href={item.href}
+                className="flex items-center justify-between gap-3 p-4 border-b border-outline-variant/10 last:border-b-0 hover:bg-surface-container-high/40 transition-colors"
+              >
+                <div className="min-w-0">
+                  <p className="text-[13px] font-medium text-on-surface leading-snug truncate">{item.label}</p>
+                  {item.subLabel && <p className="text-[12px] text-on-surface-variant/70 truncate">{item.subLabel}</p>}
                 </div>
-              );
-            })}
+                <span className="text-[10px] text-on-surface-variant/50 whitespace-nowrap shrink-0">{timeAgo(item.createdAt)}</span>
+              </Link>
+            ))}
           </div>
         )}
       </section>

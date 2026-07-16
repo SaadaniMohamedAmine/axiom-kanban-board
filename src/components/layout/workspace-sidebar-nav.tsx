@@ -61,20 +61,10 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
         </svg>
       ),
     },
-  ];
-
-  const upcoming = [
     {
-      label: t("myTasks"),
-      icon: (
-        <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
-          <path d="M21.801 10A10 10 0 1 1 17 3.335" />
-          <path d="m9 11 3 3L22 4" />
-        </svg>
-      ),
-    },
-    {
+      href: "/workspaces/archived",
       label: t("archive"),
+      active: pathname === "/workspaces/archived",
       icon: (
         <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
           <rect height="5" width="20" x="2" y="3" rx="1" />
@@ -84,7 +74,9 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
       ),
     },
     {
+      href: "/workspaces/trash",
       label: t("trash"),
+      active: pathname === "/workspaces/trash",
       icon: (
         <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
           <path d="M3 6h18" />
@@ -92,6 +84,18 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
           <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
           <line x1="10" x2="10" y1="11" y2="17" />
           <line x1="14" x2="14" y1="11" y2="17" />
+        </svg>
+      ),
+    },
+  ];
+
+  const upcoming = [
+    {
+      label: t("myTasks"),
+      icon: (
+        <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+          <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+          <path d="m9 11 3 3L22 4" />
         </svg>
       ),
     },

@@ -31,3 +31,20 @@ export async function markAllNotificationsRead(userId: string) {
 
   revalidatePath("/", "layout");
 }
+
+export interface NotificationPreferences {
+  notify: Record<string, boolean>;
+  quietHours: { enabled: boolean; start: string; end: string };
+}
+
+export async function updateNotificationPreferences(preferences: NotificationPreferences) {
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (!session) throw new Error("Unauthorized");
+
+  await prisma.user.update({
+    where: { id: session.user.id },
+    data: { emailPreferences: preferences as unknown as object },
+  });
+
+  revalidatePath("/", "layout");
+}

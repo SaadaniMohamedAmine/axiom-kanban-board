@@ -39,7 +39,7 @@ export default async function AppLayout({
   });
 
   const memberships = await prisma.workspaceMember.findMany({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, workspace: { archivedAt: null, deletedAt: null } },
     include: {
       workspace: {
         include: {

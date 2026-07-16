@@ -14,11 +14,18 @@ interface TaskCardProps {
   showConflict?: boolean;
 }
 
-const priorityStyles = {
+export const priorityStyles = {
   URGENT: "bg-red-500/10 text-red-500 border-red-500/20",
   HIGH: "bg-red-500/10 text-red-500 border-red-500/20",
   MEDIUM: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
   LOW: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+};
+
+export const priorityAccent = {
+  URGENT: "from-red-500 to-red-400",
+  HIGH: "from-red-500 to-orange-400",
+  MEDIUM: "from-yellow-500 to-amber-400",
+  LOW: "from-emerald-500 to-emerald-400",
 };
 
 export function TaskCard({ task, onClick, canEdit, showConflict }: TaskCardProps) {
@@ -41,21 +48,34 @@ export function TaskCard({ task, onClick, canEdit, showConflict }: TaskCardProps
       {...(canEdit ? attributes : {})}
       {...(canEdit ? listeners : {})}
       onClick={onClick}
-      whileHover={{ y: -1, transition: { duration: MOTION.duration.fast } }}
+      whileHover={{ y: -2, transition: { duration: MOTION.duration.fast } }}
       whileTap={{ scale: 0.98, transition: { duration: MOTION.duration.instant } }}
-      className="bg-surface-container border border-outline-variant p-4 md:p-4 rounded-lg hover:border-primary/50 transition-colors cursor-pointer group min-h-[80px] md:min-h-0"
+      className="gradient-border relative p-4 md:p-4 hover:shadow-glow transition-shadow cursor-pointer group min-h-[80px] md:min-h-0 overflow-hidden"
       data-id={task.code}
     >
-      <div className="flex gap-2 mb-3">
-        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${priorityStyles[task.priority]}`}>
-          {task.priority}
-        </span>
-        <ConflictBadge visible={!!showConflict} />
+      <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${priorityAccent[task.priority]}`} />
+
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${priorityStyles[task.priority]}`}>
+            {task.priority}
+          </span>
+          <ConflictBadge visible={!!showConflict} />
+        </div>
+        <span className="text-[10px] font-mono text-on-surface-variant/40">{task.code}</span>
       </div>
-      <h4 className="text-sm font-semibold text-on-surface leading-snug mb-4">{task.title}</h4>
+      <h4 className="text-sm font-semibold text-on-surface leading-snug mb-4 group-hover:text-primary transition-colors">{task.title}</h4>
       <div className="flex items-center justify-between mt-auto">
-        <div className="flex -space-x-1">
-          {/* Assignees would be rendered here */}
+        <div className="flex -space-x-1.5">
+          {(task.assignees ?? []).map((a) => (
+            <span
+              key={a.id}
+              title={a.user?.name ?? "Unknown member"}
+              className="w-5 h-5 rounded-full bg-primary/25 border-2 border-surface-container flex items-center justify-center text-[9px] font-bold text-primary shrink-0"
+            >
+              {(a.user?.name ?? "?").slice(0, 2).toUpperCase()}
+            </span>
+          ))}
         </div>
         {task.dueDate && (
           <div className="flex items-center gap-1.5 text-on-surface-variant text-[10px]">

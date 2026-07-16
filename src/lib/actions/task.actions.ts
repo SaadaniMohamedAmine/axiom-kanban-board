@@ -420,9 +420,14 @@ export async function setTaskAssignees(input: SetTaskAssigneesInput, socketId?: 
     ),
   ]);
 
+  const updatedAssignees = await prisma.taskAssignee.findMany({
+    where: { taskId },
+    include: { user: { select: { id: true, name: true } } },
+  });
+
   await triggerBoardEvent(
     task.boardId,
-    makeEvent("task.updated", task.boardId, session.user.id, { taskId, assigneeIds: userIds }, taskId),
+    makeEvent("task.updated", task.boardId, session.user.id, { taskId, assignees: updatedAssignees }, taskId),
     socketId,
   );
 

@@ -20,12 +20,14 @@ export interface Task {
   sprintId: string | null;
   createdAt: Date;
   updatedAt: Date;
+  assignees?: TaskAssignee[];
 }
 
 export interface TaskAssignee {
   id: string;
   taskId: string;
   userId: string;
+  user?: { id: string; name: string };
 }
 
 export interface TaskLabel {

@@ -4,7 +4,8 @@ import { headers } from "next/headers";
 import { pusher } from "@/lib/pusher";
 import { prisma } from "@/lib/prisma";
 
-const CHANNEL_NAME_PATTERN = /^presence-board-(.+)$/;
+const BOARD_CHANNEL_PATTERN = /^presence-board-(.+)$/;
+const WORKSPACE_CHANNEL_PATTERN = /^presence-workspace-(.+)$/;
 
 export async function POST(request: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });
@@ -21,26 +22,32 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing socket_id or channel_name" }, { status: 400 });
   }
 
-  const match = channelName.match(CHANNEL_NAME_PATTERN);
-  if (!match) {
+  const boardMatch = channelName.match(BOARD_CHANNEL_PATTERN);
+  const workspaceMatch = channelName.match(WORKSPACE_CHANNEL_PATTERN);
+
+  if (!boardMatch && !workspaceMatch) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const boardId = match[1];
+  let workspaceId: string;
 
-  const board = await prisma.board.findUnique({
-    where: { id: boardId },
-    select: { workspaceId: true },
-  });
-
-  if (!board) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  if (boardMatch) {
+    const board = await prisma.board.findUnique({
+      where: { id: boardMatch[1] },
+      select: { workspaceId: true },
+    });
+    if (!board) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+    workspaceId = board.workspaceId;
+  } else {
+    workspaceId = workspaceMatch![1];
   }
 
   const membership = await prisma.workspaceMember.findUnique({
     where: {
       workspaceId_userId: {
-        workspaceId: board.workspaceId,
+        workspaceId,
         userId: session.user.id,
       },
     },
