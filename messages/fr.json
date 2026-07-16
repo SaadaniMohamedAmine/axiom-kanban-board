@@ -371,7 +371,7 @@
     "theme": "Thème",
     "dangerZone": "Zone de danger",
     "deleteWorkspace": "Supprimer l'espace de travail",
-    "deleteWorkspaceDesc": "Supprime définitivement cet espace de travail ainsi que tous ses boards, tâches et données. Action irréversible.",
+    "deleteWorkspaceDesc": "Déplace cet espace de travail vers la Corbeille. Il sera masqué et inaccessible, mais pourra être restauré depuis la Corbeille — ou supprimé définitivement depuis là-bas.",
     "deleteWorkspaceConfirmPrompt": "Tapez {name} pour confirmer.",
     "deleteWorkspaceConfirming": "Suppression…",
     "deleteWorkspaceFailed": "Échec de la suppression de l'espace de travail",

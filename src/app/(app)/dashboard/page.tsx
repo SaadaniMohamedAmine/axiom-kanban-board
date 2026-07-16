@@ -12,7 +12,7 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const memberships = await prisma.workspaceMember.findMany({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, workspace: { archivedAt: null, deletedAt: null } },
     include: {
       workspace: {
         include: {

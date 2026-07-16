@@ -371,7 +371,7 @@
     "theme": "Theme",
     "dangerZone": "Danger zone",
     "deleteWorkspace": "Delete workspace",
-    "deleteWorkspaceDesc": "Permanently delete this workspace and all its boards, tasks, and data. This cannot be undone.",
+    "deleteWorkspaceDesc": "Move this workspace to Trash. It will be hidden and inaccessible, but can be restored from Trash — or deleted forever from there.",
     "deleteWorkspaceConfirmPrompt": "Type {name} to confirm.",
     "deleteWorkspaceConfirming": "Deleting…",
     "deleteWorkspaceFailed": "Failed to delete workspace",
