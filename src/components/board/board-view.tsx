@@ -224,10 +224,10 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
         </div>
       </div>
       <div className="relative min-h-0 flex-1">
-        <div className="flex gap-3 p-6 overflow-x-auto snap-x snap-mandatory md:overflow-x-visible h-full">
-          {optimisticColumns.map((column) => (
-            <div key={column.id} className="snap-center shrink-0 w-[300px] md:w-auto md:shrink md:flex-1">
-              <Column column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} />
+        <div className="flex gap-4 p-6 overflow-x-auto snap-x snap-mandatory md:overflow-x-visible h-full">
+          {optimisticColumns.map((column, index) => (
+            <div key={column.id} className="snap-center shrink-0 w-[300px] md:w-0 md:min-w-0 md:flex-1 md:shrink h-full">
+              <Column column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} columnIndex={index} />
             </div>
           ))}
         </div>

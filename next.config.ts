@@ -1,3 +1,4 @@
+import path from "node:path";
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import withPWAInit from "@ducanh2912/next-pwa";
@@ -39,6 +40,12 @@ const withPWA = withPWAInit({
 });
 
 const nextConfig: NextConfig = {
+  // A stray lockfile outside the project (e.g. C:\Users\<user>\package-lock.json)
+  // makes Next.js/Turbopack misdetect the workspace root, which breaks build
+  // manifest resolution entirely. Pin the root explicitly to this project.
+  turbopack: {
+    root: path.join(__dirname),
+  },
   // Prisma 7's driver-adapter client loads its runtime via a computed
   // require() (e.g. "@prisma/client-<hash>"), which Vercel's static file
   // tracer can't follow — without this, the deployed function is missing
