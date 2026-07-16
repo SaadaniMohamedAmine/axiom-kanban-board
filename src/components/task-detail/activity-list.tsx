@@ -5,9 +5,11 @@ import type { ActivityEvent } from "@/types/task.types";
 
 interface ActivityListProps {
   activities: ActivityEvent[];
+  boardMembers: { userId: string; name: string }[];
+  columns: { id: string; name: string }[];
 }
 
-export function ActivityList({ activities }: ActivityListProps) {
+export function ActivityList({ activities, boardMembers, columns }: ActivityListProps) {
   const [now] = useState(() => Date.now());
 
   if (activities.length === 0) {
@@ -18,10 +20,28 @@ export function ActivityList({ activities }: ActivityListProps) {
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
   );
 
+  const memberNameById = new Map(boardMembers.map((m) => [m.userId, m.name]));
+  const columnNameById = new Map(columns.map((c) => [c.id, c.name]));
+
+  function actorName(actorId: string): string {
+    return memberNameById.get(actorId) ?? `User ${actorId.slice(0, 6)}`;
+  }
+
+  function columnName(id: unknown): string {
+    if (typeof id !== "string") return "Unknown";
+    return columnNameById.get(id) ?? "Unknown";
+  }
+
   function formatActivity(activity: ActivityEvent): string {
     const payload = activity.payload as Record<string, unknown>;
     switch (activity.type) {
       case "STATUS_CHANGE":
+        if (payload.field === "column") {
+          return `moved this task from ${columnName(payload.from)} to ${columnName(payload.to)}`;
+        }
+        if (payload.field === "labels") {
+          return `updated labels`;
+        }
         return `changed ${payload.field} from ${payload.from} to ${payload.to}`;
       case "ASSIGNED": {
         const added = (payload.added as string[]) ?? [];
@@ -30,9 +50,9 @@ export function ActivityList({ activities }: ActivityListProps) {
           return `updated assignees`;
         }
         if (added.length > 0) {
-          return `assigned ${added.length} member(s)`;
+          return `assigned ${added.map((id) => actorName(id)).join(", ")}`;
         }
-        return `unassigned ${removed.length} member(s)`;
+        return `unassigned ${removed.map((id) => actorName(id)).join(", ")}`;
       }
       case "COMMENTED":
         return `added a comment`;
@@ -62,7 +82,7 @@ export function ActivityList({ activities }: ActivityListProps) {
             </svg>
           </div>
           <p className="text-on-surface-variant">
-            <span className="text-on-surface font-medium">{activity.actorId.slice(0, 8)}</span>{" "}
+            <span className="text-on-surface font-medium">{actorName(activity.actorId)}</span>{" "}
             {formatActivity(activity)}
             <span className="text-[10px] ml-1 opacity-60">{timeAgo(activity.createdAt)}</span>
           </p>

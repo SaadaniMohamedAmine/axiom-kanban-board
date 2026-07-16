@@ -46,7 +46,7 @@ export default async function BoardPage({
           tasks: {
             orderBy: { order: "asc" },
             include: {
-              assignees: true,
+              assignees: { include: { user: { select: { id: true, name: true } } } },
               labels: true,
               comments: true,
               activity: true,
