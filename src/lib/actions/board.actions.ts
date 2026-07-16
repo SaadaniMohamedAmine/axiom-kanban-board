@@ -42,7 +42,8 @@ function makeColumnEvent(
 
 const DEFAULT_COLUMNS: Record<string, { name: string; color: string }[]> = {
   KANBAN: [
-    { name: "To Do", color: "#6B7280" },
+    { name: "Backlog", color: "#6B7280" },
+    { name: "To Do", color: "#9CA3AF" },
     { name: "In Progress", color: "#3B82F6" },
     { name: "Done", color: "#10B981" },
   ],
@@ -54,11 +55,15 @@ const DEFAULT_COLUMNS: Record<string, { name: string; color: string }[]> = {
     { name: "Done", color: "#10B981" },
   ],
   BUG_TRACKING: [
+    { name: "Backlog", color: "#6B7280" },
     { name: "Reported", color: "#EF4444" },
     { name: "Confirmed", color: "#F59E0B" },
     { name: "In Progress", color: "#3B82F6" },
     { name: "Resolved", color: "#10B981" },
   ],
+  // CUSTOM intentionally starts empty — its whole purpose is a blank slate
+  // the user builds themselves, so it's excluded from the "always present"
+  // Backlog rule.
   CUSTOM: [],
 };
 
