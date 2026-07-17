@@ -28,7 +28,6 @@ export const ROADMAP: RoadmapColumn[] = [
       { id: "team-management", status: "shipped", date: "Jul 2026" },
       { id: "toast-notifications", status: "shipped", date: "Jul 2026" },
       { id: "webhooks", status: "shipped", date: "Jul 2026" },
-      { id: "pwa", status: "shipped", date: "Jul 2026" },
       { id: "i18n", status: "shipped", date: "Jul 2026" },
       { id: "emails", status: "shipped", date: "Jul 2026" },
       { id: "billing", status: "shipped", date: "Jul 2026" },
@@ -38,6 +37,7 @@ export const ROADMAP: RoadmapColumn[] = [
   {
     id: "next",
     items: [
+      { id: "pwa", status: "in-progress" },
       { id: "push-notifications", status: "planned" },
       { id: "email-expansion", status: "planned" },
     ],
