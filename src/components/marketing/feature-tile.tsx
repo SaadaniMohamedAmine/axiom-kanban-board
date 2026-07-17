@@ -15,6 +15,7 @@ export function FeatureTile({ children, className, index = 0 }: FeatureTileProps
       className={className}
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -6, transition: { duration: 0.25, ease: "easeOut" } }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: MOTION.duration.slow, ease: MOTION.ease.decelerate, delay: index * 0.08 }}
     >
