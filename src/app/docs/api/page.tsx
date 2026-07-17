@@ -4,6 +4,9 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "API Reference",
   description: "Axiom REST API documentation. Integrate Axiom into your tools.",
+  alternates: {
+    canonical: "/docs/api",
+  },
 };
 
 export const dynamic = "force-static";

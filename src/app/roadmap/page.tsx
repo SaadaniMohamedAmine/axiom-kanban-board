@@ -7,6 +7,9 @@ import { SiteFooter } from "@/components/marketing/site-footer";
 export const metadata: Metadata = {
   title: "Roadmap",
   description: "Where Axiom is headed. See what's shipped, what's in progress, and what's coming.",
+  alternates: {
+    canonical: "/roadmap",
+  },
   openGraph: {
     title: "Axiom Roadmap — Where we're headed",
     description: "See what's shipped, what's in progress, and what's coming to Axiom.",

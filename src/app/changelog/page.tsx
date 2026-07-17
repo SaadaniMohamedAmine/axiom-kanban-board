@@ -10,6 +10,9 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban-board.v
 export const metadata: Metadata = {
   title: "Changelog",
   description: "Latest updates and improvements to Axiom.",
+  alternates: {
+    canonical: "/changelog",
+  },
   openGraph: {
     title: "Axiom Changelog",
     description: "Latest updates and improvements to Axiom.",

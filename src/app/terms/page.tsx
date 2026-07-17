@@ -6,6 +6,9 @@ import { SiteFooter } from "@/components/marketing/site-footer";
 export const metadata: Metadata = {
   title: "Terms of Service",
   description: "The terms governing access to and use of Axiom.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 interface Section {

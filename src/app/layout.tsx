@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   keywords: ["kanban", "project management", "AI", "sprint planning", "team collaboration"],
   authors: [{ name: "Axiom Team" }],
   creator: "Axiom",
+  alternates: {
+    canonical: "/",
+  },
   robots: {
     index: true,
     follow: true,

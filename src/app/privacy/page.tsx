@@ -6,6 +6,9 @@ import { SiteFooter } from "@/components/marketing/site-footer";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "What information Axiom collects, how it is used, and your choices.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 interface Section {
