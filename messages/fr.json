@@ -25,7 +25,7 @@
     "switchWorkspace": "Changer d'espace de travail",
     "myAccount": "Mon compte",
     "myTasks": "Mes tâches",
-    "aiInsights": "AI Insights",
+    "aiInsights": "Perspectives IA",
     "archive": "Archive",
     "trash": "Corbeille",
     "comingSoon": "Bientôt",
@@ -344,7 +344,7 @@
     },
     "boardsList": {
       "noBoards": "Aucun board pour l'instant",
-      "boardCount": "{count, plural, one {# board} other {# boards}}",
+      "boardCount": "{count, plural, one {# tableau} other {# tableaux}}",
       "emptyState": "Créez votre premier board pour organiser le travail.",
       "createBoard": "Créer un board",
       "columns": "colonnes",
