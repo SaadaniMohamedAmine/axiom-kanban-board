@@ -224,6 +224,50 @@ body {
 }
 .driver-overlay { background: rgba(0,0,0,0.6) !important; }
 
+/* Branded react-toastify skin — glass card + gradient sheen border, same
+   masked-gradient technique as .onboarding-glass-card, applied to every
+   toast in the app (not just the notification-icon ones) via toastClassName. */
+.axiom-toast {
+  position: relative;
+  background: color-mix(in srgb, var(--surface-container-high) 88%, transparent) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
+  border: none !important;
+  border-radius: 16px !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.45) !important;
+  color: var(--on-surface) !important;
+  font-family: inherit !important;
+  padding: 4px !important;
+}
+.axiom-toast::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg, rgba(59, 130, 246, 0.35), rgba(47, 217, 244, 0.12), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.axiom-toast .Toastify__toast-body {
+  padding: 8px !important;
+  gap: 10px !important;
+}
+.axiom-toast .Toastify__progress-bar {
+  background: linear-gradient(to right, var(--primary), #2fd9f4) !important;
+  height: 3px !important;
+}
+.axiom-toast .Toastify__close-button {
+  color: var(--on-surface-variant) !important;
+  opacity: 0.5 !important;
+}
+.axiom-toast .Toastify__close-button:hover {
+  opacity: 1 !important;
+}
+
 .prose-axiom h2 {
   font-size: 16px;
   font-weight: 600;

@@ -83,7 +83,7 @@ function SignUpForm() {
           body: JSON.stringify({ email: formData.email, name: formData.name }),
         }).catch(() => {});
         window.dispatchEvent(new Event(SPLASH_EVENT));
-        router.push("/dashboard");
+        router.push("/dashboard?authToast=signup");
       }
     } catch {
       setError("An unexpected error occurred");

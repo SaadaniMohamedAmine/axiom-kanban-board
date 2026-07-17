@@ -11,6 +11,7 @@ import { PlanCard } from "@/components/layout/plan-card";
 import { CollapsibleSidebar } from "@/components/layout/collapsible-sidebar";
 import { SidebarToggleButton } from "@/components/layout/sidebar-toggle-button";
 import { ToastProvider } from "@/contexts/toast-context";
+import { AuthToastListener } from "@/components/layout/auth-toast-listener";
 import { SidebarProvider } from "@/contexts/sidebar-context";
 import { ShortcutsProvider } from "@/contexts/shortcuts-context";
 import { ShortcutsPanel } from "@/components/keyboard/shortcuts-panel";
@@ -77,6 +78,7 @@ export default async function AppLayout({
 
   return (
     <ToastProvider>
+    <AuthToastListener userName={session.user.name} />
     <ShortcutsProvider>
     <CommandPaletteProvider>
     <SidebarProvider>
