@@ -203,14 +203,19 @@ body {
    with the primary-blue accent that dominates the workspace-creation card. */
 .axiom-driver-popover {
   position: relative;
-  background: color-mix(in srgb, var(--surface-container-high) 94%, transparent) !important;
+  /* Same deep navy as .onboarding-glass-card (the workspace-creation card),
+     not the neutral --surface-container-high slate — the request was
+     specifically "no grey", blue has to dominate. */
+  background:
+    radial-gradient(circle at 25% 15%, rgba(59, 130, 246, 0.22), transparent 60%),
+    rgba(17, 24, 39, 0.92) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   backdrop-filter: blur(16px) !important;
   border: none !important;
   border-radius: 16px !important;
-  color: var(--on-surface) !important;
+  color: #dfe2f1 !important;
   font-family: inherit !important;
-  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5), 0 0 40px -12px rgba(59, 130, 246, 0.3) !important;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6), 0 0 50px -10px rgba(59, 130, 246, 0.4) !important;
   padding: 20px !important;
   min-width: 280px !important;
   max-width: 320px !important;
@@ -229,7 +234,7 @@ body {
   pointer-events: none;
 }
 .axiom-driver-popover .driver-popover-title {
-  color: var(--on-surface) !important;
+  color: #dfe2f1 !important;
   font-size: 15px !important;
   font-weight: 700 !important;
   font-family: inherit !important;
@@ -249,7 +254,7 @@ body {
   box-shadow: 0 0 8px var(--primary);
 }
 .axiom-driver-popover .driver-popover-description {
-  color: var(--on-surface-variant) !important;
+  color: #c2c6d6 !important;
   font-size: 13px !important;
   font-family: inherit !important;
   line-height: 1.6 !important;
@@ -259,7 +264,7 @@ body {
   margin-top: 18px !important;
 }
 .axiom-driver-popover .driver-popover-progress-text {
-  color: var(--on-surface-variant) !important;
+  color: #c2c6d6 !important;
   opacity: 0.55;
   font-size: 11px !important;
   font-family: inherit !important;
@@ -285,15 +290,15 @@ body {
   filter: brightness(1.1);
 }
 .axiom-driver-popover .driver-popover-prev-btn {
-  background: transparent !important;
-  color: var(--on-surface-variant) !important;
-  border: 1px solid var(--outline-variant) !important;
+  background: rgba(23, 27, 38, 0.6) !important;
+  color: #c2c6d6 !important;
+  border: 1px solid rgba(66, 71, 84, 0.4) !important;
 }
 .axiom-driver-popover .driver-popover-prev-btn:hover {
-  background: var(--surface-container-highest) !important;
+  background: rgba(66, 71, 84, 0.3) !important;
 }
 .axiom-driver-popover .driver-popover-close-btn {
-  color: var(--on-surface-variant) !important;
+  color: #c2c6d6 !important;
   opacity: 0.5 !important;
   font-family: inherit !important;
   top: 14px !important;
@@ -301,10 +306,10 @@ body {
 }
 .axiom-driver-popover .driver-popover-close-btn:hover {
   opacity: 1 !important;
-  color: var(--on-surface) !important;
+  color: #dfe2f1 !important;
 }
 .axiom-driver-popover .driver-popover-arrow {
-  border-color: color-mix(in srgb, var(--surface-container-high) 94%, transparent) !important;
+  border-color: rgba(19, 26, 39, 0.96) !important;
 }
 .driver-overlay { background: rgba(0,0,0,0.6) !important; }
 
