@@ -198,29 +198,113 @@ body {
   }
 }
 
+/* Premium onboarding tour popover — glass card + gradient sheen border
+   (same masked-gradient technique as .onboarding-glass-card/.axiom-toast)
+   with the primary-blue accent that dominates the workspace-creation card. */
 .axiom-driver-popover {
-  background: var(--surface-container-high) !important;
-  border: 1px solid var(--outline-variant) !important;
-  border-radius: 12px !important;
+  position: relative;
+  background: color-mix(in srgb, var(--surface-container-high) 94%, transparent) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
+  border: none !important;
+  border-radius: 16px !important;
   color: var(--on-surface) !important;
-  font-family: Geist, system-ui, sans-serif !important;
-  box-shadow: 0 24px 48px rgba(0,0,0,0.4) !important;
+  font-family: inherit !important;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.5), 0 0 40px -12px rgba(59, 130, 246, 0.3) !important;
+  padding: 20px !important;
+  min-width: 280px !important;
+  max-width: 320px !important;
+}
+.axiom-driver-popover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg, rgba(59, 130, 246, 0.45), rgba(47, 217, 244, 0.15), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 .axiom-driver-popover .driver-popover-title {
   color: var(--on-surface) !important;
-  font-size: 14px !important;
-  font-weight: 600 !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  font-family: inherit !important;
+  padding-left: 14px !important;
+  position: relative !important;
+}
+.axiom-driver-popover .driver-popover-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
 }
 .axiom-driver-popover .driver-popover-description {
   color: var(--on-surface-variant) !important;
   font-size: 13px !important;
+  font-family: inherit !important;
+  line-height: 1.6 !important;
+  margin-top: 8px !important;
 }
-.axiom-driver-popover .driver-popover-footer button {
+.axiom-driver-popover .driver-popover-footer {
+  margin-top: 18px !important;
+}
+.axiom-driver-popover .driver-popover-progress-text {
+  color: var(--on-surface-variant) !important;
+  opacity: 0.55;
+  font-size: 11px !important;
+  font-family: inherit !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em;
+}
+.axiom-driver-popover .driver-popover-footer-btn {
+  font-family: inherit !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 8px !important;
+  padding: 6px 14px !important;
+  transition: filter 0.15s ease, background-color 0.15s ease !important;
+  cursor: pointer;
+}
+.axiom-driver-popover .driver-popover-next-btn {
   background: var(--primary) !important;
   color: #fff !important;
-  border-radius: 8px !important;
-  font-size: 13px !important;
   border: none !important;
+  box-shadow: 0 2px 12px rgba(59, 130, 246, 0.4) !important;
+}
+.axiom-driver-popover .driver-popover-next-btn:hover {
+  filter: brightness(1.1);
+}
+.axiom-driver-popover .driver-popover-prev-btn {
+  background: transparent !important;
+  color: var(--on-surface-variant) !important;
+  border: 1px solid var(--outline-variant) !important;
+}
+.axiom-driver-popover .driver-popover-prev-btn:hover {
+  background: var(--surface-container-highest) !important;
+}
+.axiom-driver-popover .driver-popover-close-btn {
+  color: var(--on-surface-variant) !important;
+  opacity: 0.5 !important;
+  font-family: inherit !important;
+  top: 14px !important;
+  right: 14px !important;
+}
+.axiom-driver-popover .driver-popover-close-btn:hover {
+  opacity: 1 !important;
+  color: var(--on-surface) !important;
+}
+.axiom-driver-popover .driver-popover-arrow {
+  border-color: color-mix(in srgb, var(--surface-container-high) 94%, transparent) !important;
 }
 .driver-overlay { background: rgba(0,0,0,0.6) !important; }
 
