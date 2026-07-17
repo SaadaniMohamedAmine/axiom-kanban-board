@@ -5,33 +5,38 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useToast } from "@/contexts/toast-context";
 
-interface AuthToastListenerProps {
+interface NotificationToastListenerProps {
   userName: string;
 }
 
-// notifyLogin()/the signup-hook already write the DB notification row (bell
-// dropdown), but that's silent until the user opens it. Login/sign-up
-// redirect here with `?authToast=login|signup` so we can also surface it as
-// an immediate top-right toast — consumed once, then stripped from the URL.
-function AuthToastListenerInner({ userName }: AuthToastListenerProps) {
+const VALID_KEYS = ["welcome_back", "welcome", "workspace_deleted"] as const;
+type NotifyKey = (typeof VALID_KEYS)[number];
+
+// Some notification-worthy actions (login, sign-up, deleting a workspace)
+// end with a server-side redirect() — there's no client-side "success"
+// moment left to hook a toast into once the page has already navigated.
+// The redirect target carries `?notify=<key>` (+ optional `name`) so we can
+// consume it once here, then strip it from the URL.
+function NotificationToastListenerInner({ userName }: NotificationToastListenerProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { notify } = useToast();
   const t = useTranslations("notificationMessages");
 
   useEffect(() => {
-    const authToast = searchParams.get("authToast");
-    if (authToast !== "login" && authToast !== "signup") return;
+    const key = searchParams.get("notify") as NotifyKey | null;
+    if (!key || !VALID_KEYS.includes(key)) return;
 
-    const key = authToast === "signup" ? "welcome" : "welcome_back";
+    const name = searchParams.get("name") ?? userName;
     notify({
       type: key,
       title: t(`${key}.title`),
-      message: t(`${key}.message`, { name: userName }),
+      message: t(`${key}.message`, { name }),
     });
 
     const params = new URLSearchParams(searchParams);
-    params.delete("authToast");
+    params.delete("notify");
+    params.delete("name");
     router.replace(params.size ? `?${params.toString()}` : window.location.pathname, { scroll: false });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
@@ -39,10 +44,10 @@ function AuthToastListenerInner({ userName }: AuthToastListenerProps) {
   return null;
 }
 
-export function AuthToastListener(props: AuthToastListenerProps) {
+export function NotificationToastListener(props: NotificationToastListenerProps) {
   return (
     <Suspense fallback={null}>
-      <AuthToastListenerInner {...props} />
+      <NotificationToastListenerInner {...props} />
     </Suspense>
   );
 }

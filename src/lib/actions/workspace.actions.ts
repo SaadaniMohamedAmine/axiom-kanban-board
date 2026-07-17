@@ -142,7 +142,7 @@ export async function deleteWorkspace(workspaceId: string) {
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect(`/workspaces?notify=workspace_deleted&name=${encodeURIComponent(workspace.name)}`);
 }
 
 export async function archiveWorkspace(workspaceId: string) {

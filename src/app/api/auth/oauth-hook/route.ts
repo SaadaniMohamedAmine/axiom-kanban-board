@@ -29,6 +29,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  const authToast = type === "signup" ? "signup" : "login";
-  return NextResponse.redirect(new URL(`/dashboard?authToast=${authToast}`, req.url));
+  const notifyKey = type === "signup" ? "welcome" : "welcome_back";
+  return NextResponse.redirect(new URL(`/dashboard?notify=${notifyKey}`, req.url));
 }

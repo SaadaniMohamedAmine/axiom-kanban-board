@@ -42,7 +42,7 @@ export function LoginClient() {
       } else {
         void notifyLogin();
         window.dispatchEvent(new Event(SPLASH_EVENT));
-        router.push("/dashboard?authToast=login");
+        router.push("/dashboard?notify=welcome_back");
       }
     } catch {
       setError("An unexpected error occurred");
