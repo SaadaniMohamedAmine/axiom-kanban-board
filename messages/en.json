@@ -583,7 +583,43 @@
     "noStripeAccount": "No billing account on file yet — invoices will appear here after your first payment.",
     "manageBilling": "Manage billing",
     "downloadAllReceipts": "Download All Receipts",
-    "subscriptionActivated": "Subscription activated. Welcome to {plan}."
+    "subscriptionActivated": "Subscription activated. Welcome to {plan}.",
+    "boardsUsage": "Boards",
+    "aiUsage": "AI today",
+    "upgradeModal": {
+      "planName": "Axiom Pro — ${price}/month",
+      "later": "Later",
+      "upgradeCta": "Upgrade to Pro →",
+      "redirecting": "Redirecting…",
+      "features": [
+        "Unlimited workspaces",
+        "Unlimited boards",
+        "200 AI requests / day",
+        "Webhooks & Public API",
+        "Audit log (90 days)",
+        "50 members per workspace"
+      ],
+      "workspaces": {
+        "title": "Workspace limit reached",
+        "description": "The Free plan includes 1 workspace. Upgrade to Pro to create unlimited workspaces.",
+        "highlight": "Unlimited workspaces"
+      },
+      "boards": {
+        "title": "Board limit reached",
+        "description": "The Free plan includes 2 boards per workspace. Upgrade to Pro for unlimited boards.",
+        "highlight": "Unlimited boards"
+      },
+      "ai": {
+        "title": "Axiom Intelligence quota reached",
+        "description": "You've used your 10 free AI requests today. Your quota resets at midnight UTC.",
+        "highlight": "200 AI requests / day"
+      },
+      "members": {
+        "title": "Member limit reached",
+        "description": "The Free plan includes 10 members. Upgrade to Pro to invite up to 50 members.",
+        "highlight": "50 members per workspace"
+      }
+    }
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",

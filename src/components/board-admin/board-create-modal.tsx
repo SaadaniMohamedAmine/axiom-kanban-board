@@ -6,16 +6,18 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { createBoard } from "@/lib/actions/board.actions";
 import { useToast } from "@/contexts/toast-context";
+import { UpgradeModal } from "@/components/ui/upgrade-modal";
 import { MOTION } from "@/lib/motion";
 
 interface BoardCreateModalProps {
   workspaceId: string;
+  workspaceSlug: string;
   onClose: () => void;
 }
 
 const TEMPLATE_VALUES = ["KANBAN", "SCRUM", "BUG_TRACKING", "CUSTOM"] as const;
 
-export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps) {
+export function BoardCreateModal({ workspaceId, workspaceSlug, onClose }: BoardCreateModalProps) {
   const router = useRouter();
   const t = useTranslations("board");
   const tOnboarding = useTranslations("onboarding");
@@ -26,6 +28,7 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [templateOpen, setTemplateOpen] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const templateRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,11 +62,30 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
       });
       router.refresh();
       onClose();
-    } catch {
-      setError(t("createBoardModal.failed"));
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "";
+      if (message.startsWith("PLAN_LIMIT_BOARDS")) {
+        setShowUpgrade(true);
+      } else {
+        setError(t("createBoardModal.failed"));
+      }
     } finally {
       setIsSubmitting(false);
     }
+  }
+
+  if (showUpgrade) {
+    return (
+      <UpgradeModal
+        open
+        limitType="boards"
+        workspaceSlug={workspaceSlug}
+        onClose={() => {
+          setShowUpgrade(false);
+          onClose();
+        }}
+      />
+    );
   }
 
   const inputClass =

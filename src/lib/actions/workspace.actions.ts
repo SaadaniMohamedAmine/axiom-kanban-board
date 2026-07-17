@@ -47,6 +47,18 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
     throw new Error("Workspace with this name already exists");
   }
 
+  // Plan limit: FREE users own at most 1 workspace. Membership in other
+  // people's workspaces doesn't count — only ones this user owns.
+  const ownedWorkspaces = await prisma.workspace.findMany({
+    where: { ownerId: session.user.id, deletedAt: null },
+    orderBy: { createdAt: "asc" },
+    select: { plan: true },
+  });
+  const effectivePlan = ownedWorkspaces[0]?.plan ?? "FREE";
+  if (ownedWorkspaces.length >= getPlanLimits(effectivePlan).maxWorkspaces) {
+    throw new Error(`PLAN_LIMIT_WORKSPACES:${effectivePlan}`);
+  }
+
   const workspace = await prisma.workspace.create({
     data: {
       name,

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-
-const AI_DAILY_LIMIT = parseInt(process.env.AI_DAILY_LIMIT ?? "50", 10);
+import { getPlanLimits } from "@/lib/billing/plan-limits";
+import type { WorkspacePlan } from "@prisma/client";
 
 export interface WorkspaceQuotaResult {
   allowed: boolean;
@@ -8,6 +8,7 @@ export interface WorkspaceQuotaResult {
   limit: number;
   remaining: number;
   resetAt: Date;
+  plan: WorkspacePlan;
 }
 
 export async function checkWorkspaceQuota(
@@ -15,11 +16,12 @@ export async function checkWorkspaceQuota(
 ): Promise<WorkspaceQuotaResult> {
   const workspace = await prisma.workspace.findUnique({
     where: { id: workspaceId },
-    select: { aiRequestsToday: true, aiRequestsResetAt: true },
+    select: { aiRequestsToday: true, aiRequestsResetAt: true, plan: true },
   });
 
   if (!workspace) throw new Error("Workspace not found");
 
+  const dailyLimit = getPlanLimits(workspace.plan).maxAIRequestsPerDay;
   const now = new Date();
 
   // aiRequestsResetAt stores the *upcoming* reset instant (tomorrow midnight
@@ -40,11 +42,10 @@ export async function checkWorkspaceQuota(
     return {
       allowed: true,
       used: 0,
-      limit: AI_DAILY_LIMIT,
-      remaining: AI_DAILY_LIMIT,
-      resetAt: new Date(
-        Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1)
-      ),
+      limit: dailyLimit,
+      remaining: dailyLimit,
+      resetAt,
+      plan: workspace.plan,
     };
   }
 
@@ -54,11 +55,12 @@ export async function checkWorkspaceQuota(
     new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1));
 
   return {
-    allowed: used < AI_DAILY_LIMIT,
+    allowed: used < dailyLimit,
     used,
-    limit: AI_DAILY_LIMIT,
-    remaining: Math.max(0, AI_DAILY_LIMIT - used),
+    limit: dailyLimit,
+    remaining: Math.max(0, dailyLimit - used),
     resetAt,
+    plan: workspace.plan,
   };
 }
 
