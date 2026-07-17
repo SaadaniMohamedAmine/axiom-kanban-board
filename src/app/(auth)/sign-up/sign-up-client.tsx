@@ -99,7 +99,7 @@ function SignUpForm() {
     try {
       const { error } = await authClient.signIn.social({
         provider,
-        callbackURL: "/dashboard",
+        callbackURL: "/api/auth/oauth-hook?type=signup",
         errorCallbackURL: "/sign-up",
       });
 

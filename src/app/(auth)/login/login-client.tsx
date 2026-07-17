@@ -57,7 +57,7 @@ export function LoginClient() {
     try {
       const { error } = await authClient.signIn.social({
         provider,
-        callbackURL: "/dashboard",
+        callbackURL: "/api/auth/oauth-hook?type=login",
       });
 
       if (error) {
