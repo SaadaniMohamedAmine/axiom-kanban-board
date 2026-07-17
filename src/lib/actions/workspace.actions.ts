@@ -267,7 +267,14 @@ export async function inviteMember(input: InviteMemberInput) {
   });
   if (!workspace) throw new Error("Workspace not found");
   const limits = getPlanLimits(workspace.plan);
-  if (workspace._count.members >= limits.maxMembers) {
+
+  // Pending invitations count toward the limit too — otherwise it's a
+  // no-op gate, since a workspace can queue unlimited invites that only
+  // become real members later (as many as accept, all at once).
+  const pendingInvitationCount = await prisma.invitation.count({
+    where: { workspaceId, status: "PENDING", expiresAt: { gt: new Date() } },
+  });
+  if (workspace._count.members + pendingInvitationCount >= limits.maxMembers) {
     throw new Error(`PLAN_LIMIT_MEMBERS:${workspace.plan}`);
   }
 
