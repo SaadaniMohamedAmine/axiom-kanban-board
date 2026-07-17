@@ -4,11 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { getPlanLimits } from "@/lib/billing/plan-limits";
 
 interface Membership {
   workspace: {
     slug: string;
     name: string;
+    plan: "FREE" | "PRO" | "TEAM";
+    aiRequestsToday: number;
     boards: { id: string }[];
   };
 }
@@ -25,6 +28,9 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
   const current = memberships.find((m) => m.workspace.slug === currentSlug) ?? memberships[0];
   const slug = current?.workspace.slug;
   const firstBoardId = current?.workspace.boards[0]?.id;
+  const aiQuotaReached = current
+    ? current.workspace.aiRequestsToday >= getPlanLimits(current.workspace.plan).maxAIRequestsPerDay
+    : false;
 
   // ─── Section 1 — Aperçu & liste des espaces ──────────────────────────────
   const overviewLink = slug
@@ -75,6 +81,7 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
           label: t("aiInsights"),
           active: false,
           icon: iconAI,
+          badge: aiQuotaReached ? iconShieldAlert : undefined,
         },
       ]
     : [];
@@ -227,9 +234,10 @@ interface NavLinkProps {
   label: string;
   active: boolean;
   icon: React.ReactNode;
+  badge?: React.ReactNode;
 }
 
-function NavLink({ id, href, label, active, icon }: NavLinkProps) {
+function NavLink({ id, href, label, active, icon, badge }: NavLinkProps) {
   return (
     <Link
       id={id}
@@ -242,6 +250,7 @@ function NavLink({ id, href, label, active, icon }: NavLinkProps) {
     >
       {icon}
       {label}
+      {badge}
     </Link>
   );
 }
@@ -277,6 +286,16 @@ const iconAnalytics = (
 const iconAI = (
   <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
     <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
+  </svg>
+);
+
+// Shown next to "AI Insights" once the workspace has used up its daily
+// plan quota — a quick at-a-glance warning without opening the settings page.
+const iconShieldAlert = (
+  <svg className="ml-auto shrink-0 text-error" fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14">
+    <path d="M20 13c0 5-3.5 7.5-7.35 8.95a1 1 0 0 1-1.3 0C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.79 17 5 19 5a1 1 0 0 1 1 1z" />
+    <line x1="12" x2="12" y1="8" y2="12" />
+    <line x1="12" x2="12.01" y1="16" y2="16" />
   </svg>
 );
 
