@@ -5,6 +5,8 @@ import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import { getPlanLimits } from "../billing/plan-limits";
 import { createAuditLog } from "../audit/log";
+import { createNotification } from "../notifications/create";
+import { getTranslations } from "next-intl/server";
 import {
   createWorkspaceSchema,
   renameWorkspaceSchema,
@@ -60,6 +62,23 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
     },
   });
 
+  void createAuditLog({
+    workspaceId: workspace.id,
+    actorId: session.user.id,
+    actorEmail: session.user.email,
+    action: "WORKSPACE_CREATED",
+    targetType: "workspace",
+    targetId: workspace.id,
+    targetLabel: workspace.name,
+  });
+  const tWsCreated = await getTranslations("notificationMessages");
+  void createNotification({
+    userId: session.user.id,
+    type: "workspace_created",
+    title: tWsCreated("workspace_created.title"),
+    message: tWsCreated("workspace_created.message", { name: workspace.name }),
+  });
+
   revalidatePath("/", "layout");
   redirect(`/${workspace.slug}`);
 }
@@ -113,6 +132,13 @@ export async function deleteWorkspace(workspaceId: string) {
       targetId: workspaceId,
       targetLabel: workspace.name,
     });
+    const tWsDeleted = await getTranslations("notificationMessages");
+    void createNotification({
+      userId: session.user.id,
+      type: "workspace_deleted",
+      title: tWsDeleted("workspace_deleted.title"),
+      message: tWsDeleted("workspace_deleted.message", { name: workspace.name }),
+    });
   }
 
   revalidatePath("/", "layout");
@@ -129,6 +155,13 @@ export async function archiveWorkspace(workspaceId: string) {
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (session) {
+    const tWsArchived = await getTranslations("notificationMessages");
+    void createNotification({
+      userId: session.user.id,
+      type: "workspace_archived",
+      title: tWsArchived("workspace_archived.title"),
+      message: tWsArchived("workspace_archived.message", { name: workspace.name }),
+    });
     void createAuditLog({
       workspaceId,
       actorId: session.user.id,

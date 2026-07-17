@@ -6,6 +6,7 @@ import { authClient } from "@/lib/auth-client";
 import { useToast } from "@/contexts/toast-context";
 import { SettingsCard } from "@/components/settings/settings-card";
 import { RippleButton } from "@/components/ui/ripple-button";
+import { notifyNameChanged, notifyPasswordChanged } from "@/lib/actions/notification.actions";
 
 interface AccountSettingsFormProps {
   name: string;
@@ -40,6 +41,7 @@ export function AccountSettingsForm({ name, email, hasPassword, passwordAgeDays 
     try {
       const { error } = await authClient.updateUser({ name: displayName.trim() });
       if (error) throw new Error(error.message ?? t("profileUpdateFailed"));
+      void notifyNameChanged(displayName.trim());
       toast(t("profileUpdated"));
     } catch (err) {
       toast(err instanceof Error ? err.message : t("profileUpdateFailed"), "error");
@@ -60,6 +62,7 @@ export function AccountSettingsForm({ name, email, hasPassword, passwordAgeDays 
         revokeOtherSessions: true,
       });
       if (error) throw new Error(error.message ?? t("passwordChangeFailed"));
+      void notifyPasswordChanged();
       toast(t("passwordChanged"));
       setCurrentPassword("");
       setNewPassword("");

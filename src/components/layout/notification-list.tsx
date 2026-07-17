@@ -26,6 +26,20 @@ const KNOWN_TYPES = [
   "sprint_started",
   "ai_suggestion",
   "access_requested",
+  "welcome_back",
+  "welcome",
+  "workspace_created",
+  "board_created",
+  "task_created",
+  "workspace_archived",
+  "board_archived",
+  "task_archived",
+  "workspace_deleted",
+  "board_deleted",
+  "task_deleted",
+  "name_changed",
+  "password_changed",
+  "plan_changed",
 ] as const;
 
 export function NotificationList({ notifications, locale, nothingHereYet }: NotificationListProps) {

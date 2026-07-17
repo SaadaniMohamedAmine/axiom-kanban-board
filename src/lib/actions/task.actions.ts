@@ -25,6 +25,7 @@ import { dispatchWebhooks } from "../api/webhook";
 import type { BoardEvent, ConflictEvent } from "@/types/realtime.types";
 import { createAuditLog } from "../audit/log";
 import { createNotification } from "../notifications/create";
+import { getTranslations } from "next-intl/server";
 
 function makeEvent(
   type: BoardEvent["type"],
@@ -108,11 +109,12 @@ export async function createTask(input: CreateTaskInput, socketId?: string) {
       targetId: task.id,
       targetLabel: `${task.code}: ${task.title}`,
     });
+    const tTaskCreated = await getTranslations("notificationMessages");
     void createNotification({
       userId: session.user.id,
       type: "task_created",
-      title: "Task created",
-      message: `${task.title} (${task.code})`,
+      title: tTaskCreated("task_created.title"),
+      message: tTaskCreated("task_created.message", { title: `${task.title} (${task.code})` }),
     });
   }
 
@@ -150,11 +152,12 @@ export async function archiveTask(taskId: string, socketId?: string) {
       targetId: taskId,
       targetLabel: `${task.code}: ${task.title}`,
     });
+    const tTaskArchived = await getTranslations("notificationMessages");
     void createNotification({
       userId: session.user.id,
       type: "task_archived",
-      title: "Task archived",
-      message: `${task.title} (${task.code})`,
+      title: tTaskArchived("task_archived.title"),
+      message: tTaskArchived("task_archived.message", { title: `${task.title} (${task.code})` }),
     });
   }
 
@@ -326,11 +329,12 @@ export async function deleteTask(taskId: string, socketId?: string) {
       targetId: taskId,
       targetLabel: `${task.code}: ${task.title}`,
     });
+    const tTaskDeleted = await getTranslations("notificationMessages");
     void createNotification({
       userId: session.user.id,
       type: "task_deleted",
-      title: "Task deleted",
-      message: `${task.title} (${task.code})`,
+      title: tTaskDeleted("task_deleted.title"),
+      message: tTaskDeleted("task_deleted.message", { title: `${task.title} (${task.code})` }),
     });
   }
 

@@ -3,6 +3,23 @@ import { getStripeClient } from "@/lib/billing/stripe";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 import { WorkspacePlan } from "@prisma/client";
+import { getTranslations } from "next-intl/server";
+import { createNotification } from "@/lib/notifications/create";
+
+// Stripe calls this server-to-server — there's no request-scoped locale to
+// read (unlike every other notification trigger, which fires from the
+// actor's own request and is naturally in their locale). Look up the
+// recipient's stored preference instead.
+async function notifyPlanChanged(userId: string, workspaceName: string, plan: string) {
+  const owner = await prisma.user.findUnique({ where: { id: userId }, select: { locale: true } });
+  const t = await getTranslations({ locale: owner?.locale ?? "fr", namespace: "notificationMessages" });
+  void createNotification({
+    userId,
+    type: "plan_changed",
+    title: t("plan_changed.title"),
+    message: t("plan_changed.message", { workspace: workspaceName, plan }),
+  });
+}
 
 export const config = { api: { bodyParser: false } };
 
@@ -42,7 +59,7 @@ export async function POST(req: NextRequest) {
       const plan = await getPlanFromPriceId(item.price.id);
       const expiresAt = new Date(item.current_period_end * 1000);
 
-      await prisma.workspace.update({
+      const updatedWorkspace = await prisma.workspace.update({
         where: { id: workspaceId },
         data: {
           plan,
@@ -61,6 +78,7 @@ export async function POST(req: NextRequest) {
           metadata: { plan, subscriptionId: subscription.id },
         },
       });
+      void notifyPlanChanged(updatedWorkspace.ownerId, updatedWorkspace.name, plan);
       break;
     }
 
@@ -87,7 +105,7 @@ export async function POST(req: NextRequest) {
       const workspaceId = subscription.metadata?.workspaceId;
       if (!workspaceId) break;
 
-      await prisma.workspace.update({
+      const cancelledWorkspace = await prisma.workspace.update({
         where: { id: workspaceId },
         data: { plan: "FREE", stripeSubscriptionId: null, planExpiresAt: null },
       });
@@ -102,6 +120,7 @@ export async function POST(req: NextRequest) {
           metadata: { subscriptionId: subscription.id },
         },
       });
+      void notifyPlanChanged(cancelledWorkspace.ownerId, cancelledWorkspace.name, "FREE");
       break;
     }
   }

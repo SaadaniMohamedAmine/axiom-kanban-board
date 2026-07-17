@@ -5,6 +5,7 @@ import { requireRole } from "../permissions";
 import { getPlanLimits } from "../billing/plan-limits";
 import { createAuditLog } from "../audit/log";
 import { createNotification } from "../notifications/create";
+import { getTranslations } from "next-intl/server";
 import {
   createBoardSchema,
   createColumnSchema,
@@ -112,11 +113,12 @@ export async function createBoard(input: CreateBoardInput) {
       targetId: board.id,
       targetLabel: board.name,
     });
+    const tBoardCreated = await getTranslations("notificationMessages");
     void createNotification({
       userId: boardSession.user.id,
       type: "board_created",
-      title: "Board created",
-      message: board.name,
+      title: tBoardCreated("board_created.title"),
+      message: tBoardCreated("board_created.message", { name: board.name }),
     });
   }
 
@@ -146,11 +148,12 @@ export async function archiveBoard(boardId: string) {
       targetId: boardId,
       targetLabel: board.name,
     });
+    const tBoardArchived = await getTranslations("notificationMessages");
     void createNotification({
       userId: session.user.id,
       type: "board_archived",
-      title: "Board archived",
-      message: board.name,
+      title: tBoardArchived("board_archived.title"),
+      message: tBoardArchived("board_archived.message", { name: board.name }),
     });
   }
 
@@ -208,11 +211,12 @@ export async function trashBoard(boardId: string) {
       targetId: boardId,
       targetLabel: board.name,
     });
+    const tBoardDeleted = await getTranslations("notificationMessages");
     void createNotification({
       userId: session.user.id,
       type: "board_deleted",
-      title: "Board deleted",
-      message: board.name,
+      title: tBoardDeleted("board_deleted.title"),
+      message: tBoardDeleted("board_deleted.message", { name: board.name }),
     });
   }
 
