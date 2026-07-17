@@ -80,7 +80,7 @@ export function TopNavbar({
   return (
     <header className="hidden md:flex h-16 bg-surface-container/95 backdrop-blur-md border-b border-outline-variant/50 items-center px-6 shrink-0">
       <div className="flex items-center gap-6 w-full max-w-7xl mx-auto">
-        <Link href="/workspaces" className="text-[19px] font-black text-primary tracking-tight shrink-0">
+        <Link href="/" className="text-[19px] font-black text-primary tracking-tight shrink-0">
           Axiom
         </Link>
 

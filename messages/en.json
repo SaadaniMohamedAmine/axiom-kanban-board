@@ -40,6 +40,7 @@
     "viewDemo": "View demo →",
     "signIn": "Sign in",
     "getStarted": "Get started",
+    "goToDashboard": "Go to Dashboard",
     "features": {
       "aiTitle": "AI Priority Engine",
       "aiDesc": "Axiom Intelligence scores and reprioritizes your backlog automatically based on context, dependencies, and team velocity.",

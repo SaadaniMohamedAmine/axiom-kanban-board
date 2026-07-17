@@ -40,6 +40,7 @@
     "viewDemo": "Voir la démo →",
     "signIn": "Se connecter",
     "getStarted": "Commencer",
+    "goToDashboard": "Aller au Dashboard",
     "features": {
       "aiTitle": "Moteur de priorité IA",
       "aiDesc": "Axiom Intelligence note et reprioritise votre backlog automatiquement selon le contexte, les dépendances et la vélocité de l'équipe.",

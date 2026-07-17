@@ -11,6 +11,8 @@ interface HeroContentProps {
   subtitle: string;
   startFree: string;
   viewDemo: string;
+  isAuthenticated: boolean;
+  goToDashboard: string;
 }
 
 const container = {
@@ -23,7 +25,7 @@ const item = {
   visible: { opacity: 1, y: 0, transition: { duration: MOTION.duration.slow, ease: MOTION.ease.decelerate } },
 };
 
-export function HeroContent({ badge, titleLine1, titleLine2, subtitle, startFree, viewDemo }: HeroContentProps) {
+export function HeroContent({ badge, titleLine1, titleLine2, subtitle, startFree, viewDemo, isAuthenticated, goToDashboard }: HeroContentProps) {
   return (
     <motion.div variants={container} initial="hidden" animate="visible">
       <motion.div
@@ -51,18 +53,29 @@ export function HeroContent({ badge, titleLine1, titleLine2, subtitle, startFree
       </motion.p>
 
       <motion.div variants={item} className="flex items-center justify-center gap-4 flex-wrap mb-20">
-        <MotionCta
-          href="/sign-up"
-          className="px-7 py-3.5 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-[background,box-shadow]"
-        >
-          {startFree}
-        </MotionCta>
-        <MotionCta
-          href="/login"
-          className="px-7 py-3.5 border border-outline-variant bg-surface-container text-on-surface rounded-md text-[15px] font-medium hover:bg-surface-container-high transition-colors"
-        >
-          {viewDemo}
-        </MotionCta>
+        {isAuthenticated ? (
+          <MotionCta
+            href="/dashboard"
+            className="px-7 py-3.5 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-[background,box-shadow]"
+          >
+            {goToDashboard}
+          </MotionCta>
+        ) : (
+          <>
+            <MotionCta
+              href="/sign-up"
+              className="px-7 py-3.5 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-[background,box-shadow]"
+            >
+              {startFree}
+            </MotionCta>
+            <MotionCta
+              href="/login"
+              className="px-7 py-3.5 border border-outline-variant bg-surface-container text-on-surface rounded-md text-[15px] font-medium hover:bg-surface-container-high transition-colors"
+            >
+              {viewDemo}
+            </MotionCta>
+          </>
+        )}
       </motion.div>
     </motion.div>
   );

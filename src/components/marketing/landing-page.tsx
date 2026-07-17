@@ -10,9 +10,10 @@ import { MotionCta } from "@/components/marketing/motion-cta";
 
 interface Props {
   currentLocale: "fr" | "en";
+  isAuthenticated?: boolean;
 }
 
-export async function LandingPage({ currentLocale }: Props) {
+export async function LandingPage({ currentLocale, isAuthenticated = false }: Props) {
   const t = await getTranslations("landing");
   const tAi = await getTranslations("ai");
 
@@ -30,6 +31,8 @@ export async function LandingPage({ currentLocale }: Props) {
             subtitle={t("heroSubtitle")}
             startFree={t("startFree")}
             viewDemo={t("viewDemo")}
+            isAuthenticated={isAuthenticated}
+            goToDashboard={t("goToDashboard")}
           />
         </div>
 
