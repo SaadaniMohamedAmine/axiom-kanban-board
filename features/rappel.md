@@ -63,68 +63,35 @@
 
 ## SEO — pistes d'amélioration au-delà du scope Phase C
 
-**Statut** : ⏭️ À traiter plus tard, par ordre de priorité ci-dessous
+**Statut** : ✅ Résolu pour la plupart (branche `fix-rappel-cleanup`, 2026-07-17) — voir détail par point.
 
-**Contexte** : la Feature 019 (SEO & Landing) est complète et validée (US1 — metadata, OG, robots.txt, sitemap.xml tous testés OK). Mais en creusant, il y a des marges d'amélioration réelles pour un SEO "parfait", du plus critique au plus cosmétique.
+**Contexte** : la Feature 019 (SEO & Landing) est complète et validée (US1 — metadata, OG, robots.txt, sitemap.xml tous testés OK). Le reste de cette section listait des marges d'amélioration réelles pour un SEO "parfait".
 
-### ✅ 1. RÉSOLU (Phase D) — `NEXT_PUBLIC_APP_URL` absente de Vercel + mauvais domaine en fallback
+### ✅ 1. RÉSOLU — `NEXT_PUBLIC_APP_URL` absente de Vercel + mauvais domaine en fallback
 
-**Statut** : ✅ Corrigé pendant Phase D (2026-07-11) — `NEXT_PUBLIC_APP_URL=https://axiom-kanban-board.vercel.app` ajoutée dans Vercel → Environment Variables (Production) via CLI. Le fallback codé en dur dans le code n'a pas été changé (reste `axiom-kanban.vercel.app`), donc si jamais cette var Vercel est supprimée par erreur, le bug reviendrait — envisager de corriger le fallback en dur un jour pour être robuste.
+Corrigé côté Vercel pendant Phase D (env var ajoutée), et le fallback codé en dur a maintenant aussi été corrigé dans le code (`axiom-kanban.vercel.app` → `axiom-kanban-board.vercel.app`, 8 fichiers) — la var Vercel n'est plus un point de défaillance unique.
 
-<details>
-<summary>Détail original du bug (pour référence)</summary>
+### 🟠 2. Favicon / icônes manquants — toujours ouvert sur cette branche
 
-**Découvert en vérifiant l'US1** : `NEXT_PUBLIC_APP_URL` n'est **pas définie** dans les Environment Variables Vercel (confirmé via `vercel env ls production`). Le code retombe donc sur le fallback codé en dur dans `src/app/layout.tsx`, `robots.ts` et `sitemap.ts` :
-```ts
-process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app"
-```
-Or le vrai domaine stable du projet (confirmé via `vercel inspect`) est **`https://axiom-kanban-board.vercel.app`** — pas `axiom-kanban.vercel.app` (il manque `-board`). Résultat concret **actuellement en production** :
-- `og:image`, `og:url`, `twitter:image` pointent vers un domaine qui n'existe pas → **les previews de partage (Slack/Twitter/LinkedIn) sont cassées**
-- `robots.txt` référence un `Sitemap:` avec la mauvaise URL
-- `sitemap.xml` liste des URLs avec le mauvais domaine (Google Search Console les rejettera)
-
-**Fix rapide (2 options)** :
-- Soit ajouter `NEXT_PUBLIC_APP_URL=https://axiom-kanban-board.vercel.app` dans Vercel → Environment Variables (même méthode CLI que pour Sentry : `vercel env add NEXT_PUBLIC_APP_URL production`)
-- Soit corriger le fallback codé en dur dans les 3 fichiers pour qu'il soit juste par défaut
-
-**Recommandé** : faire les deux — corriger le fallback ET définir la vraie variable, pour être robuste même si le domaine custom change plus tard.
-
-</details>
-
-### 🟠 2. Favicon / icônes manquants
-
-Aucun fichier `favicon.ico`, `icon.tsx`/`icon.png`, `apple-icon.tsx`/`apple-icon.png` ou `manifest.json` dans `src/app/`. Next.js 16 supporte ces conventions nativement (comme `og/route.tsx` déjà en place). Sans ça :
-- Onglet navigateur affiche l'icône générique par défaut
-- Pas d'icône lors d'un partage sur mobile / ajout à l'écran d'accueil
-- Recommandation Google Search (favicon manquant = léger signal négatif de qualité)
+Aucun fichier `favicon.ico`, `icon.tsx`/`icon.png`, `apple-icon.tsx`/`apple-icon.png` dans `src/app/` **sur cette branche** (`fix-rappel-cleanup`, partie de `main`). Hors scope de ce nettoyage — déjà résolu indépendamment sur une autre branche en cours (redesign), à vérifier après fusion.
 
 **Fix** : créer `src/app/icon.tsx` (réutiliser le même logo SVG que la nav/OG image, généré dynamiquement comme `og/route.tsx`), + `apple-icon.tsx` en 180×180.
 
-### 🟡 3. Pas de données structurées JSON-LD (schema.org)
+### ✅ 3. RÉSOLU — Données structurées JSON-LD (schema.org)
 
-Aucun `<script type="application/ld+json">` sur aucune page. Pour un SEO "parfait", Google recommande d'ajouter :
-- `Organization` ou `SoftwareApplication` schema sur la landing (`src/app/page.tsx` / `landing-page.tsx`)
-- `Article` schema sur chaque entrée de changelog (`src/app/changelog/page.tsx`) — donnerait des rich snippets avec date de publication dans les résultats de recherche
+`SoftwareApplication` schema sur la landing (`src/app/page.tsx`), `Article` schema par entrée de changelog avec sa vraie date de frontmatter (`src/app/changelog/page.tsx`). Composant partagé : `src/components/seo/json-ld.tsx`.
 
-**Fix** : ajouter un composant `<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />` avec les objets schema.org appropriés.
+### ✅ 4. RÉSOLU — `canonical` URL explicite
 
-### 🟡 4. Pas de `canonical` URL explicite
+`alternates: { canonical: "/" }` sur le layout racine, override spécifique sur changelog/docs-api/pricing/privacy/roadmap/terms.
 
-Aucune page ne définit `alternates: { canonical: ... }` dans son `metadata`. Pas grave tant qu'il n'y a qu'un seul domaine de prod, mais si jamais un domaine preview Vercel (`*-git-main-*.vercel.app`) est indexé par erreur, ça crée du contenu dupliqué aux yeux de Google.
+### ✅ 5. RÉSOLU — OG image générique partagée par toutes les pages
 
-**Fix** : ajouter `alternates: { canonical: "/" }` (ou l'URL complète) dans le `metadata` de chaque page publique (landing, changelog, roadmap).
+`/og/image` accepte maintenant `?title=`, changelog et roadmap l'utilisent chacun avec leur propre titre au lieu d'hériter de l'image générique de la landing.
 
-### 🟢 5. OG image générique partagée par toutes les pages
+### ✅ 6. RÉSOLU — `sitemap.xml` — `lastmod` non lié au vrai contenu
 
-`/changelog` et `/roadmap` héritent de la même image OG que la landing (le générateur `og/image/route.tsx` ne prend aucun paramètre). Une image contextualisée par page (ex: titre "Changelog" au lieu du titre générique) améliorerait le taux de clic sur les partages sociaux.
-
-**Fix** : passer un paramètre à la route (`/og/image?title=Changelog`) et adapter `ImageResponse` en conséquence.
-
-### 🟢 6. `sitemap.xml` — `lastmod` non lié au vrai contenu
-
-Toutes les entrées utilisent `new Date()` au moment du build plutôt que la vraie date de dernière modification. Pour `/changelog`, la date du fichier `.md` le plus récent (déjà disponible via `data.date` dans `getAllChangelogEntries()`) serait plus juste.
-
-**Priorité globale** : traiter le point 🔴 1 en premier (impact réel en prod dès aujourd'hui), le reste peut attendre la Phase 10 (Recruiter-Ready Packaging).
+`/changelog` utilise maintenant la date réelle de l'entrée la plus récente (`getAllChangelogEntries()[0].date`) au lieu de `new Date()` au build. `/` et `/roadmap` restent sur `new Date()` — ni l'un ni l'autre n'a de date de contenu réelle à exposer, ce n'est pas une régression.
 
 ---
 
@@ -166,36 +133,34 @@ Ce `output` custom existait depuis la Phase 2 (commit `8c83039`, tout début du 
 2. Désactiver `next-pwa` (soupçon que son patch webpack cassait le tracing Vercel) — testé, l'erreur persistait à l'identique
 3. Forcer `next build --webpack` au lieu de Turbopack (Next 16 utilise Turbopack par défaut pour `next build`, qui **saute complètement** l'étape "Collecting build traces") — a bien changé la signature de l'erreur (confirmé que Webpack tournait) mais **n'a pas résolu le vrai problème** (bug de résolution pnpm, indépendant du bundler). A aussi révélé un problème annexe : la route `/og/image` (edge runtime) dépassait la limite de 1MB des Edge Functions Vercel une fois buildée en Webpack → basculée en `runtime = "nodejs"` (fix légitime, à garder).
 
-**Deux changements "de guerre" à nettoyer proprement plus tard** (pas urgents, le site tourne bien comme ça) :
+**Deux changements "de guerre" — résolu différemment que prévu (branche `fix-rappel-cleanup`, 2026-07-17)** :
 
-1. **`package.json` — `"build": "prisma generate && next build --webpack"`** : forcé en Webpack pendant l'incident (fausse piste, mais fonctionne). À rebasculer sur Turbopack (juste `next build`, sans `--webpack`) dans un commit séparé, tester que le build + une route Prisma marchent toujours (maintenant que le vrai fix est en place, ça devrait être le cas), et déployer en preview d'abord pour vérifier avant de toucher `main`.
+1. **`package.json` — `"build": "prisma generate && next build --webpack"`** : **gardé intentionnellement**, pas une dette à nettoyer. Testé le rebascule vers Turbopack (juste `next build`) : le build réussit, mais `@ducanh2912/next-pwa` **ne génère plus aucun service worker du tout** (aucune erreur, `public/sw.js` n'est simplement jamais écrit — ce plugin ne patche que la config webpack). Tant que PWA est actif, le build doit rester sur `--webpack`. Documenté directement dans `next.config.ts` pour ne pas se refaire avoir.
 
-2. **`next.config.ts` — next-pwa `disable: true` en dur** : désactivé pendant l'incident par excès de prudence (fausse piste, mais actuellement ça bloque une vraie feature — voir section suivante).
+2. **`next.config.ts` — next-pwa `disable: true` en dur** : ✅ résolu, voir section suivante.
 
 ---
 
-## Phase D — PWA (Feature 020) désactivée en prod suite à l'incident, à réactiver proprement
+## Phase D — PWA (Feature 020) réactivée en prod (branche `fix-rappel-cleanup`, 2026-07-17)
 
-**Statut** : ⏭️ À faire — feature actuellement non-fonctionnelle en prod (pas supprimée, juste désactivée)
+**Statut** : ✅ Code fait et vérifié en local — ⏭️ reste seulement la vérification sur un déploiement preview avant de merger
 
 **C'est quoi cette feature, concrètement** : la PWA (Progressive Web App) permet à Axiom de se comporter comme une vraie app installable :
 - **Installation / "Add to Home Screen"** : sur mobile (et desktop Chrome), le navigateur propose d'installer Axiom comme une app avec icône sur l'écran d'accueil, ouverture en plein écran sans barre d'adresse — comme une app native.
 - **Mode offline** : un service worker met les pages visitées en cache ; en cas de perte de connexion, au lieu de l'écran d'erreur navigateur générique, l'utilisateur voit la page `/offline` on-brand ("You are offline. Try again") avec bouton de reconnexion.
 - **Manifest** : nom de l'app, icônes 192px/512px, couleur de thème (`#0f131d`), raccourci direct "New Board" accessible en long-press sur l'icône de l'app.
 
-**Pourquoi c'est cassé actuellement** : dans `next.config.ts`, la config `next-pwa` a `disable: true` en dur (mis pendant l'incident du 2026-07-11 par excès de prudence — ce n'était PAS la vraie cause du bug de prod, voir section précédente). Résultat : le manifest, les icônes et la page `/offline` répondent tous correctement en HTTP (200), mais le **service worker ne s'enregistre jamais**, donc aucune des 3 fonctionnalités ci-dessus ne marche réellement — pas d'installation proposée, pas de cache offline actif.
+**Ce qui a été fait** :
+1. `next.config.ts` : `disable: true` → `disable: process.env.NODE_ENV === "development"`.
+2. Porté un fix découvert sur une autre branche pendant ce même nettoyage : `outputFileTracingIncludes` (l'ancien contournement pour `@prisma/client-runtime-utils`) traverse un symlink pnpm sans inclure le symlink lui-même, ce qui fait planter le packaging Vercel ("produces files in symlinked directories") — remplacé par `serverExternalPackages: ["@prisma/client-runtime-utils"]`, le mécanisme officiel de Next.js pour ce cas. Sans ce fix, réactiver PWA aurait probablement recassé le déploiement Vercel une deuxième fois.
+3. `pnpm build` en local confirmé : `public/sw.js` et `workbox-*.js` générés, `.next/server/.../route.js.nft.json` référence toujours correctement `client-runtime-utils`.
 
-**Pour réactiver (étapes précises, à faire dans cet ordre)** :
-1. Dans `next.config.ts`, remplacer `disable: true` par `disable: process.env.NODE_ENV === "development"` (comportement original : actif en prod, désactivé en dev/local)
-2. `pnpm build` en local pour confirmer que ça compile toujours sans erreur
-3. **Déployer en Preview d'abord** (`vercel deploy`, PAS `vercel deploy --prod` ni push direct sur `main`) — leçon apprise de l'incident : toujours valider un changement risqué sur une preview avant de toucher la prod
-4. Sur l'URL preview (⚠️ protégée par le SSO Vercel — utiliser soit un token de bypass automation, soit se connecter au compte Vercel dans le navigateur pour passer le mur SSO avant de tester)
-5. Suivre le scénario de test complet (déjà écrit, toujours valable) :
-   - Chrome DevTools → onglet **Application** → **Manifest** : vérifier que `name`, `icons` (192/512), `theme_color` (`#0f131d`) s'affichent correctement
-   - Chrome DevTools → **Lighthouse** → cocher "Progressive Web App" → Analyze : doit être vert
-   - Sur mobile (ou Chrome DevTools device emulation) : menu ⋮ → doit proposer "Add to Home Screen" / "Install app"
-   - Couper le réseau (DevTools → Network → Offline) et recharger → doit afficher la page `/offline` avec le bouton "Try again"
-6. Si tout est vert sur la preview → merger/déployer en production, puis refaire le même test rapide sur `https://axiom-kanban-board.vercel.app` pour confirmer
+**Ce qui reste** : déployer en **Preview d'abord** (pas `--prod`, pas push direct sur `main`) et suivre le scénario de test :
+- Chrome DevTools → **Application** → **Manifest** : `name`, `icons` (192/512), `theme_color` (`#0f131d`) corrects
+- Chrome DevTools → **Lighthouse** → "Progressive Web App" → doit être vert
+- Mobile (ou device emulation) : doit proposer "Add to Home Screen" / "Install app"
+- Réseau coupé (DevTools → Network → Offline) + reload → doit afficher `/offline` avec "Try again"
+- Si tout est vert → merger, puis reconfirmer sur `https://axiom-kanban-board.vercel.app`
 
 ---
 
@@ -203,29 +168,35 @@ Ce `output` custom existait depuis la Phase 2 (commit `8c83039`, tout début du 
 
 ### US2 — Billing / Stripe
 
-**Statut** : ⚠️ Backend fonctionnel, un bouton UI cassé bloque le test de bout en bout du checkout.
+**Statut** : ✅ Stale — le bouton "Upgrade to Pro" décrit ci-dessous comme une ancre morte est déjà branché sur `UpgradeCheckoutButton` → `/api/billing/checkout` dans le code actuel de cette branche. Reste un test manuel de bout en bout (carte test Stripe), pas un bug de code.
 
 1. Connecté, va sur `/{workspace}/settings/billing`. Tu trouveras le plan actuel ("Free"), un bloc d'usage "Boards X / 3" et "Members X / 10", et un lien "Upgrade to Pro" (visible seulement en plan Free).
 2. Clique "Upgrade to Pro" → amène sur `/pricing` (3 cartes Free/Pro/Team).
-3. **Bug connu** : le bouton "Upgrade to Pro" de la carte Pro est une ancre morte (`href="#upgrade-pro"`), pas branchée à `/api/billing/checkout`. Cliquer ne fait rien. Idem pour la carte Team. **Le flow Stripe Checkout complet ne peut pas être testé depuis l'UI tant que ce n'est pas corrigé.**
-4. Ce qui marche déjà et est testable : plan-limit enforcement. Crée des tableaux jusqu'à 3 sur un workspace Free → le 4ème doit lever `PLAN_LIMIT_BOARDS:FREE` (vérifier si un message on-brand s'affiche ou si c'est une erreur brute non gérée côté UI).
-5. Pareil sur `/settings/members` : inviter jusqu'à 10 membres en Free → le 11ème doit lever `PLAN_LIMIT_MEMBERS:FREE`.
-6. Webhook Stripe (`/api/billing/webhook`) : déjà créé côté Stripe Dashboard (test mode, endpoint `https://axiom-kanban-board.vercel.app/api/billing/webhook`, events `checkout.session.completed`/`customer.subscription.updated`/`customer.subscription.deleted`), mais jamais déclenché faute de checkout fonctionnel — non testé de bout en bout.
+3. Ce qui marche déjà et est testable : plan-limit enforcement. Crée des tableaux jusqu'à 3 sur un workspace Free → le 4ème doit lever `PLAN_LIMIT_BOARDS:FREE` (vérifier si un message on-brand s'affiche ou si c'est une erreur brute non gérée côté UI).
+4. Pareil sur `/settings/members` : inviter jusqu'à 10 membres en Free → le 11ème doit lever `PLAN_LIMIT_MEMBERS:FREE`.
+5. Webhook Stripe (`/api/billing/webhook`) : déjà créé côté Stripe Dashboard (test mode, endpoint `https://axiom-kanban-board.vercel.app/api/billing/webhook`, events `checkout.session.completed`/`customer.subscription.updated`/`customer.subscription.deleted`) — non testé de bout en bout avec un vrai paiement.
 
-**À faire avant de considérer US2 validée** : brancher les CTA de `/pricing` (Pro/Team) sur `POST /api/billing/checkout` avec le bon `workspaceId`/`plan`, puis tester un paiement réel en carte test Stripe (`4242 4242 4242 4242`) et vérifier que `Workspace.plan` passe à `PRO` après webhook.
+**À faire avant de considérer US2 validée** : tester un paiement réel en carte test Stripe (`4242 4242 4242 4242`) et vérifier que `Workspace.plan` passe à `PRO` après webhook. Test uniquement, pas de code à écrire.
 
 ### US3 — Audit Log
 
-**Statut** : ✅ Fonctionnel pour les 6 actions câblées ; 13/19 types d'action ne se déclenchent jamais (fonctions correspondantes absentes du code).
+**Statut** : ✅ Étendu (branche `fix-rappel-cleanup`, 2026-07-17) — `WORKSPACE_CREATED`, `MEMBER_JOINED`, `API_KEY_CREATED`, `API_KEY_REVOKED` sont maintenant câblés en plus des 10 déjà en place (`WORKSPACE_RENAMED`/`TRASHED`/`ARCHIVED`/`UNARCHIVED`/`RESTORED`, `MEMBER_INVITED`, `BOARD_CREATED`, `TASK_DELETED`, `BILLING_UPGRADED`/`CANCELLED`). Reste 6 types non câblés, pour deux raisons différentes :
+
+**Bloqués par le schéma actuel (pas juste un appel manquant)** :
+- `WORKSPACE_DELETED` (`permanentlyDeleteWorkspace`) : `AuditLog.workspace` a `onDelete: Cascade` — toute entrée liée à ce workspace serait supprimée dans la même transaction que le workspace qu'elle est censée documenter. Nécessite une migration (FK nullable + `SetNull`) pour être fait correctement.
+- `API_KEY_USED` : `actorEmail` est requis (non-null) en DB et dans `createAuditLog()`, mais une requête authentifiée par clé API n'a pas d'utilisateur humain à qui l'attribuer.
+- `AUTH_LOGIN` / `AUTH_LOGIN_FAILED` / `AUTH_LOGOUT` : `AuditLog` est scopé par workspace (`workspaceId` requis), mais un événement d'auth n'est pas naturellement lié à un seul workspace (un utilisateur peut appartenir à plusieurs).
+
+**Bloqués par une feature manquante (pas de l'instrumentation, du nouveau code)** :
+- `MEMBER_REMOVED` : pas de fonction `removeMember` dans le code, ni d'UI pour retirer un membre.
+- `BOARD_DELETED` : pas de fonction `deleteBoard` dans le code.
+- `MEMBER_ROLE_CHANGED` : pas de fonction de changement de rôle.
+- `AI_SUGGESTION_APPLIED` : les suggestions IA s'appliquent via les actions génériques de mise à jour de tâche (`task.actions.ts`), pas un point d'entrée dédié — instrumenter proprement demanderait de faire passer un flag "vient d'une suggestion IA" à travers plusieurs call sites.
 
 1. Va sur `/{workspace}/audit-log` (lien "Journal d'audit" en bas de la sidebar). Si tu n'es pas OWNER/ADMIN, tu trouveras un écran "Access restricted" — pas de 500, comportement correct.
 2. En tant qu'OWNER/ADMIN, tu trouveras un tableau avec colonnes Date/Actor/Action/Target, des filtres (email, action, période 7/30/90 jours), et un bouton "Export CSV".
-3. Pour générer une vraie entrée : renomme le workspace (`WORKSPACE_RENAMED`), invite un membre (`MEMBER_INVITED`), crée un board (`BOARD_CREATED`), supprime une tâche (`TASK_DELETED`). Ces 4 actions + `BILLING_UPGRADED`/`BILLING_CANCELLED` (via webhook Stripe) sont les seules réellement instrumentées.
-4. Les 13 autres types d'action du enum (`MEMBER_REMOVED`, `BOARD_DELETED`, `API_KEY_CREATED`, `AUTH_LOGIN`, etc.) ne peuvent pas être testés : soit la fonction correspondante n'existe pas encore dans le code (`removeMember`, `deleteBoard`, `createAPIKey` côté audit), soit elle existe mais n'appelle pas `createAuditLog()`.
-5. Teste l'export CSV : clique le bouton, vérifie que le fichier téléchargé a les colonnes Date/Actor/Action/Target Type/Target/IP Address.
-6. Vérifie qu'aucune route ne permet de supprimer une entrée (pas de `DELETE` sur `/api/audit-log/*`) — confirmé déjà par audit de code, pas de UI à tester ici.
-
-**À faire avant de considérer US3 totalement validée** : soit accepter que seuls 6/19 types soient couverts pour cette phase, soit instrumenter les fonctions manquantes (`removeMember`, `deleteBoard`, `createAPIKey`, `revokeAPIKey`, événements auth) avec `createAuditLog()`.
+3. Teste l'export CSV : clique le bouton, vérifie que le fichier téléchargé a les colonnes Date/Actor/Action/Target Type/Target/IP Address.
+4. Vérifie qu'aucune route ne permet de supprimer une entrée (pas de `DELETE` sur `/api/audit-log/*`) — confirmé déjà par audit de code, pas de UI à tester ici.
 
 ### US4 — Recruiter-Ready Packaging
 
