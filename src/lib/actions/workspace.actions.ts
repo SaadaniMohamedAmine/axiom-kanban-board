@@ -60,6 +60,16 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
     },
   });
 
+  void createAuditLog({
+    workspaceId: workspace.id,
+    actorId: session.user.id,
+    actorEmail: session.user.email,
+    action: "WORKSPACE_CREATED",
+    targetType: "workspace",
+    targetId: workspace.id,
+    targetLabel: workspace.name,
+  });
+
   revalidatePath("/", "layout");
   redirect(`/${workspace.slug}`);
 }
@@ -334,6 +344,16 @@ export async function acceptInvitation(input: AcceptInvitationInput) {
       data: { status: "ACCEPTED" },
     }),
   ]);
+
+  void createAuditLog({
+    workspaceId: invitation.workspaceId,
+    actorId: session.user.id,
+    actorEmail: session.user.email,
+    action: "MEMBER_JOINED",
+    targetType: "member",
+    targetId: session.user.id,
+    targetLabel: session.user.email,
+  });
 
   revalidatePath("/", "layout");
   redirect(`/${invitation.workspace.slug}`);

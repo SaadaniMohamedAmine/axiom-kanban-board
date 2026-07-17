@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { generateAPIKey } from "@/lib/api/api-key";
+import { createAuditLog } from "@/lib/audit/log";
 import { z } from "zod";
 
 async function requireWorkspaceAdmin(workspaceId: string) {
@@ -35,7 +36,7 @@ export async function createAPIKey(
   workspaceId: string,
   name: string
 ): Promise<CreatedAPIKey> {
-  await requireWorkspaceAdmin(workspaceId);
+  const session = await requireWorkspaceAdmin(workspaceId);
 
   const nameResult = z.string().min(1).max(100).safeParse(name);
   if (!nameResult.success) throw new Error("Invalid name");
@@ -47,17 +48,38 @@ export async function createAPIKey(
     select: { id: true, name: true, prefix: true, createdAt: true },
   });
 
+  void createAuditLog({
+    workspaceId,
+    actorId: session.user.id,
+    actorEmail: session.user.email,
+    action: "API_KEY_CREATED",
+    targetType: "apiKey",
+    targetId: apiKey.id,
+    targetLabel: apiKey.name,
+  });
+
   revalidatePath(`/[workspaceSlug]/settings`, "page");
 
   return { ...apiKey, rawKey: raw };
 }
 
 export async function revokeAPIKey(workspaceId: string, keyId: string): Promise<void> {
-  await requireWorkspaceAdmin(workspaceId);
+  const session = await requireWorkspaceAdmin(workspaceId);
 
-  await prisma.aPIKey.update({
+  const apiKey = await prisma.aPIKey.update({
     where: { id: keyId, workspaceId },
     data: { revokedAt: new Date() },
+    select: { name: true },
+  });
+
+  void createAuditLog({
+    workspaceId,
+    actorId: session.user.id,
+    actorEmail: session.user.email,
+    action: "API_KEY_REVOKED",
+    targetType: "apiKey",
+    targetId: keyId,
+    targetLabel: apiKey.name,
   });
 
   revalidatePath(`/[workspaceSlug]/settings`, "page");
