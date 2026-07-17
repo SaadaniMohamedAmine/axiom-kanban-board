@@ -502,7 +502,7 @@
     "remainingLabel": "remaining",
     "infoLine1": "The daily limit applies across all AI features — priority, estimation, description, blocker detection, and smart assignment.",
     "infoLine2": "The counter resets automatically at midnight UTC every day.",
-    "infoLine3": "To adjust the limit, set the AI_DAILY_LIMIT environment variable and redeploy."
+    "infoLine3": "Your daily limit depends on your plan — Free: 10, Pro: 200, Team: 500 requests per day."
   },
   "sprint": {
     "active": "Active sprint",

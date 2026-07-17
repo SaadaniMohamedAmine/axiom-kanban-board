@@ -502,7 +502,7 @@
     "remainingLabel": "restantes",
     "infoLine1": "La limite quotidienne s'applique à toutes les fonctionnalités IA — priorité, estimation, description, détection de blocages et assignation intelligente.",
     "infoLine2": "Le compteur se réinitialise automatiquement à minuit UTC chaque jour.",
-    "infoLine3": "Pour ajuster la limite, configurez la variable d'environnement AI_DAILY_LIMIT et redéployez."
+    "infoLine3": "Votre limite quotidienne dépend de votre offre — Free : 10, Pro : 200, Team : 500 requêtes par jour."
   },
   "sprint": {
     "active": "Sprint actif",

@@ -18,12 +18,11 @@ import { NotificationIcon, notificationBadgeClass } from "@/components/layout/no
 import { timeAgo } from "@/lib/time-ago";
 import { markAllNotificationsRead, type NotificationPreferences } from "@/lib/actions/notification.actions";
 import { NotificationPreferencesForm } from "@/components/workspace/notification-preferences-form";
+import { getPlanLimits } from "@/lib/billing/plan-limits";
 
 interface Props {
   params: Promise<{ workspaceSlug: string }>;
 }
-
-const AI_DAILY_LIMIT = parseInt(process.env.AI_DAILY_LIMIT ?? "50", 10);
 
 const ICONS = {
   account: (
@@ -103,6 +102,8 @@ export default async function SettingsPage({ params }: Props) {
 
   if (!workspace) notFound();
 
+  const aiDailyLimit = getPlanLimits(workspace.plan).maxAIRequestsPerDay;
+
   const currentMember = workspace.members.find((m) => m.userId === session.user.id);
   const currentRole = currentMember?.role ?? "VIEWER";
   const canEditWorkspace = currentRole === "OWNER";
@@ -137,7 +138,7 @@ export default async function SettingsPage({ params }: Props) {
   };
 
   const used = workspace.aiRequestsToday;
-  const pct = Math.min(100, Math.round((used / AI_DAILY_LIMIT) * 100));
+  const pct = Math.min(100, Math.round((used / aiDailyLimit) * 100));
   const resetAt = workspace.aiRequestsResetAt ?? new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1)
   );
@@ -287,7 +288,7 @@ export default async function SettingsPage({ params }: Props) {
                     </div>
                     <div className={`text-4xl font-semibold ${statusColor}`}>
                       {used}
-                      <span className="text-xl text-on-surface-variant font-normal"> / {AI_DAILY_LIMIT}</span>
+                      <span className="text-xl text-on-surface-variant font-normal"> / {aiDailyLimit}</span>
                     </div>
                   </div>
                   <div className="text-right">
@@ -300,7 +301,7 @@ export default async function SettingsPage({ params }: Props) {
                 </div>
                 <div className="flex items-center justify-between mt-2 text-[11px] text-on-surface-variant/50">
                   <span>{pct}{tAi("pctUsed")}</span>
-                  <span>{AI_DAILY_LIMIT - used} {tAi("remainingLabel")}</span>
+                  <span>{aiDailyLimit - used} {tAi("remainingLabel")}</span>
                 </div>
               </div>
             </div>
