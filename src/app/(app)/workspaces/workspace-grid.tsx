@@ -39,6 +39,9 @@ type PendingAction = { type: "archive" | "delete"; workspace: WorkspaceCardData 
 
 export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridProps) {
   const t = useTranslations("nav");
+  const tw = useTranslations("workspacesPage");
+  const tActions = useTranslations("actions");
+  const tOnboarding = useTranslations("onboarding");
   const { toast } = useToast();
   const [workspaces, setWorkspaces] = useState(initialWorkspaces);
   const [pending, setPending] = useState<PendingAction>(null);
@@ -60,13 +63,13 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
       if (pending.type === "archive") {
         await archiveWorkspace(pending.workspace.id);
         setWorkspaces((prev) => prev.filter((w) => w.id !== pending.workspace.id));
-        toast("Workspace archived");
+        toast(tw("archivedToast"));
         setPending(null);
       } else {
         await deleteWorkspace(pending.workspace.id);
       }
     } catch (error) {
-      toast(error instanceof Error ? error.message : "Action failed", "error");
+      toast(error instanceof Error ? error.message : tw("actionFailed"), "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -81,8 +84,8 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
               <div className="absolute -top-3 -right-3 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-all duration-200 z-20">
                 <button
                   onClick={() => setPending({ type: "archive", workspace: ws })}
-                  aria-label="Archive workspace"
-                  title="Archive workspace"
+                  aria-label={tw("archiveAction")}
+                  title={tw("archiveAction")}
                   className="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/40 shadow-lg flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-highest transition-colors cursor-pointer"
                 >
                   <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" viewBox="0 0 24 24" width="14">
@@ -91,8 +94,8 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
                 </button>
                 <button
                   onClick={() => setPending({ type: "delete", workspace: ws })}
-                  aria-label="Move to Trash"
-                  title="Move to Trash"
+                  aria-label={tw("moveToTrashAction")}
+                  title={tw("moveToTrashAction")}
                   className="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant/40 shadow-lg flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error/10 transition-colors cursor-pointer"
                 >
                   <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.75" viewBox="0 0 24 24" width="14">
@@ -134,7 +137,7 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
               </div>
 
               <div className="mt-5 flex items-center gap-1.5 text-[12px] font-semibold text-primary opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-                Open workspace
+                {tw("openWorkspace")}
                 <svg fill="none" height="13" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="13">
                   <path d="M5 12h14" /><path d="m12 5 7 7-7 7" />
                 </svg>
@@ -166,7 +169,7 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
                 type="button"
                 onClick={() => setPending(null)}
                 disabled={isSubmitting}
-                aria-label="Close"
+                aria-label={tOnboarding("close")}
                 className="absolute top-4 right-4 p-1.5 rounded-lg text-on-surface-variant/60 hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer disabled:opacity-50"
               >
                 <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
@@ -175,12 +178,12 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
               </button>
 
               <h2 className="text-h3 text-on-surface mb-3">
-                {pending.type === "delete" ? "Move to Trash" : "Archive workspace"}
+                {pending.type === "delete" ? tw("deleteModalTitle") : tw("archiveModalTitle")}
               </h2>
               <p className="text-[13px] text-on-surface-variant mb-6">
                 {pending.type === "delete"
-                  ? `"${pending.workspace.name}" will be moved to Trash and hidden from your workspace list. You can restore it, or delete it forever, from Trash.`
-                  : `"${pending.workspace.name}" will be archived and hidden from your workspace list. You can restore it later.`}
+                  ? tw("deleteConfirm", { name: pending.workspace.name })
+                  : tw("archiveConfirm", { name: pending.workspace.name })}
               </p>
 
               <div className="flex gap-3">
@@ -190,7 +193,7 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
                   disabled={isSubmitting}
                   className="flex-1 py-2.5 bg-surface-container-high text-on-surface-variant rounded-lg text-[13px] font-semibold hover:bg-surface-container-highest transition-colors cursor-pointer disabled:opacity-50"
                 >
-                  Cancel
+                  {tActions("cancel")}
                 </button>
                 <button
                   type="button"
@@ -202,7 +205,7 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
                       : "bg-primary text-on-primary hover:brightness-110"
                   }`}
                 >
-                  {isSubmitting ? "Working..." : "Confirm"}
+                  {isSubmitting ? tw("working") : tActions("confirm")}
                 </button>
               </div>
             </motion.div>

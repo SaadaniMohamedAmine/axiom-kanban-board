@@ -17,6 +17,7 @@ export default async function ArchivedWorkspacesPage() {
   });
 
   const t = await getTranslations("nav");
+  const tw = await getTranslations("workspacesPage");
 
   const workspaces = memberships.map((m) => ({
     id: m.workspace.id,
@@ -31,14 +32,14 @@ export default async function ArchivedWorkspacesPage() {
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-h1 text-on-surface">{t("archive")}</h1>
         <Link href="/workspaces" className="text-[13px] text-primary hover:text-primary/80 transition-colors">
-          Back to Workspaces
+          {tw("backToWorkspaces")}
         </Link>
       </div>
-      <p className="text-[13px] text-on-surface-variant mb-8">Archived workspaces are hidden from your list. Restore one to make it active again.</p>
+      <p className="text-[13px] text-on-surface-variant mb-8">{tw("archivedDesc")}</p>
 
       {workspaces.length === 0 ? (
         <div className="border border-dashed border-outline-variant/40 rounded-xl p-12 text-center text-on-surface-variant">
-          Nothing archived yet.
+          {tw("nothingArchived")}
         </div>
       ) : (
         <ArchivedWorkspaceList workspaces={workspaces} />

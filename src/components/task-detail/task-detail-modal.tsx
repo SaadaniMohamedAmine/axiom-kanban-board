@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { MOTION } from "@/lib/motion";
 import type { TaskWithRelations } from "@/types/task.types";
 import { TaskPropertiesPanel } from "./task-properties-panel";
@@ -22,6 +23,7 @@ interface TaskDetailModalProps {
 
 export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembers, columns }: TaskDetailModalProps) {
   const [now] = useState(() => Date.now());
+  const t = useTranslations("taskDetail");
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
@@ -61,7 +63,7 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                 <path d="M7 12h10"></path>
                 <path d="M7 17h10"></path>
               </svg>
-              Task {task.code}
+              {t("taskLabel", { code: task.code })}
             </div>
             <h1 className="text-2xl font-semibold text-on-surface">{task.title}</h1>
           </div>
@@ -96,13 +98,13 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                   <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
-                Description
+                {t("description")}
               </div>
               <div className="text-[14px] leading-relaxed text-on-surface-variant">
                 {task.description ? (
                   <div className="whitespace-pre-wrap">{task.description}</div>
                 ) : (
-                  <p className="italic opacity-60">No description yet</p>
+                  <p className="italic opacity-60">{t("noDescriptionYet")}</p>
                 )}
               </div>
             </div>
@@ -114,7 +116,7 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                   <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"></path>
                   <path d="M12 8v4l3 3"></path>
                 </svg>
-                Activity
+                {t("activity")}
               </div>
               <ActivityList activities={task.activity} boardMembers={boardMembers} columns={columns} />
             </div>
@@ -125,7 +127,7 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                 <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
-                Comments
+                {t("comments")}
               </div>
               <CommentThread taskId={task.id} comments={task.comments} />
             </div>
@@ -146,12 +148,12 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
-              Created {new Date(task.createdAt ?? now).toLocaleDateString()}
+              {t("created", { date: new Date(task.createdAt ?? now).toLocaleDateString() })}
             </div>
           </div>
           <div className="flex items-center gap-4">
             <button onClick={onClose} className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors px-4 py-2 cursor-pointer">
-              Close
+              {t("close")}
             </button>
           </div>
         </footer>

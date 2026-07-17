@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { updateTaskFields, setTaskAssignees } from "@/lib/actions/task.actions";
 import type { TaskWithRelations } from "@/types/task.types";
 
@@ -12,7 +13,6 @@ interface TaskPropertiesPanelProps {
 
 type Priority = "URGENT" | "HIGH" | "MEDIUM" | "LOW";
 const PRIORITIES: Priority[] = ["URGENT", "HIGH", "MEDIUM", "LOW"];
-const PRIORITY_LABELS: Record<Priority, string> = { URGENT: "Urgent", HIGH: "High", MEDIUM: "Medium", LOW: "Low" };
 const PRIORITY_DOT: Record<Priority, string> = {
   URGENT: "bg-red-500",
   HIGH: "bg-orange-400",
@@ -30,6 +30,8 @@ function SectionLabel({ children, icon }: { children: React.ReactNode; icon: Rea
 }
 
 export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropertiesPanelProps) {
+  const t = useTranslations("taskDetail");
+  const tBoard = useTranslations("board");
   const [priority, setPriority] = useState(task.priority);
   const [estimate, setEstimate] = useState(task.estimate?.toString() ?? "");
   const [dueDate, setDueDate] = useState(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
@@ -142,7 +144,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
             <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" /><polyline points="14 2 14 8 20 8" />
           </svg>
         }>
-          Description
+          {t("description")}
         </SectionLabel>
         {isEditingDescription && canEdit ? (
           <div className="gradient-border rounded-lg overflow-hidden">
@@ -151,7 +153,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
                 type="button"
                 onClick={() => insertMarkdown("**", "**")}
                 className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors cursor-pointer"
-                title="Bold"
+                title={t("bold")}
               >
                 B
               </button>
@@ -159,7 +161,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
                 type="button"
                 onClick={() => insertMarkdown("*", "*")}
                 className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors italic cursor-pointer"
-                title="Italic"
+                title={t("italic")}
               >
                 I
               </button>
@@ -167,7 +169,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
                 type="button"
                 onClick={() => insertMarkdown("- ")}
                 className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors cursor-pointer"
-                title="List"
+                title={t("list")}
               >
                 •
               </button>
@@ -175,7 +177,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
                 type="button"
                 onClick={() => insertMarkdown("[", "](url)")}
                 className="px-2 py-1 text-xs text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors cursor-pointer"
-                title="Link"
+                title={t("link")}
               >
                 🔗
               </button>
@@ -187,7 +189,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
               onBlur={handleDescriptionBlur}
               autoFocus
               className="w-full px-3 py-2 bg-transparent text-body-md text-on-surface focus:outline-none min-h-[120px] resize-y"
-              placeholder="Add a description..."
+              placeholder={t("clickToAddDescription")}
             />
           </div>
         ) : (
@@ -198,7 +200,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
             {description ? (
               <div className="whitespace-pre-wrap">{description}</div>
             ) : (
-              <p className="italic opacity-60">{canEdit ? "Click to add description..." : "No description yet"}</p>
+              <p className="italic opacity-60">{canEdit ? t("clickToAddDescription") : t("noDescriptionYet")}</p>
             )}
           </div>
         )}
@@ -206,7 +208,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
 
       <div>
         <SectionLabel icon={<span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[priority]}`} />}>
-          Priority
+          {t("priority")}
         </SectionLabel>
         <div ref={priorityRef} className="relative">
           <button
@@ -219,7 +221,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
           >
             <span className="flex items-center gap-2">
               <span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[priority]}`} />
-              {PRIORITY_LABELS[priority]}
+              {tBoard(`priority.${priority}`)}
             </span>
             <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14" className={`shrink-0 text-on-surface-variant/60 transition-transform ${priorityOpen ? "rotate-180" : ""}`}>
               <path d="m6 9 6 6 6-6" />
@@ -237,7 +239,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
                   className={`w-full flex items-center gap-2 text-left px-3 py-2 text-body-md transition-colors cursor-pointer hover:bg-surface-container-highest ${p === priority ? "text-on-surface font-medium" : "text-on-surface-variant"}`}
                 >
                   <span className={`w-2 h-2 rounded-full ${PRIORITY_DOT[p]}`} />
-                  {PRIORITY_LABELS[p]}
+                  {tBoard(`priority.${p}`)}
                 </button>
               ))}
             </div>
@@ -251,7 +253,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
             <path d="M12 20V10" /><path d="M18 20V4" /><path d="M6 20v-4" />
           </svg>
         }>
-          Estimate (points)
+          {t("estimate")}
         </SectionLabel>
         <input
           type="number"
@@ -270,7 +272,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
             <rect height="18" rx="2" ry="2" width="18" x="3" y="4" /><line x1="16" x2="16" y1="2" y2="6" /><line x1="8" x2="8" y1="2" y2="6" /><line x1="3" x2="21" y1="10" y2="10" />
           </svg>
         }>
-          Due Date
+          {t("dueDate")}
         </SectionLabel>
         <input
           type="date"
@@ -287,7 +289,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
             <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
           </svg>
         }>
-          Assignees
+          {t("assignees")}
         </SectionLabel>
         <div ref={assigneesRef} className="relative">
           <button
@@ -299,7 +301,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
             className={`w-full flex items-center justify-between gap-2 ${inputClass} ${canEdit ? "cursor-pointer" : "cursor-not-allowed"}`}
           >
             {assigneeIds.length === 0 ? (
-              <span className="text-on-surface-variant/60 italic">No assignees</span>
+              <span className="text-on-surface-variant/60 italic">{t("noAssignees")}</span>
             ) : (
               <span className="flex items-center gap-2 min-w-0">
                 <span className="flex -space-x-1.5 shrink-0">
@@ -318,8 +320,8 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
                 </span>
                 <span className="truncate text-on-surface">
                   {assigneeIds.length === 1
-                    ? boardMembers.find((m) => m.userId === assigneeIds[0])?.name ?? "Unknown member"
-                    : `${assigneeIds.length} assigned`}
+                    ? boardMembers.find((m) => m.userId === assigneeIds[0])?.name ?? t("unknownMember")
+                    : t("assignedCount", { count: assigneeIds.length })}
                 </span>
               </span>
             )}
@@ -330,7 +332,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
           {assigneesOpen && (
             <div role="listbox" className="absolute left-0 right-0 top-full mt-1.5 rounded-lg border border-outline-variant/30 bg-surface-container-high shadow-lg overflow-hidden z-10 max-h-56 overflow-y-auto">
               {boardMembers.length === 0 ? (
-                <p className="px-3 py-2 text-xs italic text-on-surface-variant/60">No workspace members</p>
+                <p className="px-3 py-2 text-xs italic text-on-surface-variant/60">{t("noWorkspaceMembers")}</p>
               ) : (
                 boardMembers.map((member) => {
                   const isAssigned = assigneeIds.includes(member.userId);
@@ -370,10 +372,10 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
             <path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82Z" /><circle cx="7" cy="7" r="1" fill="currentColor" />
           </svg>
         }>
-          Labels
+          {t("labels")}
         </SectionLabel>
         {task.labels.length === 0 ? (
-          <p className="text-sm italic text-on-surface-variant/60">No labels</p>
+          <p className="text-sm italic text-on-surface-variant/60">{t("noLabels")}</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {task.labels.map((l) => (

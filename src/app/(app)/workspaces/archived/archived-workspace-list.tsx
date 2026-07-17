@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { unarchiveWorkspace } from "@/lib/actions/workspace.actions";
 import { useToast } from "@/contexts/toast-context";
 
@@ -17,6 +18,7 @@ interface ArchivedWorkspaceListProps {
 }
 
 export function ArchivedWorkspaceList({ workspaces: initial }: ArchivedWorkspaceListProps) {
+  const t = useTranslations("workspacesPage");
   const [workspaces, setWorkspaces] = useState(initial);
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const { toast } = useToast();
@@ -26,9 +28,9 @@ export function ArchivedWorkspaceList({ workspaces: initial }: ArchivedWorkspace
     try {
       await unarchiveWorkspace(id);
       setWorkspaces((prev) => prev.filter((w) => w.id !== id));
-      toast(`"${name}" restored`);
+      toast(t("restoredToast", { name }));
     } catch (error) {
-      toast(error instanceof Error ? error.message : "Failed to restore workspace", "error");
+      toast(error instanceof Error ? error.message : t("restoreFailed"), "error");
     } finally {
       setRestoringId(null);
     }
@@ -48,7 +50,7 @@ export function ArchivedWorkspaceList({ workspaces: initial }: ArchivedWorkspace
             <div className="min-w-0">
               <p className="text-body-md text-on-surface font-medium truncate">{ws.name}</p>
               <p className="text-[12px] text-on-surface-variant/60">
-                Archived {new Date(ws.archivedAt).toLocaleDateString()}
+                {t("archivedOn", { date: new Date(ws.archivedAt).toLocaleDateString() })}
               </p>
             </div>
           </div>
@@ -59,7 +61,7 @@ export function ArchivedWorkspaceList({ workspaces: initial }: ArchivedWorkspace
               disabled={restoringId === ws.id}
               className="shrink-0 px-4 py-2 bg-primary text-on-primary rounded-lg text-[13px] font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
-              {restoringId === ws.id ? "Restoring..." : "Restore"}
+              {restoringId === ws.id ? t("restoring") : t("restore")}
             </button>
           )}
         </div>

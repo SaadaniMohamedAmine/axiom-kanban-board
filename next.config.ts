@@ -8,13 +8,10 @@ const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const withPWA = withPWAInit({
   dest: "public",
-  // EMERGENCY: force-disabled — next-pwa's webpack/turbopack config
-  // patching breaks Vercel's serverless output file tracing, causing
-  // every DB-touching route to 500 with "Cannot find module
-  // '@prisma/client-runtime-utils'" in production. Re-enable once a
-  // tracing-safe next-pwa config (or alternative) is confirmed working
-  // on a preview deployment.
-  disable: true,
+  // The prod 500 this was worked around for was actually a stray custom
+  // `output` path in schema.prisma's generator block (fixed in b047fd5),
+  // not next-pwa itself — safe to re-enable for real prod builds now.
+  disable: process.env.NODE_ENV === "development",
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,

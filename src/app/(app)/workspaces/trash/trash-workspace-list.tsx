@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { restoreWorkspace, permanentlyDeleteWorkspace } from "@/lib/actions/workspace.actions";
 import { useToast } from "@/contexts/toast-context";
 import { MOTION } from "@/lib/motion";
@@ -19,6 +20,9 @@ interface TrashWorkspaceListProps {
 }
 
 export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListProps) {
+  const t = useTranslations("workspacesPage");
+  const tActions = useTranslations("actions");
+  const tOnboarding = useTranslations("onboarding");
   const [workspaces, setWorkspaces] = useState(initial);
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const [confirmTarget, setConfirmTarget] = useState<TrashedWorkspace | null>(null);
@@ -39,9 +43,9 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
     try {
       await restoreWorkspace(id);
       setWorkspaces((prev) => prev.filter((w) => w.id !== id));
-      toast(`"${name}" restored`);
+      toast(t("restoredToast", { name }));
     } catch (error) {
-      toast(error instanceof Error ? error.message : "Failed to restore workspace", "error");
+      toast(error instanceof Error ? error.message : t("restoreFailed"), "error");
     } finally {
       setRestoringId(null);
     }
@@ -53,10 +57,10 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
     try {
       await permanentlyDeleteWorkspace(confirmTarget.id);
       setWorkspaces((prev) => prev.filter((w) => w.id !== confirmTarget.id));
-      toast(`"${confirmTarget.name}" deleted forever`);
+      toast(t("deletedForeverToast", { name: confirmTarget.name }));
       setConfirmTarget(null);
     } catch (error) {
-      toast(error instanceof Error ? error.message : "Failed to delete workspace", "error");
+      toast(error instanceof Error ? error.message : t("deleteFailed"), "error");
     } finally {
       setIsDeleting(false);
     }
@@ -77,7 +81,7 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
               <div className="min-w-0">
                 <p className="text-body-md text-on-surface font-medium truncate">{ws.name}</p>
                 <p className="text-[12px] text-on-surface-variant/60">
-                  Deleted {new Date(ws.deletedAt).toLocaleDateString()}
+                  {t("deletedOn", { date: new Date(ws.deletedAt).toLocaleDateString() })}
                 </p>
               </div>
             </div>
@@ -89,13 +93,13 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
                   disabled={restoringId === ws.id}
                   className="px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-lg text-[13px] font-semibold hover:bg-surface-container-highest disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
                 >
-                  {restoringId === ws.id ? "Restoring..." : "Restore"}
+                  {restoringId === ws.id ? t("restoring") : t("restore")}
                 </button>
                 <button
                   onClick={() => setConfirmTarget(ws)}
                   className="px-4 py-2 border border-error/40 text-error rounded-lg text-[13px] font-semibold hover:bg-error/10 transition-colors cursor-pointer"
                 >
-                  Delete forever
+                  {t("deleteForever")}
                 </button>
               </div>
             )}
@@ -125,7 +129,7 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
                 type="button"
                 onClick={() => setConfirmTarget(null)}
                 disabled={isDeleting}
-                aria-label="Close"
+                aria-label={tOnboarding("close")}
                 className="absolute top-4 right-4 p-1.5 rounded-lg text-on-surface-variant/60 hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer disabled:opacity-50"
               >
                 <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
@@ -133,9 +137,9 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
                 </svg>
               </button>
 
-              <h2 className="text-h3 text-on-surface mb-3">Delete forever</h2>
+              <h2 className="text-h3 text-on-surface mb-3">{t("deleteForeverTitle")}</h2>
               <p className="text-[13px] text-on-surface-variant mb-6">
-                This permanently deletes &quot;{confirmTarget.name}&quot; and everything in it — boards, tasks, and members. This cannot be undone.
+                {t("deleteForeverConfirm", { name: confirmTarget.name })}
               </p>
 
               <div className="flex gap-3">
@@ -145,7 +149,7 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
                   disabled={isDeleting}
                   className="flex-1 py-2.5 bg-surface-container-high text-on-surface-variant rounded-lg text-[13px] font-semibold hover:bg-surface-container-highest transition-colors cursor-pointer disabled:opacity-50"
                 >
-                  Cancel
+                  {tActions("cancel")}
                 </button>
                 <button
                   type="button"
@@ -153,7 +157,7 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
                   disabled={isDeleting}
                   className="flex-1 py-2.5 bg-error text-on-error rounded-lg text-[13px] font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
                 >
-                  {isDeleting ? "Deleting..." : "Confirm"}
+                  {isDeleting ? t("deleting") : tActions("confirm")}
                 </button>
               </div>
             </motion.div>
