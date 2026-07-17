@@ -806,6 +806,7 @@
     "sending": "Sending...",
     "invite": "Invite",
     "inviteFailed": "Failed to send invitation",
+    "invitationSent": "Invitation sent",
     "members": "Members",
     "you": "(You)",
     "joined": "Joined",

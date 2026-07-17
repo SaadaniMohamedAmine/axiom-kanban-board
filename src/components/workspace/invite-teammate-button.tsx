@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { inviteMember } from "@/lib/actions/workspace.actions";
 import { UpgradeModal } from "@/components/ui/upgrade-modal";
+import { useToast } from "@/contexts/toast-context";
 import { MOTION } from "@/lib/motion";
 
 interface InviteTeammateButtonProps {
@@ -18,6 +19,7 @@ export function InviteTeammateButton({ workspaceId, workspaceSlug }: InviteTeamm
   const t = useTranslations("membersPage");
   const tTeam = useTranslations("teamPage");
   const tOnboarding = useTranslations("onboarding");
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"ADMIN" | "MEMBER" | "VIEWER">("MEMBER");
@@ -44,6 +46,7 @@ export function InviteTeammateButton({ workspaceId, workspaceSlug }: InviteTeamm
       await inviteMember({ workspaceId, email: email.trim(), role });
       setEmail("");
       setIsOpen(false);
+      toast(t("invitationSent"));
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : "";
