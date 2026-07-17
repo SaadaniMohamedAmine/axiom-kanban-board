@@ -83,7 +83,11 @@ function SignUpForm() {
           body: JSON.stringify({ email: formData.email, name: formData.name }),
         }).catch(() => {});
         window.dispatchEvent(new Event(SPLASH_EVENT));
-        router.push("/dashboard?notify=welcome");
+        // A brand-new account never has a workspace yet, so /dashboard would
+        // immediately server-redirect to /workspaces/new anyway — sending
+        // the client there directly, mid-transition, is what was corrupting
+        // Next's router state (and silently dropping ?notify in the bounce).
+        router.push("/workspaces/new?notify=welcome");
       }
     } catch {
       setError("An unexpected error occurred");
