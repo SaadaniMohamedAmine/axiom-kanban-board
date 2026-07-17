@@ -39,7 +39,7 @@ export function LoginClient() {
         setError(error.message || "Sign in failed");
       } else {
         window.dispatchEvent(new Event(SPLASH_EVENT));
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch {
       setError("An unexpected error occurred");
@@ -55,7 +55,7 @@ export function LoginClient() {
     try {
       const { error } = await authClient.signIn.social({
         provider,
-        callbackURL: "/",
+        callbackURL: "/dashboard",
       });
 
       if (error) {

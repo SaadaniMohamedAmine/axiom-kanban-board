@@ -82,7 +82,7 @@ function SignUpForm() {
           body: JSON.stringify({ email: formData.email, name: formData.name }),
         }).catch(() => {});
         window.dispatchEvent(new Event(SPLASH_EVENT));
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch {
       setError("An unexpected error occurred");
@@ -99,7 +99,7 @@ function SignUpForm() {
     try {
       const { error } = await authClient.signIn.social({
         provider,
-        callbackURL: "/",
+        callbackURL: "/dashboard",
         errorCallbackURL: "/sign-up",
       });
 
