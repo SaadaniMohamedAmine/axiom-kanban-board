@@ -8,10 +8,15 @@ const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const withPWA = withPWAInit({
   dest: "public",
-  // The prod 500 this was worked around for was actually a stray custom
-  // `output` path in schema.prisma's generator block (fixed in b047fd5),
-  // not next-pwa itself — safe to re-enable for real prod builds now.
-  disable: process.env.NODE_ENV === "development",
+  // Re-enabling this in production (2026-07-17) broke the Vercel deploy:
+  // "The framework produced an invalid deployment package for a Serverless
+  // Function... produces files in symlinked directories." That's the same
+  // failure mode commit 7ec82a9 already pinned on next-pwa's build-time
+  // config patching interfering with Next's output file tracing — the
+  // stray Prisma `output` path (b047fd5) explained the *500s*, but never
+  // actually cleared next-pwa as a packaging-time suspect. Disabling again
+  // until a tracing-safe next-pwa config is confirmed on a preview deploy.
+  disable: true,
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
