@@ -25,6 +25,7 @@
     "switchWorkspace": "Switch workspace",
     "myAccount": "My account",
     "myTasks": "My Tasks",
+    "allTasks": "All Tasks",
     "aiInsights": "AI Insights",
     "archive": "Archive",
     "trash": "Trash",
@@ -821,6 +822,12 @@
     "title": "My Tasks",
     "subtitle": "Every open task assigned to you, across all your workspaces.",
     "empty": "No open tasks assigned to you right now.",
+    "noDueDate": "No due date"
+  },
+  "allTasksPage": {
+    "title": "All Tasks",
+    "subtitle": "Every open task across all your workspaces, regardless of assignee.",
+    "empty": "No open tasks right now.",
     "noDueDate": "No due date"
   },
   "notificationPrefs": {

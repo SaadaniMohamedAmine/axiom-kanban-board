@@ -44,6 +44,13 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
     icon: iconWorkspaces,
   };
 
+  const allTasksLink = {
+    href: "/all-tasks",
+    label: t("allTasks"),
+    active: pathname === "/all-tasks",
+    icon: iconAllTasks,
+  };
+
   // ─── Section 2 — Espace de travail courant & contexte ───────────────────
   const contextLinks = slug
     ? [
@@ -93,6 +100,7 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
       <div className="space-y-0.5">
         {overviewLink && <NavLink {...overviewLink} />}
         <NavLink {...allWorkspacesLink} />
+        <NavLink {...allTasksLink} />
       </div>
 
       <div className="my-2 h-px bg-outline-variant/20" />
@@ -100,12 +108,14 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
       <div className="space-y-0.5">
         <WorkspaceSwitcher memberships={memberships} current={current} />
 
-        <NavLink
-          href="/my-tasks"
-          label={t("myTasks")}
-          active={pathname === "/my-tasks"}
-          icon={iconMyTasks}
-        />
+        {slug && (
+          <NavLink
+            href={`/${slug}`}
+            label={t("myTasks")}
+            active={pathname === `/${slug}` || pathname.startsWith(`/${slug}/boards`)}
+            icon={iconMyTasks}
+          />
+        )}
 
         {contextLinks.map((item) => (
           <NavLink key={item.href} {...item} />
@@ -300,5 +310,16 @@ const iconMyTasks = (
   <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
     <path d="M21.801 10A10 10 0 1 1 17 3.335" />
     <path d="m9 11 3 3L22 4" />
+  </svg>
+);
+
+const iconAllTasks = (
+  <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+    <path d="M9 6h11" />
+    <path d="M9 12h11" />
+    <path d="M9 18h11" />
+    <path d="M4 6h.01" />
+    <path d="M4 12h.01" />
+    <path d="M4 18h.01" />
   </svg>
 );

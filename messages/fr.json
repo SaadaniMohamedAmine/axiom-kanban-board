@@ -25,6 +25,7 @@
     "switchWorkspace": "Changer d'espace de travail",
     "myAccount": "Mon compte",
     "myTasks": "Mes tâches",
+    "allTasks": "Toutes les tâches",
     "aiInsights": "Perspectives IA",
     "archive": "Archive",
     "trash": "Corbeille",
@@ -821,6 +822,12 @@
     "title": "Mes tâches",
     "subtitle": "Toutes les tâches ouvertes qui vous sont assignées, tous espaces de travail confondus.",
     "empty": "Aucune tâche ouverte ne vous est assignée pour le moment.",
+    "noDueDate": "Aucune échéance"
+  },
+  "allTasksPage": {
+    "title": "Toutes les tâches",
+    "subtitle": "Toutes les tâches ouvertes de tous vos espaces de travail, quel que soit l'assigné.",
+    "empty": "Aucune tâche ouverte pour le moment.",
     "noDueDate": "Aucune échéance"
   },
   "notificationPrefs": {
