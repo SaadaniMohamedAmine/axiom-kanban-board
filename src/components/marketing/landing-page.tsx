@@ -157,7 +157,7 @@ export async function LandingPage({ currentLocale, isAuthenticated = false }: Pr
           </FeatureTile>
 
           <FeatureTile index={1} className="feature-card-premium rounded-3xl p-8 flex flex-col justify-center">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-gradient-to-br from-surface-container-highest to-surface-container-high border border-outline-variant/25 text-on-surface-variant shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
               <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
               </svg>
@@ -167,7 +167,7 @@ export async function LandingPage({ currentLocale, isAuthenticated = false }: Pr
           </FeatureTile>
 
           <FeatureTile index={2} className="feature-card-premium rounded-3xl p-8 flex flex-col justify-center">
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-gradient-to-br from-surface-container-highest to-surface-container-high border border-outline-variant/25 text-on-surface-variant shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
               <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
@@ -184,7 +184,7 @@ export async function LandingPage({ currentLocale, isAuthenticated = false }: Pr
             className="feature-card-premium md:col-span-2 rounded-3xl p-8 md:p-10 flex items-center justify-between"
           >
             <div className="max-w-md">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-gradient-to-br from-surface-container-highest to-surface-container-high border border-outline-variant/25 text-on-surface-variant shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
                 <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                   <circle cx="12" cy="12" r="3" />
                   <path d="M3 7V5a2 2 0 0 1 2-2h2" />
@@ -206,7 +206,7 @@ export async function LandingPage({ currentLocale, isAuthenticated = false }: Pr
             <span className="absolute top-6 right-6 font-mono text-[10px] px-1.5 py-0.5 rounded border border-outline-variant/30 text-on-surface-variant">
               &#8984;K
             </span>
-            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-gradient-to-br from-surface-container-highest to-surface-container-high border border-outline-variant/25 text-on-surface-variant shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
               <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                 <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
               </svg>
@@ -237,9 +237,10 @@ export async function LandingPage({ currentLocale, isAuthenticated = false }: Pr
       </section>
 
       {/* CTA */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <div className="relative rounded-[40px] py-20 px-8 text-center overflow-hidden border border-outline-variant/20 bg-surface-container">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+      <section className="relative max-w-5xl mx-auto px-6 py-24">
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-64 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="relative rounded-[40px] py-20 px-8 text-center overflow-hidden border border-primary/20 bg-surface-container">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
           <div className="relative">
             <h2 className="text-[36px] md:text-display font-semibold text-on-surface mb-6">{t("cta.title")}</h2>
             <p className="text-on-surface-variant text-[18px] max-w-xl mx-auto mb-10 leading-relaxed">{t("cta.subtitle")}</p>

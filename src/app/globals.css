@@ -131,10 +131,12 @@ body {
 /* Premium landing-page feature card — layered surface gradient, a soft glass
    sheen border (same masked-gradient technique as .onboarding-glass-card,
    but theme-aware via var() instead of a hardcoded dark rgba), and a
-   hover lift/glow. Icon chips inside stay achromatic on purpose — the AI
-   tile is the only one that gets a color accent, per brand rules. */
+   hover lift/glow. Icon chips use the same primary-blue tint as the
+   dashboard's workspace cards (bg-primary/15 text-primary) — the AI tile
+   keeps sole ownership of the violet/cyan accent, per brand rules. */
 .feature-card-premium {
   position: relative;
+  cursor: pointer;
   background: linear-gradient(165deg, var(--surface-container-high) 0%, var(--surface-container) 55%);
   transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -152,7 +154,7 @@ body {
   pointer-events: none;
 }
 .feature-card-premium:hover {
-  box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(59, 130, 246, 0.35);
 }
 
 /* Axiom-branded scrollbar — gradient thumb (primary → AI violet), no track background */
