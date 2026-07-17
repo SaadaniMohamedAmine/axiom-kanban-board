@@ -5,6 +5,24 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+// Same priority accent/badge system as the board's TaskCard
+// (src/components/board/task-card.tsx) — duplicated rather than
+// imported since that file is a client component with drag-and-drop
+// wiring this server page has no use for.
+const priorityStyles = {
+  URGENT: "bg-red-500/10 text-red-500 border-red-500/20",
+  HIGH: "bg-red-500/10 text-red-500 border-red-500/20",
+  MEDIUM: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
+  LOW: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20",
+};
+
+const priorityAccent = {
+  URGENT: "from-red-500 to-red-400",
+  HIGH: "from-red-500 to-orange-400",
+  MEDIUM: "from-yellow-500 to-amber-400",
+  LOW: "from-emerald-500 to-emerald-400",
+};
+
 export default async function AllTasksPage() {
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) redirect("/login");
@@ -26,6 +44,7 @@ export default async function AllTasksPage() {
     include: {
       board: { select: { name: true, workspace: { select: { slug: true, name: true } } } },
       column: { select: { name: true } },
+      assignees: { include: { user: { select: { id: true, name: true } } } },
     },
     orderBy: { createdAt: "desc" },
   });
@@ -65,7 +84,7 @@ export default async function AllTasksPage() {
           {Array.from(grouped.entries()).map(([workspaceName, workspaceTasks]) => (
             <section key={workspaceName}>
               <h2 className="text-h3 text-on-surface mb-3">{workspaceName}</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {workspaceTasks.map((task) => {
                   const isOverdue = task.dueDate ? task.dueDate < today : false;
                   const isDueToday = task.dueDate ? task.dueDate >= today && task.dueDate < tomorrow : false;
@@ -74,29 +93,49 @@ export default async function AllTasksPage() {
                     <Link
                       key={task.id}
                       href={`/${task.board.workspace.slug}/boards/${task.boardId}?task=${task.id}`}
-                      className="flex items-center justify-between gap-3 p-4 bg-surface-container border border-outline-variant/50 rounded-xl hover:border-primary/50 transition-colors"
+                      className="gradient-border group relative flex flex-col p-4 overflow-hidden hover:shadow-glow transition-shadow"
                     >
-                      <div className="min-w-0">
-                        <p className="text-body-md text-on-surface font-medium truncate">{task.title}</p>
-                        <p className="text-label-md text-on-surface-variant truncate">
-                          {task.board.name} · {task.column.name}
-                        </p>
+                      <div className={`absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r ${priorityAccent[task.priority]}`} />
+
+                      <div className="flex items-center justify-between mb-3">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${priorityStyles[task.priority]}`}>
+                          {task.priority}
+                        </span>
+                        <span className="text-[10px] font-mono text-on-surface-variant/40">{task.code}</span>
                       </div>
-                      <span
-                        className={`text-[11px] font-semibold shrink-0 px-2.5 py-1 rounded-full ${
-                          isOverdue
-                            ? "bg-error/15 text-error"
-                            : "bg-surface-container-high text-on-surface-variant"
-                        }`}
-                      >
-                        {isOverdue
-                          ? tDashboard("overdue")
-                          : isDueToday
-                            ? tDashboard("dueToday")
-                            : task.dueDate
-                              ? new Date(task.dueDate).toLocaleDateString()
-                              : t("noDueDate")}
-                      </span>
+
+                      <h3 className="text-sm font-semibold text-on-surface leading-snug mb-1 group-hover:text-primary transition-colors line-clamp-2">
+                        {task.title}
+                      </h3>
+                      <p className="text-[11px] text-on-surface-variant/70 truncate mb-4">
+                        {task.board.name} · {task.column.name}
+                      </p>
+
+                      <div className="flex items-center justify-between mt-auto">
+                        <div className="flex -space-x-1.5">
+                          {task.assignees.map((a) => (
+                            <span
+                              key={a.id}
+                              title={a.user.name}
+                              className="w-6 h-6 rounded-full bg-primary/20 border-2 border-surface-container flex items-center justify-center text-[10px] font-bold text-primary shrink-0"
+                            >
+                              {a.user.name.slice(0, 2).toUpperCase()}
+                            </span>
+                          ))}
+                        </div>
+
+                        {task.dueDate ? (
+                          <span
+                            className={`text-[10px] font-semibold shrink-0 px-2 py-0.5 rounded-full ${
+                              isOverdue ? "bg-error/15 text-error" : "text-on-surface-variant/60"
+                            }`}
+                          >
+                            {isOverdue ? tDashboard("overdue") : isDueToday ? tDashboard("dueToday") : new Date(task.dueDate).toLocaleDateString()}
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-on-surface-variant/40">{t("noDueDate")}</span>
+                        )}
+                      </div>
                     </Link>
                   );
                 })}
