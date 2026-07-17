@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { updateTaskFields, setTaskAssignees } from "@/lib/actions/task.actions";
+import { useToast } from "@/contexts/toast-context";
 import type { TaskWithRelations } from "@/types/task.types";
 
 interface TaskPropertiesPanelProps {
@@ -32,6 +33,7 @@ function SectionLabel({ children, icon }: { children: React.ReactNode; icon: Rea
 export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropertiesPanelProps) {
   const t = useTranslations("taskDetail");
   const tBoard = useTranslations("board");
+  const { toast } = useToast();
   const [priority, setPriority] = useState(task.priority);
   const [estimate, setEstimate] = useState(task.estimate?.toString() ?? "");
   const [dueDate, setDueDate] = useState(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
@@ -69,6 +71,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
       await setTaskAssignees({ taskId: task.id, userIds: nextIds });
     } catch {
       setAssigneeIds(previousIds);
+      toast(t("updateFailed"), "error");
     } finally {
       setIsSavingAssignees(false);
     }
@@ -82,6 +85,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
       await updateTaskFields({ taskId: task.id, priority: newPriority, expectedUpdatedAt: task.updatedAt.toISOString() });
     } catch {
       setPriority(task.priority);
+      toast(t("updateFailed"), "error");
     }
   }
 
@@ -94,6 +98,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
         await updateTaskFields({ taskId: task.id, estimate: newValue, expectedUpdatedAt: task.updatedAt.toISOString() });
       } catch {
         setEstimate(task.estimate?.toString() ?? "");
+        toast(t("updateFailed"), "error");
       }
     }
   }
@@ -106,6 +111,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
       await updateTaskFields({ taskId: task.id, dueDate: newValue, expectedUpdatedAt: task.updatedAt.toISOString() });
     } catch {
       setDueDate(task.dueDate ? new Date(task.dueDate).toISOString().split("T")[0] : "");
+      toast(t("updateFailed"), "error");
     }
   }
 
@@ -128,6 +134,7 @@ export function TaskPropertiesPanel({ task, canEdit, boardMembers }: TaskPropert
         await updateTaskFields({ taskId: task.id, description: description || null, expectedUpdatedAt: task.updatedAt.toISOString() });
       } catch {
         setDescription(task.description ?? "");
+        toast(t("updateFailed"), "error");
       }
     }
     setIsEditingDescription(false);

@@ -393,7 +393,8 @@
     "addedComment": "added a comment",
     "performedAction": "performed an action",
     "unknownColumn": "Unknown",
-    "userFallback": "User {id}"
+    "userFallback": "User {id}",
+    "updateFailed": "Failed to save changes"
   },
   "workspacesPage": {
     "openWorkspace": "Open workspace",
