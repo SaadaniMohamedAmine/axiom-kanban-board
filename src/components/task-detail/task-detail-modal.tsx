@@ -11,6 +11,8 @@ import { CommentThread } from "./comment-thread";
 import { AxiomIntelligencePanel } from "@/components/ai/axiom-intelligence-panel";
 import { MoveToMenu } from "@/components/board/move-to-menu";
 import { priorityAccent } from "@/components/board/task-card";
+import { archiveTask, deleteTask } from "@/lib/actions/task.actions";
+import { useToast } from "@/contexts/toast-context";
 
 interface TaskDetailModalProps {
   task: TaskWithRelations;
@@ -23,15 +25,42 @@ interface TaskDetailModalProps {
 
 export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembers, columns }: TaskDetailModalProps) {
   const [now] = useState(() => Date.now());
+  const [pendingAction, setPendingAction] = useState<"archive" | "delete" | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const t = useTranslations("taskDetail");
+  const tActions = useTranslations("actions");
+  const { toast } = useToast();
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (pendingAction) setPendingAction(null);
+        else onClose();
+      }
     }
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [onClose]);
+  }, [onClose, pendingAction]);
+
+  async function handleConfirmAction() {
+    if (!pendingAction) return;
+    setIsSubmitting(true);
+    try {
+      if (pendingAction === "archive") {
+        await archiveTask(task.id);
+        toast(t("archivedToast"));
+      } else {
+        await deleteTask(task.id);
+        toast(t("deletedToast"));
+      }
+      setPendingAction(null);
+      onClose();
+    } catch (error) {
+      toast(error instanceof Error ? error.message : t("updateFailed"), "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -151,13 +180,70 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
               {t("created", { date: new Date(task.createdAt ?? now).toLocaleDateString() })}
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            {canEdit && (
+              <>
+                <button
+                  onClick={() => setPendingAction("archive")}
+                  className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors px-4 py-2 cursor-pointer"
+                >
+                  {t("archive")}
+                </button>
+                <button
+                  onClick={() => setPendingAction("delete")}
+                  className="text-sm font-medium text-error/80 hover:text-error transition-colors px-4 py-2 cursor-pointer"
+                >
+                  {tActions("delete")}
+                </button>
+              </>
+            )}
             <button onClick={onClose} className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors px-4 py-2 cursor-pointer">
               {t("close")}
             </button>
           </div>
         </footer>
         </motion.main>
+
+        {pendingAction && (
+          <div className="fixed inset-0 z-60 flex items-center justify-center px-6">
+            <div
+              className="absolute inset-0 bg-surface-container-lowest/90"
+              onClick={() => !isSubmitting && setPendingAction(null)}
+            />
+            <div className="onboarding-glass-card relative w-full max-w-md rounded-2xl p-8 shadow-2xl">
+              <h2 className="text-h3 text-on-surface mb-3">
+                {pendingAction === "delete" ? t("deleteModalTitle") : t("archiveModalTitle")}
+              </h2>
+              <p className="text-[13px] text-on-surface-variant mb-6">
+                {pendingAction === "delete"
+                  ? t("deleteConfirm", { title: task.title })
+                  : t("archiveConfirm", { title: task.title })}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPendingAction(null)}
+                  disabled={isSubmitting}
+                  className="flex-1 py-2.5 bg-surface-container-high text-on-surface-variant rounded-lg text-[13px] font-semibold hover:bg-surface-container-highest transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {tActions("cancel")}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmAction}
+                  disabled={isSubmitting}
+                  className={`flex-1 py-2.5 rounded-lg text-[13px] font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                    pendingAction === "delete"
+                      ? "bg-error text-on-error hover:brightness-110"
+                      : "bg-primary text-on-primary hover:brightness-110"
+                  }`}
+                >
+                  {isSubmitting ? t("working") : tActions("confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AnimatePresence>
   );

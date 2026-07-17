@@ -428,7 +428,15 @@
     "performedAction": "a effectué une action",
     "unknownColumn": "Inconnue",
     "userFallback": "Utilisateur {id}",
-    "updateFailed": "Échec de l'enregistrement"
+    "updateFailed": "Échec de l'enregistrement",
+    "archive": "Archiver",
+    "archivedToast": "Tâche archivée",
+    "deletedToast": "Tâche supprimée",
+    "archiveModalTitle": "Archiver cette tâche ?",
+    "deleteModalTitle": "Supprimer cette tâche ?",
+    "archiveConfirm": "« {title} » sera masquée du board. Vous pourrez la restaurer plus tard.",
+    "deleteConfirm": "Ceci supprime définitivement « {title} ». Cette action est irréversible.",
+    "working": "En cours…"
   },
   "workspacesPage": {
     "openWorkspace": "Ouvrir le workspace",

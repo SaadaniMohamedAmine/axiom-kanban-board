@@ -428,7 +428,15 @@
     "performedAction": "performed an action",
     "unknownColumn": "Unknown",
     "userFallback": "User {id}",
-    "updateFailed": "Failed to save changes"
+    "updateFailed": "Failed to save changes",
+    "archive": "Archive",
+    "archivedToast": "Task archived",
+    "deletedToast": "Task deleted",
+    "archiveModalTitle": "Archive task?",
+    "deleteModalTitle": "Delete task?",
+    "archiveConfirm": "\"{title}\" will be hidden from the board. You can restore it later.",
+    "deleteConfirm": "This permanently deletes \"{title}\". This cannot be undone.",
+    "working": "Working…"
   },
   "workspacesPage": {
     "openWorkspace": "Open workspace",
