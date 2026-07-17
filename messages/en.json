@@ -817,6 +817,12 @@
     "recentActivity": "Recent activity",
     "recentActivityDesc": "Your recent actions across every workspace"
   },
+  "myTasksPage": {
+    "title": "My Tasks",
+    "subtitle": "Every open task assigned to you, across all your workspaces.",
+    "empty": "No open tasks assigned to you right now.",
+    "noDueDate": "No due date"
+  },
   "notificationPrefs": {
     "title": "Notification preferences",
     "typesTitle": "Alert types",

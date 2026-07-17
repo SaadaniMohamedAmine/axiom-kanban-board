@@ -100,13 +100,12 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
       <div className="space-y-0.5">
         <WorkspaceSwitcher memberships={memberships} current={current} />
 
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant/40 cursor-default select-none">
-          {iconMyTasks}
-          <span className="text-body-md flex-1">{t("myTasks")}</span>
-          <span className="text-[10px] uppercase tracking-wide bg-surface-container-high rounded px-1.5 py-0.5 text-on-surface-variant/50">
-            {t("comingSoon")}
-          </span>
-        </div>
+        <NavLink
+          href="/my-tasks"
+          label={t("myTasks")}
+          active={pathname === "/my-tasks"}
+          icon={iconMyTasks}
+        />
 
         {contextLinks.map((item) => (
           <NavLink key={item.href} {...item} />

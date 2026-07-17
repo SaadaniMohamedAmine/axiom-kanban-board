@@ -817,6 +817,12 @@
     "recentActivity": "Activité récente",
     "recentActivityDesc": "Vos actions récentes, tous espaces de travail confondus"
   },
+  "myTasksPage": {
+    "title": "Mes tâches",
+    "subtitle": "Toutes les tâches ouvertes qui vous sont assignées, tous espaces de travail confondus.",
+    "empty": "Aucune tâche ouverte ne vous est assignée pour le moment.",
+    "noDueDate": "Aucune échéance"
+  },
   "notificationPrefs": {
     "title": "Préférences de notification",
     "typesTitle": "Types d'alertes",
