@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Axiom Changelog",
     description: "Latest updates and improvements to Axiom.",
+    images: [{ url: "/og/image?title=Changelog", width: 1200, height: 630, alt: "Axiom Changelog" }],
   },
 };
 
