@@ -350,7 +350,39 @@
       "createBoard": "Créer un board",
       "columns": "colonnes",
       "tasks": "tâches",
-      "openBoard": "Ouvrir le board"
+      "openBoard": "Ouvrir le board",
+      "archiveAction": "Archiver le board",
+      "moveToTrashAction": "Déplacer vers la corbeille",
+      "archiveModalTitle": "Archiver ce board ?",
+      "deleteModalTitle": "Déplacer ce board vers la corbeille ?",
+      "archiveConfirm": "« {name} » sera masqué de la liste des boards. Vous pourrez le restaurer plus tard.",
+      "deleteConfirm": "« {name} » sera déplacé vers la corbeille. Vous pourrez le restaurer plus tard, ou le supprimer définitivement depuis là.",
+      "working": "En cours…",
+      "archivedToast": "Board archivé",
+      "deletedToast": "Board déplacé vers la corbeille",
+      "actionFailed": "Une erreur est survenue",
+      "restoring": "Restauration…",
+      "restore": "Restaurer",
+      "restoredToast": "« {name} » restauré",
+      "restoreFailed": "Échec de la restauration du board",
+      "deleteForever": "Supprimer définitivement",
+      "deleting": "Suppression…",
+      "deleteFailed": "Échec de la suppression du board"
+    },
+    "archivedPage": {
+      "desc": "Les boards archivés sont masqués de la liste des boards. Restaurez-en un pour le réactiver.",
+      "empty": "Rien d'archivé pour l'instant.",
+      "archivedOn": "Archivé le {date}",
+      "backToBoards": "Retour aux boards"
+    },
+    "trashPage": {
+      "desc": "Les boards supprimés restent ici jusqu'à ce que vous les restauriez ou les supprimiez définitivement.",
+      "empty": "La corbeille est vide.",
+      "deletedOn": "Supprimé le {date}",
+      "backToBoards": "Retour aux boards",
+      "deleteForeverTitle": "Supprimer définitivement",
+      "deleteForeverConfirm": "Ceci supprime définitivement « {name} » et tout ce qu'il contient — colonnes et tâches. Cette action est irréversible.",
+      "deletedForeverToast": "« {name} » supprimé définitivement"
     }
   },
   "taskDetail": {

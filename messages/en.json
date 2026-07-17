@@ -350,7 +350,39 @@
       "createBoard": "Create Board",
       "columns": "columns",
       "tasks": "tasks",
-      "openBoard": "Open board"
+      "openBoard": "Open board",
+      "archiveAction": "Archive board",
+      "moveToTrashAction": "Move to trash",
+      "archiveModalTitle": "Archive board?",
+      "deleteModalTitle": "Move board to trash?",
+      "archiveConfirm": "\"{name}\" will be hidden from the board list. You can restore it later.",
+      "deleteConfirm": "\"{name}\" will be moved to trash. You can restore it later, or delete it permanently from there.",
+      "working": "Working…",
+      "archivedToast": "Board archived",
+      "deletedToast": "Board moved to trash",
+      "actionFailed": "Something went wrong",
+      "restoring": "Restoring…",
+      "restore": "Restore",
+      "restoredToast": "\"{name}\" restored",
+      "restoreFailed": "Failed to restore board",
+      "deleteForever": "Delete forever",
+      "deleting": "Deleting…",
+      "deleteFailed": "Failed to delete board"
+    },
+    "archivedPage": {
+      "desc": "Archived boards are hidden from the board list. Restore one to make it active again.",
+      "empty": "Nothing archived yet.",
+      "archivedOn": "Archived {date}",
+      "backToBoards": "Back to boards"
+    },
+    "trashPage": {
+      "desc": "Deleted boards stay here until you restore them or delete them forever.",
+      "empty": "Trash is empty.",
+      "deletedOn": "Deleted {date}",
+      "backToBoards": "Back to boards",
+      "deleteForeverTitle": "Delete forever",
+      "deleteForeverConfirm": "This permanently deletes \"{name}\" and everything in it — columns and tasks. This cannot be undone.",
+      "deletedForeverToast": "\"{name}\" deleted forever"
     }
   },
   "taskDetail": {
