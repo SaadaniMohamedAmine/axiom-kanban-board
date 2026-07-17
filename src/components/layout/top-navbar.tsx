@@ -10,6 +10,10 @@ import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { UserMenu } from "@/components/layout/user-menu";
 
+// Same navy + blue tint as .onboarding-glass-card, instead of the neutral
+// --surface-container token, so the app chrome doesn't read as flat grey.
+const NAVY_BAR_BG = "linear-gradient(180deg, rgba(17,24,39,0.97) 0%, rgba(13,17,30,0.97) 100%)";
+
 interface NotificationItem {
   id: string;
   type: string;
@@ -70,7 +74,10 @@ export function TopNavbar({
   const breadcrumb = buildBreadcrumb(pathname, current, { t, tSettings });
 
   return (
-    <header className="hidden md:flex h-14 bg-surface-container/95 backdrop-blur-md border-b border-outline-variant/30 shrink-0">
+    <header
+      className="hidden md:flex h-14 backdrop-blur-md border-b border-primary/10 shrink-0"
+      style={{ background: NAVY_BAR_BG }}
+    >
       <div className="flex items-center w-full max-w-7xl mx-auto px-6 gap-4">
       {/* Logo — always goes back to the public landing page, even signed in */}
       <Link href="/" className="text-[18px] font-black text-primary tracking-tight shrink-0">
