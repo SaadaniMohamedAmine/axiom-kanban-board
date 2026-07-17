@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
 interface Membership {
   workspace: {
     slug: string;
+    name: string;
     boards: { id: string }[];
   };
 }
@@ -24,15 +26,27 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
   const slug = current?.workspace.slug;
   const firstBoardId = current?.workspace.boards[0]?.id;
 
-  // ─── Section 1 — Navigation principale du workspace ────────────────────
-  const mainLinks = slug
+  // ─── Section 1 — Aperçu & liste des espaces ──────────────────────────────
+  const overviewLink = slug
+    ? {
+        href: `/${slug}`,
+        label: t("overview"),
+        active: pathname === `/${slug}` || pathname.startsWith(`/${slug}/boards`),
+        icon: iconOverview,
+      }
+    : null;
+
+  const allWorkspacesLink = {
+    id: "sidebar-workspaces",
+    href: "/workspaces",
+    label: t("workspaces"),
+    active: pathname === "/workspaces",
+    icon: iconWorkspaces,
+  };
+
+  // ─── Section 2 — Espace de travail courant & contexte ───────────────────
+  const contextLinks = slug
     ? [
-        {
-          href: `/${slug}`,
-          label: t("overview"),
-          active: pathname === `/${slug}` || pathname.startsWith(`/${slug}/boards`),
-          icon: iconOverview,
-        },
         {
           href: `/${slug}/team`,
           label: t("team"),
@@ -49,29 +63,14 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
               },
             ]
           : []),
+        {
+          href: `/${slug}/settings#ai-quota`,
+          label: t("aiInsights"),
+          active: false,
+          icon: iconAI,
+        },
       ]
     : [];
-
-  // ─── Section 2 — IA & espaces de travail ────────────────────────────────
-  const secondaryLinks = [
-    ...(slug
-      ? [
-          {
-            href: `/${slug}/settings#ai-quota`,
-            label: t("aiInsights"),
-            active: false,
-            icon: iconAI,
-          },
-        ]
-      : []),
-    {
-      id: "sidebar-workspaces",
-      href: "/workspaces",
-      label: t("workspaces"),
-      active: pathname === "/workspaces",
-      icon: iconWorkspaces,
-    },
-  ];
 
   // ─── Section 3 — Utilitaires ─────────────────────────────────────────────
   const utilityLinks = [
@@ -92,15 +91,24 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
   return (
     <nav className="flex-1 px-3 py-4 overflow-y-auto flex flex-col gap-1">
       <div className="space-y-0.5">
-        {mainLinks.map((item) => (
-          <NavLink key={item.href} {...item} />
-        ))}
+        {overviewLink && <NavLink {...overviewLink} />}
+        <NavLink {...allWorkspacesLink} />
       </div>
 
       <div className="my-2 h-px bg-outline-variant/20" />
 
       <div className="space-y-0.5">
-        {secondaryLinks.map((item) => (
+        <WorkspaceSwitcher memberships={memberships} current={current} />
+
+        <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant/40 cursor-default select-none">
+          {iconMyTasks}
+          <span className="text-body-md flex-1">{t("myTasks")}</span>
+          <span className="text-[10px] uppercase tracking-wide bg-surface-container-high rounded px-1.5 py-0.5 text-on-surface-variant/50">
+            {t("comingSoon")}
+          </span>
+        </div>
+
+        {contextLinks.map((item) => (
           <NavLink key={item.href} {...item} />
         ))}
       </div>
@@ -111,16 +119,94 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
         {utilityLinks.map((item) => (
           <NavLink key={item.href} {...item} />
         ))}
-
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg text-on-surface-variant/40 cursor-default select-none">
-          {iconMyTasks}
-          <span className="text-body-md flex-1">{t("myTasks")}</span>
-          <span className="text-[10px] uppercase tracking-wide bg-surface-container-high rounded px-1.5 py-0.5 text-on-surface-variant/50">
-            {t("comingSoon")}
-          </span>
-        </div>
       </div>
     </nav>
+  );
+}
+
+// ─── Workspace switcher ─────────────────────────────────────────────────────
+
+function WorkspaceSwitcher({
+  memberships,
+  current,
+}: {
+  memberships: Membership[];
+  current: Membership | undefined;
+}) {
+  const t = useTranslations("nav");
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  if (!current) return null;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all cursor-pointer"
+      >
+        {iconWorkspaces}
+        <span className="flex-1 truncate text-left">
+          {t("workspaces")} <span className="text-on-surface-variant/60">({current.workspace.name})</span>
+        </span>
+        <svg
+          fill="none"
+          height="12"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          width="12"
+          className={`shrink-0 transition-transform ${open ? "rotate-180" : ""}`}
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          className="absolute left-0 top-full mt-1.5 w-full min-w-55 rounded-lg border border-outline-variant/20 bg-surface-container-high shadow-lg overflow-hidden z-50"
+        >
+          {memberships.map((m) => (
+            <Link
+              key={m.workspace.slug}
+              href={`/${m.workspace.slug}`}
+              role="option"
+              aria-selected={m.workspace.slug === current.workspace.slug}
+              onClick={() => setOpen(false)}
+              className={`flex items-center gap-2 px-3 py-2 text-[13px] hover:bg-surface-container-highest transition-colors ${
+                m.workspace.slug === current.workspace.slug ? "text-on-surface font-medium" : "text-on-surface-variant"
+              }`}
+            >
+              <span className="truncate">{m.workspace.name}</span>
+            </Link>
+          ))}
+          <div className="h-px bg-outline-variant/20" />
+          <Link
+            href="/workspaces/new"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2 px-3 py-2 text-[13px] text-primary hover:bg-surface-container-highest transition-colors"
+          >
+            <svg fill="none" height="14" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="14">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+            {t("newWorkspace")}
+          </Link>
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -186,7 +272,7 @@ const iconAI = (
 );
 
 const iconWorkspaces = (
-  <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+  <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16" className="shrink-0">
     <circle cx="12" cy="12" r="9" />
     <circle cx="12" cy="12" r="5" />
     <circle cx="12" cy="12" r="1" fill="currentColor" />
