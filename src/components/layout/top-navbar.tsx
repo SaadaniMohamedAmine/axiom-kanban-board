@@ -70,7 +70,8 @@ export function TopNavbar({
   const breadcrumb = buildBreadcrumb(pathname, current, { t, tSettings });
 
   return (
-    <header className="hidden md:flex h-14 bg-surface-container/95 backdrop-blur-md border-b border-outline-variant/30 items-center px-5 shrink-0 gap-4">
+    <header className="hidden md:flex h-14 bg-surface-container/95 backdrop-blur-md border-b border-outline-variant/30 shrink-0">
+      <div className="flex items-center w-full max-w-7xl mx-auto px-6 gap-4">
       {/* Logo — always goes back to the public landing page, even signed in */}
       <Link href="/" className="text-[18px] font-black text-primary tracking-tight shrink-0">
         Axiom
@@ -193,6 +194,7 @@ export function TopNavbar({
 
         <UserMenu userName={userName} userEmail={userEmail} />
       </div>
+    </div>
     </header>
   );
 }
