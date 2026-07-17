@@ -36,6 +36,7 @@ export default async function DashboardPage() {
         dueDate: { lt: endOfToday },
         assignees: { some: { userId: session.user.id } },
         column: { name: { not: "Done" } },
+        archivedAt: null,
       },
       include: {
         board: { select: { name: true, workspace: { select: { slug: true } } } },

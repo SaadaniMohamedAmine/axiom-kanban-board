@@ -40,6 +40,7 @@ export default async function AllTasksPage() {
     where: {
       board: { workspaceId: { in: workspaceIds } },
       column: { name: { not: "Done" } },
+      archivedAt: null,
     },
     include: {
       board: { select: { name: true, workspace: { select: { slug: true, name: true } } } },

@@ -4,6 +4,7 @@ import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import { getPlanLimits } from "../billing/plan-limits";
 import { createAuditLog } from "../audit/log";
+import { createNotification } from "../notifications/create";
 import {
   createBoardSchema,
   createColumnSchema,
@@ -111,10 +112,165 @@ export async function createBoard(input: CreateBoardInput) {
       targetId: board.id,
       targetLabel: board.name,
     });
+    void createNotification({
+      userId: boardSession.user.id,
+      type: "board_created",
+      title: "Board created",
+      message: board.name,
+    });
   }
 
   revalidatePath(`/[workspaceSlug]`, "page");
   return board;
+}
+
+export async function archiveBoard(boardId: string) {
+  const board = await prisma.board.findUnique({ where: { id: boardId } });
+  if (!board) throw new Error("Board not found");
+
+  await requireRole(board.workspaceId, "ADMIN");
+
+  await prisma.board.update({
+    where: { id: boardId },
+    data: { archivedAt: new Date() },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId: board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "BOARD_ARCHIVED",
+      targetType: "board",
+      targetId: boardId,
+      targetLabel: board.name,
+    });
+    void createNotification({
+      userId: session.user.id,
+      type: "board_archived",
+      title: "Board archived",
+      message: board.name,
+    });
+  }
+
+  revalidatePath(`/[workspaceSlug]`, "page");
+  return { success: true };
+}
+
+export async function unarchiveBoard(boardId: string) {
+  const board = await prisma.board.findUnique({ where: { id: boardId } });
+  if (!board) throw new Error("Board not found");
+
+  await requireRole(board.workspaceId, "ADMIN");
+
+  await prisma.board.update({
+    where: { id: boardId },
+    data: { archivedAt: null },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId: board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "BOARD_UNARCHIVED",
+      targetType: "board",
+      targetId: boardId,
+      targetLabel: board.name,
+    });
+  }
+
+  revalidatePath(`/[workspaceSlug]`, "page");
+  return { success: true };
+}
+
+export async function trashBoard(boardId: string) {
+  const board = await prisma.board.findUnique({ where: { id: boardId } });
+  if (!board) throw new Error("Board not found");
+
+  await requireRole(board.workspaceId, "ADMIN");
+
+  await prisma.board.update({
+    where: { id: boardId },
+    data: { deletedAt: new Date() },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId: board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "BOARD_TRASHED",
+      targetType: "board",
+      targetId: boardId,
+      targetLabel: board.name,
+    });
+    void createNotification({
+      userId: session.user.id,
+      type: "board_deleted",
+      title: "Board deleted",
+      message: board.name,
+    });
+  }
+
+  revalidatePath(`/[workspaceSlug]`, "page");
+  return { success: true };
+}
+
+export async function restoreBoard(boardId: string) {
+  const board = await prisma.board.findUnique({ where: { id: boardId } });
+  if (!board) throw new Error("Board not found");
+
+  await requireRole(board.workspaceId, "ADMIN");
+
+  await prisma.board.update({
+    where: { id: boardId },
+    data: { deletedAt: null },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId: board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "BOARD_RESTORED",
+      targetType: "board",
+      targetId: boardId,
+      targetLabel: board.name,
+    });
+  }
+
+  revalidatePath(`/[workspaceSlug]`, "page");
+  return { success: true };
+}
+
+export async function permanentlyDeleteBoard(boardId: string) {
+  const board = await prisma.board.findUnique({ where: { id: boardId } });
+  if (!board) throw new Error("Board not found");
+
+  await requireRole(board.workspaceId, "ADMIN");
+
+  await prisma.board.delete({ where: { id: boardId } });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    void createAuditLog({
+      workspaceId: board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "BOARD_DELETED",
+      targetType: "board",
+      targetId: boardId,
+      targetLabel: board.name,
+    });
+  }
+
+  revalidatePath(`/[workspaceSlug]`, "page");
+  return { success: true };
 }
 
 export async function createColumn(input: CreateColumnInput, socketId?: string) {

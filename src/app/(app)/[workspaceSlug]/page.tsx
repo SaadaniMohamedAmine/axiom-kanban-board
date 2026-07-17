@@ -25,6 +25,7 @@ export default async function WorkspacePage({
         where: { userId: session.user.id },
       },
       boards: {
+        where: { archivedAt: null, deletedAt: null },
         orderBy: { createdAt: "asc" },
         include: {
           _count: { select: { columns: true, tasks: true } },

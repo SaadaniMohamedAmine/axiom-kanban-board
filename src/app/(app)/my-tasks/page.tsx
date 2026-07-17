@@ -23,6 +23,7 @@ export default async function MyTasksPage() {
       board: { workspaceId: { in: workspaceIds } },
       assignees: { some: { userId: session.user.id } },
       column: { name: { not: "Done" } },
+      archivedAt: null,
     },
     include: {
       board: { select: { name: true, workspace: { select: { slug: true, name: true } } } },

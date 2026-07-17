@@ -41,6 +41,7 @@ export default async function BoardPage({
           orderBy: { order: "asc" },
           include: {
             tasks: {
+              where: { archivedAt: null },
               orderBy: { order: "asc" },
               include: {
                 assignees: { include: { user: { select: { id: true, name: true } } } },
@@ -73,6 +74,7 @@ export default async function BoardPage({
       where: {
         task: {
           boardId,
+          archivedAt: null,
         },
       },
       _count: { taskId: true },

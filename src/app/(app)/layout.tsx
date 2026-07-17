@@ -49,6 +49,7 @@ export default async function AppLayout({
         workspace: {
           include: {
             boards: {
+              where: { archivedAt: null, deletedAt: null },
               select: { id: true, name: true },
             },
             _count: { select: { members: true } },
