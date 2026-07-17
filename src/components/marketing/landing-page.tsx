@@ -245,18 +245,29 @@ export async function LandingPage({ currentLocale, isAuthenticated = false }: Pr
             <h2 className="text-[36px] md:text-display font-semibold text-on-surface mb-6">{t("cta.title")}</h2>
             <p className="text-on-surface-variant text-[18px] max-w-xl mx-auto mb-10 leading-relaxed">{t("cta.subtitle")}</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <MotionCta
-                href="/sign-up"
-                className="px-8 py-4 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 transition-[background]"
-              >
-                {t("startFree")}
-              </MotionCta>
-              <MotionCta
-                href="/login"
-                className="px-8 py-4 border border-outline-variant text-on-surface rounded-md text-[15px] font-medium hover:bg-surface-container-high transition-colors"
-              >
-                {t("viewDemo")}
-              </MotionCta>
+              {isAuthenticated ? (
+                <MotionCta
+                  href="/dashboard"
+                  className="px-8 py-4 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 transition-[background]"
+                >
+                  {t("goToDashboard")}
+                </MotionCta>
+              ) : (
+                <>
+                  <MotionCta
+                    href="/sign-up"
+                    className="px-8 py-4 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 transition-[background]"
+                  >
+                    {t("startFree")}
+                  </MotionCta>
+                  <MotionCta
+                    href="/login"
+                    className="px-8 py-4 border border-outline-variant text-on-surface rounded-md text-[15px] font-medium hover:bg-surface-container-high transition-colors"
+                  >
+                    {t("viewDemo")}
+                  </MotionCta>
+                </>
+              )}
             </div>
           </div>
         </div>
