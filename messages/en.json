@@ -552,6 +552,98 @@
     "lastUpdated": "Last updated July 2026",
     "backToAxiom": "Back to Axiom"
   },
+  "roadmapColumns": {
+    "now": {
+      "label": "Now",
+      "description": "What we're shipping or just shipped"
+    },
+    "next": {
+      "label": "Next",
+      "description": "What's coming in the next 60 days"
+    },
+    "later": {
+      "label": "Later",
+      "description": "Longer-term vision"
+    }
+  },
+  "roadmapItems": {
+    "kanban-core": {
+      "title": "Core Kanban Board",
+      "description": "Drag-and-drop columns and tasks, real-time sync via Pusher Channels."
+    },
+    "ai-intelligence": {
+      "title": "Axiom Intelligence Engine",
+      "description": "AI-powered prioritization, estimation, blocker detection, and smart assignment."
+    },
+    "sprint-analytics": {
+      "title": "Sprint Analytics",
+      "description": "Burndown charts, velocity tracking, AI-generated sprint health summaries."
+    },
+    "dark-light": {
+      "title": "Dark & Light Mode",
+      "description": "Full design token system with next-themes and system preference detection."
+    },
+    "cmd-palette": {
+      "title": "Command Palette",
+      "description": "Global ⌘K search across all tasks and boards with keyboard navigation."
+    },
+    "premium-redesign": {
+      "title": "Premium Visual Redesign",
+      "description": "Glass-card design language, priority accent colors, and full French/English translation coverage across the entire app."
+    },
+    "workspace-lifecycle": {
+      "title": "Workspace Archive & Trash",
+      "description": "Archive a workspace or move it to Trash with a dedicated recovery page, instead of an instant, irreversible delete."
+    },
+    "team-management": {
+      "title": "Team Management & Presence",
+      "description": "Invite teammates, see real-time online/offline presence, and manage pending invitations from a dedicated team page."
+    },
+    "toast-notifications": {
+      "title": "Toast Notification System",
+      "description": "Instant top-right feedback for every action, with matching entries in the notification bell and notification center."
+    },
+    "webhooks": {
+      "title": "Webhooks & Public API",
+      "description": "REST API for external integrations, with API keys and docs at /docs/api."
+    },
+    "pwa": {
+      "title": "Progressive Web App",
+      "description": "Install Axiom on desktop or mobile and keep working offline with a dedicated fallback page."
+    },
+    "i18n": {
+      "title": "Internationalization",
+      "description": "Full French and English support across every screen, with a persistent locale switcher."
+    },
+    "emails": {
+      "title": "Transactional Emails",
+      "description": "On-brand email notifications for workspace invitations and task assignments."
+    },
+    "billing": {
+      "title": "Billing & Pricing Plans",
+      "description": "Stripe-powered subscription with Free, Pro, and Team tiers, plus an invoice history with downloads."
+    },
+    "audit-log": {
+      "title": "Audit Log & Compliance",
+      "description": "Full activity audit trail for workspace owners, exportable as CSV."
+    },
+    "push-notifications": {
+      "title": "Push Notifications",
+      "description": "Browser push notifications for mentions, assignments, and sprint milestones, building on the installable PWA."
+    },
+    "email-expansion": {
+      "title": "Expanded Email Notifications",
+      "description": "Mention and sprint-milestone emails, extending the transactional email system already sending invitations and task assignments."
+    },
+    "native-mobile": {
+      "title": "Native Mobile App",
+      "description": "React Native app with offline board access and push notifications."
+    },
+    "integrations": {
+      "title": "GitHub / Linear Integration",
+      "description": "Sync tasks with GitHub Issues and Linear tickets bidirectionally."
+    }
+  },
   "analytics": {
     "noActiveSprintFound": "No active sprint found.",
     "startSprintHint": "Start a sprint to see burndown and velocity data.",

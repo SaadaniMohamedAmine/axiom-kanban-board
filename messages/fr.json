@@ -552,6 +552,98 @@
     "lastUpdated": "Dernière mise à jour juillet 2026",
     "backToAxiom": "Retour à Axiom"
   },
+  "roadmapColumns": {
+    "now": {
+      "label": "Maintenant",
+      "description": "Ce que nous livrons ou venons de livrer"
+    },
+    "next": {
+      "label": "Ensuite",
+      "description": "Ce qui arrive dans les 60 prochains jours"
+    },
+    "later": {
+      "label": "Plus tard",
+      "description": "Vision à long terme"
+    }
+  },
+  "roadmapItems": {
+    "kanban-core": {
+      "title": "Tableau Kanban principal",
+      "description": "Colonnes et tâches en glisser-déposer, synchronisation temps réel via Pusher Channels."
+    },
+    "ai-intelligence": {
+      "title": "Moteur d'intelligence Axiom",
+      "description": "Priorisation, estimation, détection de blocages et assignation intelligente par IA."
+    },
+    "sprint-analytics": {
+      "title": "Analytique des sprints",
+      "description": "Graphiques de burndown, suivi de vélocité, résumés de santé de sprint générés par IA."
+    },
+    "dark-light": {
+      "title": "Mode sombre et clair",
+      "description": "Système complet de tokens de design avec next-themes et détection de la préférence système."
+    },
+    "cmd-palette": {
+      "title": "Palette de commandes",
+      "description": "Recherche globale ⌘K dans toutes les tâches et tableaux, navigation au clavier."
+    },
+    "premium-redesign": {
+      "title": "Refonte visuelle premium",
+      "description": "Langage de design en verre glacé, couleurs d'accent par priorité, et couverture de traduction française/anglaise complète sur toute l'application."
+    },
+    "workspace-lifecycle": {
+      "title": "Archivage et corbeille d'espaces de travail",
+      "description": "Archivez un espace de travail ou déplacez-le vers la corbeille, avec une page de récupération dédiée, plutôt qu'une suppression instantanée et irréversible."
+    },
+    "team-management": {
+      "title": "Gestion d'équipe et présence",
+      "description": "Invitez des coéquipiers, voyez leur présence en ligne/hors ligne en temps réel, et gérez les invitations en attente depuis une page équipe dédiée."
+    },
+    "toast-notifications": {
+      "title": "Système de notifications toast",
+      "description": "Retour instantané en haut à droite pour chaque action, avec les entrées correspondantes dans la cloche de notifications et le centre de notifications."
+    },
+    "webhooks": {
+      "title": "Webhooks et API publique",
+      "description": "API REST pour les intégrations externes, avec clés API et documentation sur /docs/api."
+    },
+    "pwa": {
+      "title": "Application web progressive",
+      "description": "Installez Axiom sur ordinateur ou mobile et continuez à travailler hors ligne grâce à une page de secours dédiée."
+    },
+    "i18n": {
+      "title": "Internationalisation",
+      "description": "Support complet du français et de l'anglais sur tous les écrans, avec un sélecteur de langue persistant."
+    },
+    "emails": {
+      "title": "E-mails transactionnels",
+      "description": "Notifications par e-mail à l'image d'Axiom pour les invitations aux espaces de travail et les assignations de tâches."
+    },
+    "billing": {
+      "title": "Facturation et forfaits",
+      "description": "Abonnement propulsé par Stripe avec les forfaits Free, Pro et Team, ainsi qu'un historique des factures téléchargeables."
+    },
+    "audit-log": {
+      "title": "Journal d'audit et conformité",
+      "description": "Historique d'activité complet pour les propriétaires d'espace de travail, exportable en CSV."
+    },
+    "push-notifications": {
+      "title": "Notifications push",
+      "description": "Notifications push du navigateur pour les mentions, assignations et jalons de sprint, en s'appuyant sur la PWA installable."
+    },
+    "email-expansion": {
+      "title": "Notifications par e-mail étendues",
+      "description": "E-mails de mentions et de jalons de sprint, en complément du système d'e-mails transactionnels qui envoie déjà les invitations et assignations de tâches."
+    },
+    "native-mobile": {
+      "title": "Application mobile native",
+      "description": "Application React Native avec accès aux tableaux hors ligne et notifications push."
+    },
+    "integrations": {
+      "title": "Intégration GitHub / Linear",
+      "description": "Synchronisez les tâches avec GitHub Issues et les tickets Linear dans les deux sens."
+    }
+  },
   "analytics": {
     "noActiveSprintFound": "Aucun sprint actif trouvé.",
     "startSprintHint": "Démarre un sprint pour voir les données de burndown et de vélocité.",
