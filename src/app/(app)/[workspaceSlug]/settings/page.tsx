@@ -142,7 +142,9 @@ export default async function SettingsPage({ params }: Props) {
   const resetAt = workspace.aiRequestsResetAt ?? new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1)
   );
-  const hoursUntilReset = Math.max(0, Math.floor((resetAt.getTime() - now.getTime()) / 1000 / 60 / 60));
+  const minutesUntilReset = Math.max(0, Math.round((resetAt.getTime() - now.getTime()) / 1000 / 60));
+  const hoursUntilReset = Math.floor(minutesUntilReset / 60);
+  const resetCountdown = hoursUntilReset > 0 ? `${hoursUntilReset}h` : `${minutesUntilReset}m`;
   const statusColor = pct >= 90 ? "text-red-400" : pct >= 70 ? "text-yellow-400" : "text-green-400";
   const barColor = pct >= 90 ? "bg-red-500" : pct >= 70 ? "bg-yellow-500" : "bg-primary";
 
@@ -293,7 +295,7 @@ export default async function SettingsPage({ params }: Props) {
                   </div>
                   <div className="text-right">
                     <div className="text-[12px] text-on-surface-variant/60">{tAi("resetsIn")}</div>
-                    <div className="text-[14px] font-medium text-on-surface">{hoursUntilReset}h</div>
+                    <div className="text-[14px] font-medium text-on-surface">{resetCountdown}</div>
                   </div>
                 </div>
                 <div className="h-2 bg-surface-container-high rounded-full overflow-hidden">
