@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { getStripeClient } from "@/lib/billing/stripe";
 import { headers } from "next/headers";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban-board.vercel.app";
 
 export async function POST(req: NextRequest) {
   const session = await auth.api.getSession({ headers: await headers() });

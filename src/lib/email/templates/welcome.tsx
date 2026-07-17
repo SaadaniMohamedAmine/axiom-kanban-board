@@ -8,7 +8,7 @@ interface WelcomeEmailProps {
 }
 
 export function WelcomeEmail({ userName, appUrl }: WelcomeEmailProps) {
-  const APP_URL = appUrl || process.env.NEXT_PUBLIC_APP_URL || "https://axiom-kanban.vercel.app";
+  const APP_URL = appUrl || process.env.NEXT_PUBLIC_APP_URL || "https://axiom-kanban-board.vercel.app";
 
   return (
     <Html>

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-static";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban-board.vercel.app";
 
 const ENDPOINTS = [
   {
