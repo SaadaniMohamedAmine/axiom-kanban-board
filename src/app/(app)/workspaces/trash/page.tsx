@@ -17,6 +17,7 @@ export default async function TrashWorkspacesPage() {
   });
 
   const t = await getTranslations("nav");
+  const tw = await getTranslations("workspacesPage");
 
   const workspaces = memberships.map((m) => ({
     id: m.workspace.id,
@@ -31,14 +32,14 @@ export default async function TrashWorkspacesPage() {
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-h1 text-on-surface">{t("trash")}</h1>
         <Link href="/workspaces" className="text-[13px] text-primary hover:text-primary/80 transition-colors">
-          Back to Workspaces
+          {tw("backToWorkspaces")}
         </Link>
       </div>
-      <p className="text-[13px] text-on-surface-variant mb-8">Deleted workspaces stay here until you restore them or delete them forever.</p>
+      <p className="text-[13px] text-on-surface-variant mb-8">{tw("trashDesc")}</p>
 
       {workspaces.length === 0 ? (
         <div className="border border-dashed border-outline-variant/40 rounded-xl p-12 text-center text-on-surface-variant">
-          Trash is empty.
+          {tw("trashEmpty")}
         </div>
       ) : (
         <TrashWorkspaceList workspaces={workspaces} />

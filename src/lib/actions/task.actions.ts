@@ -24,6 +24,8 @@ import { triggerBoardEvent } from "../realtime";
 import { dispatchWebhooks } from "../api/webhook";
 import type { BoardEvent, ConflictEvent } from "@/types/realtime.types";
 import { createAuditLog } from "../audit/log";
+import { createNotification } from "../notifications/create";
+import { getTranslations } from "next-intl/server";
 
 function makeEvent(
   type: BoardEvent["type"],
@@ -98,10 +100,105 @@ export async function createTask(input: CreateTaskInput, socketId?: string) {
       boardId,
       columnId,
     });
+    void createAuditLog({
+      workspaceId: board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "TASK_CREATED",
+      targetType: "task",
+      targetId: task.id,
+      targetLabel: `${task.code}: ${task.title}`,
+    });
+    const tTaskCreated = await getTranslations("notificationMessages");
+    void createNotification({
+      userId: session.user.id,
+      type: "task_created",
+      title: tTaskCreated("task_created.title"),
+      message: tTaskCreated("task_created.message", { title: `${task.title} (${task.code})` }),
+    });
   }
 
   revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
   return task;
+}
+
+export async function archiveTask(taskId: string, socketId?: string) {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { board: true },
+  });
+  if (!task) throw new Error("Task not found");
+
+  await requireRole(task.board.workspaceId, "MEMBER");
+
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { archivedAt: new Date() },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      task.boardId,
+      makeEvent("task.deleted", task.boardId, session.user.id, { taskId }, taskId),
+      socketId,
+    );
+    void createAuditLog({
+      workspaceId: task.board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "TASK_ARCHIVED",
+      targetType: "task",
+      targetId: taskId,
+      targetLabel: `${task.code}: ${task.title}`,
+    });
+    const tTaskArchived = await getTranslations("notificationMessages");
+    void createNotification({
+      userId: session.user.id,
+      type: "task_archived",
+      title: tTaskArchived("task_archived.title"),
+      message: tTaskArchived("task_archived.message", { title: `${task.title} (${task.code})` }),
+    });
+  }
+
+  revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
+  return { success: true };
+}
+
+export async function unarchiveTask(taskId: string, socketId?: string) {
+  const task = await prisma.task.findUnique({
+    where: { id: taskId },
+    include: { board: true },
+  });
+  if (!task) throw new Error("Task not found");
+
+  await requireRole(task.board.workspaceId, "MEMBER");
+
+  await prisma.task.update({
+    where: { id: taskId },
+    data: { archivedAt: null },
+  });
+
+  const session = await auth.api.getSession({ headers: await headers() });
+  if (session) {
+    await triggerBoardEvent(
+      task.boardId,
+      makeEvent("task.created", task.boardId, session.user.id, task as unknown as Record<string, unknown>, task.id, task.columnId),
+      socketId,
+    );
+    void createAuditLog({
+      workspaceId: task.board.workspaceId,
+      actorId: session.user.id,
+      actorEmail: session.user.email,
+      action: "TASK_UNARCHIVED",
+      targetType: "task",
+      targetId: taskId,
+      targetLabel: `${task.code}: ${task.title}`,
+    });
+  }
+
+  revalidatePath(`/[workspaceSlug]/boards/[boardId]`, "page");
+  return { success: true };
 }
 
 export async function moveTask(input: MoveTaskInput, socketId?: string) {
@@ -231,6 +328,13 @@ export async function deleteTask(taskId: string, socketId?: string) {
       targetType: "task",
       targetId: taskId,
       targetLabel: `${task.code}: ${task.title}`,
+    });
+    const tTaskDeleted = await getTranslations("notificationMessages");
+    void createNotification({
+      userId: session.user.id,
+      type: "task_deleted",
+      title: tTaskDeleted("task_deleted.title"),
+      message: tTaskDeleted("task_deleted.message", { title: `${task.title} (${task.code})` }),
     });
   }
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { deleteWorkspace } from "@/lib/actions/workspace.actions";
+import { isRedirectError } from "@/lib/is-redirect-error";
 import { useToast } from "@/contexts/toast-context";
 
 interface DangerZoneCardProps {
@@ -24,6 +25,7 @@ export function DangerZoneCard({ workspaceId, workspaceName, canDelete }: Danger
     try {
       await deleteWorkspace(workspaceId);
     } catch (err) {
+      if (isRedirectError(err)) throw err;
       toast(err instanceof Error ? err.message : t("deleteWorkspaceFailed"), "error");
       setIsDeleting(false);
     }

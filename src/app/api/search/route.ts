@@ -21,7 +21,8 @@ export async function GET(req: NextRequest) {
   const [tasks, boards, people] = await Promise.all([
     prisma.task.findMany({
       where: {
-        board: { workspaceId: { in: workspaceIds } },
+        board: { workspaceId: { in: workspaceIds }, archivedAt: null, deletedAt: null },
+        archivedAt: null,
         OR: [
           { title: { contains: q, mode: "insensitive" } },
           { code: { contains: q, mode: "insensitive" } },
@@ -36,6 +37,8 @@ export async function GET(req: NextRequest) {
     prisma.board.findMany({
       where: {
         workspaceId: { in: workspaceIds },
+        archivedAt: null,
+        deletedAt: null,
         name: { contains: q, mode: "insensitive" },
       },
       include: { workspace: { select: { slug: true } } },

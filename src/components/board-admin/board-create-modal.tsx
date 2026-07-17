@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { createBoard } from "@/lib/actions/board.actions";
+import { useToast } from "@/contexts/toast-context";
 import { MOTION } from "@/lib/motion";
 
 interface BoardCreateModalProps {
@@ -11,15 +13,14 @@ interface BoardCreateModalProps {
   onClose: () => void;
 }
 
-const TEMPLATES = [
-  { value: "KANBAN", label: "Kanban" },
-  { value: "SCRUM", label: "Scrum" },
-  { value: "BUG_TRACKING", label: "Bug Tracking" },
-  { value: "CUSTOM", label: "Custom" },
-] as const;
+const TEMPLATE_VALUES = ["KANBAN", "SCRUM", "BUG_TRACKING", "CUSTOM"] as const;
 
 export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps) {
   const router = useRouter();
+  const t = useTranslations("board");
+  const tOnboarding = useTranslations("onboarding");
+  const tNotify = useTranslations("notificationMessages");
+  const { notify } = useToast();
   const [name, setName] = useState("");
   const [template, setTemplate] = useState<"SCRUM" | "KANBAN" | "BUG_TRACKING" | "CUSTOM">("KANBAN");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,11 +51,16 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
     setIsSubmitting(true);
     setError(null);
     try {
-      await createBoard({ workspaceId, name: name.trim(), template });
+      const board = await createBoard({ workspaceId, name: name.trim(), template });
+      notify({
+        type: "board_created",
+        title: tNotify("board_created.title"),
+        message: tNotify("board_created.message", { name: board.name }),
+      });
       router.refresh();
       onClose();
     } catch {
-      setError("Failed to create board");
+      setError(t("createBoardModal.failed"));
     } finally {
       setIsSubmitting(false);
     }
@@ -63,7 +69,7 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
   const inputClass =
     "w-full bg-surface-container-lowest border border-outline-variant/30 rounded-lg px-4 py-2.5 text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none input-glow transition-all text-body-md";
 
-  const currentTemplateLabel = TEMPLATES.find((t) => t.value === template)?.label ?? "";
+  const currentTemplateLabel = t(`templates.${template}`);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center px-6">
@@ -88,7 +94,7 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={tOnboarding("close")}
           className="absolute top-4 right-4 p-1.5 rounded-lg text-on-surface-variant/60 hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
         >
           <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
@@ -96,18 +102,18 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
           </svg>
         </button>
 
-        <h2 className="text-h3 text-on-surface mb-6">Create Board</h2>
+        <h2 className="text-h3 text-on-surface mb-6">{t("createBoardModal.title")}</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
             <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-              Board Name
+              {t("createBoardModal.nameLabel")}
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g., Sprint Planning"
+              placeholder={t("createBoardModal.namePlaceholder")}
               className={inputClass}
               autoFocus
             />
@@ -115,7 +121,7 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
 
           <div className="space-y-2">
             <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-              Template
+              {t("createBoardModal.templateLabel")}
             </label>
             <div ref={templateRef} className="relative">
               <button
@@ -140,18 +146,18 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
                   role="listbox"
                   className="absolute left-0 right-0 top-full mt-1.5 rounded-lg border border-outline-variant/30 bg-surface-container-high shadow-lg overflow-hidden z-10"
                 >
-                  {TEMPLATES.map((t) => (
+                  {TEMPLATE_VALUES.map((value) => (
                     <button
-                      key={t.value}
+                      key={value}
                       type="button"
                       role="option"
-                      aria-selected={t.value === template}
-                      onClick={() => { setTemplate(t.value); setTemplateOpen(false); }}
+                      aria-selected={value === template}
+                      onClick={() => { setTemplate(value); setTemplateOpen(false); }}
                       className={`w-full text-left px-4 py-2.5 text-body-md transition-colors cursor-pointer hover:bg-surface-container-highest ${
-                        t.value === template ? "text-on-surface font-medium" : "text-on-surface-variant"
+                        value === template ? "text-on-surface font-medium" : "text-on-surface-variant"
                       }`}
                     >
-                      {t.label}
+                      {t(`templates.${value}`)}
                     </button>
                   ))}
                 </div>
@@ -166,7 +172,7 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
             disabled={isSubmitting || !name.trim()}
             className="w-full py-2.5 bg-primary text-on-primary rounded-lg text-[13px] font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all"
           >
-            {isSubmitting ? "Creating..." : "Create"}
+            {isSubmitting ? t("createBoardModal.creating") : t("createBoardModal.create")}
           </button>
         </form>
       </motion.section>

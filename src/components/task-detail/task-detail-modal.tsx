@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { MOTION } from "@/lib/motion";
 import type { TaskWithRelations } from "@/types/task.types";
 import { TaskPropertiesPanel } from "./task-properties-panel";
@@ -10,6 +11,8 @@ import { CommentThread } from "./comment-thread";
 import { AxiomIntelligencePanel } from "@/components/ai/axiom-intelligence-panel";
 import { MoveToMenu } from "@/components/board/move-to-menu";
 import { priorityAccent } from "@/components/board/task-card";
+import { archiveTask, deleteTask } from "@/lib/actions/task.actions";
+import { useToast } from "@/contexts/toast-context";
 
 interface TaskDetailModalProps {
   task: TaskWithRelations;
@@ -22,14 +25,42 @@ interface TaskDetailModalProps {
 
 export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembers, columns }: TaskDetailModalProps) {
   const [now] = useState(() => Date.now());
+  const [pendingAction, setPendingAction] = useState<"archive" | "delete" | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const t = useTranslations("taskDetail");
+  const tActions = useTranslations("actions");
+  const { toast } = useToast();
 
   useEffect(() => {
     function handleEscape(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        if (pendingAction) setPendingAction(null);
+        else onClose();
+      }
     }
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
-  }, [onClose]);
+  }, [onClose, pendingAction]);
+
+  async function handleConfirmAction() {
+    if (!pendingAction) return;
+    setIsSubmitting(true);
+    try {
+      if (pendingAction === "archive") {
+        await archiveTask(task.id);
+        toast(t("archivedToast"));
+      } else {
+        await deleteTask(task.id);
+        toast(t("deletedToast"));
+      }
+      setPendingAction(null);
+      onClose();
+    } catch (error) {
+      toast(error instanceof Error ? error.message : t("updateFailed"), "error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -61,7 +92,7 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                 <path d="M7 12h10"></path>
                 <path d="M7 17h10"></path>
               </svg>
-              Task {task.code}
+              {t("taskLabel", { code: task.code })}
             </div>
             <h1 className="text-2xl font-semibold text-on-surface">{task.title}</h1>
           </div>
@@ -96,13 +127,13 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                   <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
-                Description
+                {t("description")}
               </div>
               <div className="text-[14px] leading-relaxed text-on-surface-variant">
                 {task.description ? (
                   <div className="whitespace-pre-wrap">{task.description}</div>
                 ) : (
-                  <p className="italic opacity-60">No description yet</p>
+                  <p className="italic opacity-60">{t("noDescriptionYet")}</p>
                 )}
               </div>
             </div>
@@ -114,7 +145,7 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                   <path d="M3 12a9 9 0 1 0 18 0 9 9 0 0 0-18 0"></path>
                   <path d="M12 8v4l3 3"></path>
                 </svg>
-                Activity
+                {t("activity")}
               </div>
               <ActivityList activities={task.activity} boardMembers={boardMembers} columns={columns} />
             </div>
@@ -125,7 +156,7 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                 <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                 </svg>
-                Comments
+                {t("comments")}
               </div>
               <CommentThread taskId={task.id} comments={task.comments} />
             </div>
@@ -146,16 +177,73 @@ export function TaskDetailModal({ task, onClose, canEdit, columnName, boardMembe
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
-              Created {new Date(task.createdAt ?? now).toLocaleDateString()}
+              {t("created", { date: new Date(task.createdAt ?? now).toLocaleDateString() })}
             </div>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            {canEdit && (
+              <>
+                <button
+                  onClick={() => setPendingAction("archive")}
+                  className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors px-4 py-2 cursor-pointer"
+                >
+                  {t("archive")}
+                </button>
+                <button
+                  onClick={() => setPendingAction("delete")}
+                  className="text-sm font-medium text-error/80 hover:text-error transition-colors px-4 py-2 cursor-pointer"
+                >
+                  {tActions("delete")}
+                </button>
+              </>
+            )}
             <button onClick={onClose} className="text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors px-4 py-2 cursor-pointer">
-              Close
+              {t("close")}
             </button>
           </div>
         </footer>
         </motion.main>
+
+        {pendingAction && (
+          <div className="fixed inset-0 z-60 flex items-center justify-center px-6">
+            <div
+              className="absolute inset-0 bg-surface-container-lowest/90"
+              onClick={() => !isSubmitting && setPendingAction(null)}
+            />
+            <div className="onboarding-glass-card relative w-full max-w-md rounded-2xl p-8 shadow-2xl">
+              <h2 className="text-h3 text-on-surface mb-3">
+                {pendingAction === "delete" ? t("deleteModalTitle") : t("archiveModalTitle")}
+              </h2>
+              <p className="text-[13px] text-on-surface-variant mb-6">
+                {pendingAction === "delete"
+                  ? t("deleteConfirm", { title: task.title })
+                  : t("archiveConfirm", { title: task.title })}
+              </p>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setPendingAction(null)}
+                  disabled={isSubmitting}
+                  className="flex-1 py-2.5 bg-surface-container-high text-on-surface-variant rounded-lg text-[13px] font-semibold hover:bg-surface-container-highest transition-colors cursor-pointer disabled:opacity-50"
+                >
+                  {tActions("cancel")}
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmAction}
+                  disabled={isSubmitting}
+                  className={`flex-1 py-2.5 rounded-lg text-[13px] font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${
+                    pendingAction === "delete"
+                      ? "bg-error text-on-error hover:brightness-110"
+                      : "bg-primary text-on-primary hover:brightness-110"
+                  }`}
+                >
+                  {isSubmitting ? t("working") : tActions("confirm")}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </AnimatePresence>
   );

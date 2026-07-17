@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { ActivityEvent } from "@/types/task.types";
 
 interface ActivityListProps {
@@ -11,25 +12,18 @@ interface ActivityListProps {
 
 export function ActivityList({ activities, boardMembers, columns }: ActivityListProps) {
   const [now] = useState(() => Date.now());
-
-  if (activities.length === 0) {
-    return <p className="text-sm text-on-surface-variant italic opacity-60">No activity yet</p>;
-  }
-
-  const sortedActivities = [...activities].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  const t = useTranslations("taskDetail");
 
   const memberNameById = new Map(boardMembers.map((m) => [m.userId, m.name]));
   const columnNameById = new Map(columns.map((c) => [c.id, c.name]));
 
   function actorName(actorId: string): string {
-    return memberNameById.get(actorId) ?? `User ${actorId.slice(0, 6)}`;
+    return memberNameById.get(actorId) ?? t("userFallback", { id: actorId.slice(0, 6) });
   }
 
   function columnName(id: unknown): string {
-    if (typeof id !== "string") return "Unknown";
-    return columnNameById.get(id) ?? "Unknown";
+    if (typeof id !== "string") return t("unknownColumn");
+    return columnNameById.get(id) ?? t("unknownColumn");
   }
 
   function formatActivity(activity: ActivityEvent): string {
@@ -37,40 +31,48 @@ export function ActivityList({ activities, boardMembers, columns }: ActivityList
     switch (activity.type) {
       case "STATUS_CHANGE":
         if (payload.field === "column") {
-          return `moved this task from ${columnName(payload.from)} to ${columnName(payload.to)}`;
+          return t("movedColumn", { from: columnName(payload.from), to: columnName(payload.to) });
         }
         if (payload.field === "labels") {
-          return `updated labels`;
+          return t("updatedLabelsShort");
         }
-        return `changed ${payload.field} from ${payload.from} to ${payload.to}`;
+        return t("changedField", { field: String(payload.field), from: String(payload.from), to: String(payload.to) });
       case "ASSIGNED": {
         const added = (payload.added as string[]) ?? [];
         const removed = (payload.removed as string[]) ?? [];
         if (added.length > 0 && removed.length > 0) {
-          return `updated assignees`;
+          return t("updatedAssigneesShort");
         }
         if (added.length > 0) {
-          return `assigned ${added.map((id) => actorName(id)).join(", ")}`;
+          return t("assignedNames", { names: added.map((id) => actorName(id)).join(", ") });
         }
-        return `unassigned ${removed.map((id) => actorName(id)).join(", ")}`;
+        return t("unassignedNames", { names: removed.map((id) => actorName(id)).join(", ") });
       }
       case "COMMENTED":
-        return `added a comment`;
+        return t("addedComment");
       default:
-        return `performed an action`;
+        return t("performedAction");
     }
   }
 
   function timeAgo(date: Date): string {
     const seconds = Math.floor((now - new Date(date).getTime()) / 1000);
-    if (seconds < 60) return "just now";
+    if (seconds < 60) return t("justNow");
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
+    if (minutes < 60) return t("minutesAgo", { count: minutes });
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
+    if (hours < 24) return t("hoursAgo", { count: hours });
     const days = Math.floor(hours / 24);
-    return `${days}d ago`;
+    return t("daysAgo", { count: days });
   }
+
+  if (activities.length === 0) {
+    return <p className="text-sm text-on-surface-variant italic opacity-60">{t("noActivityYet")}</p>;
+  }
+
+  const sortedActivities = [...activities].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   return (
     <div className="space-y-4 pl-1">

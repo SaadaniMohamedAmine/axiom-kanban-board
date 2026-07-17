@@ -128,6 +128,35 @@ body {
   box-shadow: 0 0 0 1px var(--primary), 0 0 12px rgba(59, 130, 246, 0.15);
 }
 
+/* Premium landing-page feature card — layered surface gradient, a soft glass
+   sheen border (same masked-gradient technique as .onboarding-glass-card,
+   but theme-aware via var() instead of a hardcoded dark rgba), and a
+   hover lift/glow. Icon chips use the same primary-blue tint as the
+   dashboard's workspace cards (bg-primary/15 text-primary) — the AI tile
+   keeps sole ownership of the violet/cyan accent, per brand rules. */
+.feature-card-premium {
+  position: relative;
+  cursor: pointer;
+  background: linear-gradient(165deg, var(--surface-container-high) 0%, var(--surface-container) 55%);
+  transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.feature-card-premium::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.03) 45%, transparent 75%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.feature-card-premium:hover {
+  box-shadow: 0 24px 48px -24px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(59, 130, 246, 0.35);
+}
+
 /* Axiom-branded scrollbar — gradient thumb (primary → AI violet), no track background */
 * {
   scrollbar-width: thin;
@@ -194,6 +223,53 @@ body {
   border: none !important;
 }
 .driver-overlay { background: rgba(0,0,0,0.6) !important; }
+
+/* Branded react-toastify skin — glass card + gradient sheen border, same
+   masked-gradient technique as .onboarding-glass-card, applied to every
+   toast in the app (not just the notification-icon ones) via toastClassName. */
+.axiom-toast {
+  /* These are the library's own theming hooks (see ReactToastify.css :root) —
+     setting them here is more reliable than fighting its internal layout
+     with hard padding/border-radius overrides, which fought the progress
+     bar's own corner-rounding logic and ended up with near-zero padding. */
+  --toastify-toast-padding: 16px;
+  --toastify-toast-bd-radius: 16px;
+  position: relative;
+  background: color-mix(in srgb, var(--surface-container-high) 88%, transparent) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
+  border: none !important;
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.45) !important;
+  color: var(--on-surface) !important;
+  font-family: inherit !important;
+}
+.axiom-toast::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(160deg, rgba(59, 130, 246, 0.35), rgba(47, 217, 244, 0.12), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+.axiom-toast .Toastify__toast-body {
+  gap: 10px !important;
+}
+.axiom-toast .Toastify__progress-bar {
+  background: linear-gradient(to right, var(--primary), #2fd9f4) !important;
+  height: 3px !important;
+}
+.axiom-toast .Toastify__close-button {
+  color: var(--on-surface-variant) !important;
+  opacity: 0.5 !important;
+}
+.axiom-toast .Toastify__close-button:hover {
+  opacity: 1 !important;
+}
 
 .prose-axiom h2 {
   font-size: 16px;

@@ -15,6 +15,8 @@ export const metadata: Metadata = {
 
 export default async function RoadmapPage() {
   const t = await getTranslations("roadmapPage");
+  const tItems = await getTranslations("roadmapItems");
+  const tColumns = await getTranslations("roadmapColumns");
   const locale = await getLocale();
 
   const STATUS_CONFIG: Record<
@@ -74,8 +76,12 @@ export default async function RoadmapPage() {
           {ROADMAP.map((col) => (
             <div key={col.id}>
               <div className="mb-5">
-                <h2 className="text-[18px] font-semibold text-on-surface mb-1">{col.label}</h2>
-                <p className="text-[12px] text-on-surface-variant/60">{col.description}</p>
+                <h2 className="text-[18px] font-semibold text-on-surface mb-1">
+                  {tColumns(`${col.id}.label`)}
+                </h2>
+                <p className="text-[12px] text-on-surface-variant/60">
+                  {tColumns(`${col.id}.description`)}
+                </p>
               </div>
 
               <div className="space-y-3">
@@ -90,7 +96,7 @@ export default async function RoadmapPage() {
                     >
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <h3 className="text-[14px] font-medium text-on-surface leading-snug">
-                          {item.title}
+                          {tItems(`${item.id}.title`)}
                         </h3>
                         <span
                           className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold border ${cfg.badgeClass}`}
@@ -101,7 +107,7 @@ export default async function RoadmapPage() {
                         </span>
                       </div>
                       <p className="text-[12px] text-on-surface-variant/70 leading-relaxed">
-                        {item.description}
+                        {tItems(`${item.id}.description`)}
                       </p>
                     </div>
                   );

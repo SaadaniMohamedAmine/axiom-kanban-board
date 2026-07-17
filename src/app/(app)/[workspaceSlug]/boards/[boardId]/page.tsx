@@ -22,14 +22,64 @@ export default async function BoardPage({
     redirect("/login");
   }
 
-  const workspace = await prisma.workspace.findUnique({
-    where: { slug: workspaceSlug },
-    include: {
-      members: {
-        where: { userId: session.user.id },
+  // None of these three depend on each other's results (only on boardId/
+  // workspaceSlug/session.user.id, all already known) — fetching them in
+  // sequence was adding two extra DB round-trips to every board visit.
+  const [workspace, board, taskCounts] = await Promise.all([
+    prisma.workspace.findUnique({
+      where: { slug: workspaceSlug },
+      include: {
+        members: {
+          where: { userId: session.user.id },
+        },
       },
-    },
-  });
+    }),
+    prisma.board.findUnique({
+      where: { id: boardId },
+      include: {
+        columns: {
+          orderBy: { order: "asc" },
+          include: {
+            tasks: {
+              where: { archivedAt: null },
+              orderBy: { order: "asc" },
+              include: {
+                assignees: { include: { user: { select: { id: true, name: true } } } },
+                labels: true,
+                comments: true,
+                activity: true,
+              },
+            },
+          },
+        },
+        sprints: {
+          orderBy: { startDate: "desc" },
+        },
+        labels: {
+          orderBy: { name: "asc" },
+        },
+        workspace: {
+          include: {
+            members: {
+              include: {
+                user: { select: { id: true, name: true } },
+              },
+            },
+          },
+        },
+      },
+    }),
+    prisma.taskAssignee.groupBy({
+      by: ["userId"],
+      where: {
+        task: {
+          boardId,
+          archivedAt: null,
+        },
+      },
+      _count: { taskId: true },
+    }),
+  ]);
 
   if (!workspace || workspace.members.length === 0) {
     notFound();
@@ -37,54 +87,9 @@ export default async function BoardPage({
 
   const canEdit = workspace.members[0].role !== "VIEWER";
 
-  const board = await prisma.board.findUnique({
-    where: { id: boardId },
-    include: {
-      columns: {
-        orderBy: { order: "asc" },
-        include: {
-          tasks: {
-            orderBy: { order: "asc" },
-            include: {
-              assignees: { include: { user: { select: { id: true, name: true } } } },
-              labels: true,
-              comments: true,
-              activity: true,
-            },
-          },
-        },
-      },
-      sprints: {
-        orderBy: { startDate: "desc" },
-      },
-      labels: {
-        orderBy: { name: "asc" },
-      },
-      workspace: {
-        include: {
-          members: {
-            include: {
-              user: { select: { id: true, name: true } },
-            },
-          },
-        },
-      },
-    },
-  });
-
   if (!board || board.workspaceId !== workspace.id) {
     notFound();
   }
-
-  const taskCounts = await prisma.taskAssignee.groupBy({
-    by: ["userId"],
-    where: {
-      task: {
-        boardId,
-      },
-    },
-    _count: { taskId: true },
-  });
 
   const boardMembers = board.workspace.members.map((m) => ({
     userId: m.user.id,

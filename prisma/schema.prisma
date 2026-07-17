@@ -80,7 +80,14 @@ enum AuditAction {
   MEMBER_ROLE_CHANGED
   MEMBER_REMOVED
   BOARD_CREATED
+  BOARD_ARCHIVED
+  BOARD_UNARCHIVED
+  BOARD_TRASHED
+  BOARD_RESTORED
   BOARD_DELETED
+  TASK_CREATED
+  TASK_ARCHIVED
+  TASK_UNARCHIVED
   TASK_DELETED
   AUTH_LOGIN
   AUTH_LOGIN_FAILED
@@ -263,6 +270,8 @@ model Board {
   name        String
   template    BoardTemplate @default(KANBAN)
   taskCounter Int           @default(0)
+  archivedAt  DateTime?
+  deletedAt   DateTime?
   createdAt   DateTime      @default(now())
 
   workspace Workspace  @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
@@ -301,6 +310,7 @@ model Task {
   dueDate     DateTime?
   order       Int
   sprintId    String?
+  archivedAt  DateTime?
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 

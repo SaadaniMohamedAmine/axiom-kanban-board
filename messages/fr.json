@@ -1,5 +1,6 @@
 {
   "nav": {
+    "board": "Tableau",
     "boards": "Tableaux",
     "analytics": "Analytiques",
     "settings": "Paramètres",
@@ -24,7 +25,8 @@
     "switchWorkspace": "Changer d'espace de travail",
     "myAccount": "Mon compte",
     "myTasks": "Mes tâches",
-    "aiInsights": "AI Insights",
+    "allTasks": "Toutes les tâches",
+    "aiInsights": "Perspectives IA",
     "archive": "Archive",
     "trash": "Corbeille",
     "comingSoon": "Bientôt",
@@ -40,6 +42,7 @@
     "viewDemo": "Voir la démo →",
     "signIn": "Se connecter",
     "getStarted": "Commencer",
+    "goToDashboard": "Aller au Dashboard",
     "features": {
       "aiTitle": "Moteur de priorité IA",
       "aiDesc": "Axiom Intelligence note et reprioritise votre backlog automatiquement selon le contexte, les dépendances et la vélocité de l'équipe.",
@@ -89,6 +92,22 @@
       "title": "Demande d'accès",
       "message": "{name} a demandé l'accès à {resource}."
     }
+  },
+  "notificationMessages": {
+    "welcome_back": { "title": "Bon retour", "message": "Ravi de vous revoir, {name}." },
+    "welcome": { "title": "Bienvenue sur Axiom", "message": "Ravi de vous compter parmi nous, {name}." },
+    "workspace_created": { "title": "Espace de travail créé", "message": "« {name} » est prêt." },
+    "workspace_archived": { "title": "Espace de travail archivé", "message": "« {name} » a été archivé." },
+    "workspace_deleted": { "title": "Espace de travail supprimé", "message": "« {name} » a été déplacé vers la corbeille." },
+    "board_created": { "title": "Board créé", "message": "« {name} » est prêt." },
+    "board_archived": { "title": "Board archivé", "message": "« {name} » a été archivé." },
+    "board_deleted": { "title": "Board supprimé", "message": "« {name} » a été déplacé vers la corbeille." },
+    "task_created": { "title": "Tâche créée", "message": "{title}" },
+    "task_archived": { "title": "Tâche archivée", "message": "{title}" },
+    "task_deleted": { "title": "Tâche supprimée", "message": "{title}" },
+    "name_changed": { "title": "Nom mis à jour", "message": "Votre nom est maintenant {name}." },
+    "password_changed": { "title": "Mot de passe mis à jour", "message": "Le mot de passe de {email} a été modifié." },
+    "plan_changed": { "title": "Forfait mis à jour", "message": "« {workspace} » est maintenant sur le forfait {plan}." }
   },
   "legal": {
     "eyebrow": "Mentions légales",
@@ -309,7 +328,160 @@
       "HIGH": "Haute",
       "MEDIUM": "Moyenne",
       "LOW": "Faible"
+    },
+    "templates": {
+      "KANBAN": "Kanban",
+      "SCRUM": "Scrum",
+      "BUG_TRACKING": "Suivi de bugs",
+      "CUSTOM": "Personnalisé"
+    },
+    "createBoardModal": {
+      "title": "Créer un board",
+      "nameLabel": "Nom du board",
+      "namePlaceholder": "ex. Sprint Planning",
+      "templateLabel": "Modèle",
+      "creating": "Création...",
+      "create": "Créer",
+      "failed": "Échec de la création du board"
+    },
+    "createTaskModal": {
+      "title": "Créer une tâche",
+      "titleLabel": "Titre de la tâche",
+      "titlePlaceholder": "ex. Corriger le bug de redirection login",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Ajouter plus de détails...",
+      "statusLabel": "Statut",
+      "priorityLabel": "Priorité",
+      "dueDateLabel": "Échéance",
+      "labelsLabel": "Labels",
+      "creating": "Création...",
+      "create": "Créer la tâche",
+      "created": "Tâche créée",
+      "failed": "Échec de la création de la tâche"
+    },
+    "boardsList": {
+      "noBoards": "Aucun board pour l'instant",
+      "boardCount": "{count, plural, one {# tableau} other {# tableaux}}",
+      "emptyState": "Créez votre premier board pour organiser le travail.",
+      "createBoard": "Créer un board",
+      "columns": "colonnes",
+      "tasks": "tâches",
+      "openBoard": "Ouvrir le board",
+      "archiveAction": "Archiver le board",
+      "moveToTrashAction": "Déplacer vers la corbeille",
+      "archiveModalTitle": "Archiver ce board ?",
+      "deleteModalTitle": "Déplacer ce board vers la corbeille ?",
+      "archiveConfirm": "« {name} » sera masqué de la liste des boards. Vous pourrez le restaurer plus tard.",
+      "deleteConfirm": "« {name} » sera déplacé vers la corbeille. Vous pourrez le restaurer plus tard, ou le supprimer définitivement depuis là.",
+      "working": "En cours…",
+      "archivedToast": "Board archivé",
+      "deletedToast": "Board déplacé vers la corbeille",
+      "actionFailed": "Une erreur est survenue",
+      "restoring": "Restauration…",
+      "restore": "Restaurer",
+      "restoredToast": "« {name} » restauré",
+      "restoreFailed": "Échec de la restauration du board",
+      "deleteForever": "Supprimer définitivement",
+      "deleting": "Suppression…",
+      "deleteFailed": "Échec de la suppression du board"
+    },
+    "archivedPage": {
+      "desc": "Les boards archivés sont masqués de la liste des boards. Restaurez-en un pour le réactiver.",
+      "empty": "Rien d'archivé pour l'instant.",
+      "archivedOn": "Archivé le {date}",
+      "backToBoards": "Retour aux boards"
+    },
+    "trashPage": {
+      "desc": "Les boards supprimés restent ici jusqu'à ce que vous les restauriez ou les supprimiez définitivement.",
+      "empty": "La corbeille est vide.",
+      "deletedOn": "Supprimé le {date}",
+      "backToBoards": "Retour aux boards",
+      "deleteForeverTitle": "Supprimer définitivement",
+      "deleteForeverConfirm": "Ceci supprime définitivement « {name} » et tout ce qu'il contient — colonnes et tâches. Cette action est irréversible.",
+      "deletedForeverToast": "« {name} » supprimé définitivement"
     }
+  },
+  "taskDetail": {
+    "taskLabel": "Tâche {code}",
+    "description": "Description",
+    "noDescriptionYet": "Aucune description",
+    "clickToAddDescription": "Cliquez pour ajouter une description...",
+    "activity": "Activité",
+    "noActivityYet": "Aucune activité",
+    "comments": "Commentaires",
+    "close": "Fermer",
+    "created": "Créée le {date}",
+    "priority": "Priorité",
+    "estimate": "Estimation (points)",
+    "dueDate": "Échéance",
+    "assignees": "Assignés",
+    "noAssignees": "Aucun assigné",
+    "unknownMember": "Membre inconnu",
+    "assignedCount": "{count} assigné(s)",
+    "noWorkspaceMembers": "Aucun membre du workspace",
+    "labels": "Labels",
+    "noLabels": "Aucun label",
+    "bold": "Gras",
+    "italic": "Italique",
+    "list": "Liste",
+    "link": "Lien",
+    "movedTask": "A déplacé {title}",
+    "updatedField": "A modifié {field} sur {title}",
+    "updatedAssignees": "A modifié les assignés de {title}",
+    "commentedOn": "A commenté {title}",
+    "updatedTask": "A modifié {title}",
+    "justNow": "à l'instant",
+    "minutesAgo": "il y a {count}min",
+    "hoursAgo": "il y a {count}h",
+    "daysAgo": "il y a {count}j",
+    "movedColumn": "a déplacé cette tâche de {from} vers {to}",
+    "updatedLabelsShort": "a modifié les labels",
+    "changedField": "a changé {field} de {from} à {to}",
+    "updatedAssigneesShort": "a modifié les assignés",
+    "assignedNames": "a assigné {names}",
+    "unassignedNames": "a désassigné {names}",
+    "addedComment": "a ajouté un commentaire",
+    "performedAction": "a effectué une action",
+    "unknownColumn": "Inconnue",
+    "userFallback": "Utilisateur {id}",
+    "updateFailed": "Échec de l'enregistrement",
+    "archive": "Archiver",
+    "archivedToast": "Tâche archivée",
+    "deletedToast": "Tâche supprimée",
+    "archiveModalTitle": "Archiver cette tâche ?",
+    "deleteModalTitle": "Supprimer cette tâche ?",
+    "archiveConfirm": "« {title} » sera masquée du board. Vous pourrez la restaurer plus tard.",
+    "deleteConfirm": "Ceci supprime définitivement « {title} ». Cette action est irréversible.",
+    "working": "En cours…"
+  },
+  "workspacesPage": {
+    "openWorkspace": "Ouvrir le workspace",
+    "archiveModalTitle": "Archiver le workspace",
+    "deleteModalTitle": "Déplacer vers la Corbeille",
+    "archiveConfirm": "\"{name}\" sera archivé et masqué de votre liste de workspaces. Vous pourrez le restaurer plus tard.",
+    "deleteConfirm": "\"{name}\" sera déplacé vers la Corbeille et masqué de votre liste de workspaces. Vous pourrez le restaurer, ou le supprimer définitivement, depuis la Corbeille.",
+    "working": "Traitement...",
+    "archiveAction": "Archiver le workspace",
+    "moveToTrashAction": "Déplacer vers la Corbeille",
+    "backToWorkspaces": "Retour aux workspaces",
+    "archivedDesc": "Les workspaces archivés sont masqués de votre liste. Restaurez-en un pour le réactiver.",
+    "nothingArchived": "Rien d'archivé pour l'instant.",
+    "trashDesc": "Les workspaces supprimés restent ici jusqu'à ce que vous les restauriez ou les supprimiez définitivement.",
+    "trashEmpty": "La corbeille est vide.",
+    "archivedOn": "Archivé le {date}",
+    "deletedOn": "Supprimé le {date}",
+    "restoring": "Restauration...",
+    "restore": "Restaurer",
+    "deleteForever": "Supprimer définitivement",
+    "deleteForeverTitle": "Supprimer définitivement",
+    "deleteForeverConfirm": "Ceci supprime définitivement \"{name}\" et tout son contenu — boards, tâches et membres. Action irréversible.",
+    "deleting": "Suppression...",
+    "restoreFailed": "Échec de la restauration du workspace",
+    "deleteFailed": "Échec de la suppression du workspace",
+    "archivedToast": "Workspace archivé",
+    "restoredToast": "\"{name}\" restauré",
+    "deletedForeverToast": "\"{name}\" supprimé définitivement",
+    "actionFailed": "Échec de l'action"
   },
   "ai": {
     "name": "Axiom Intelligence",
@@ -437,6 +609,98 @@
     "considering": "En réflexion",
     "lastUpdated": "Dernière mise à jour juillet 2026",
     "backToAxiom": "Retour à Axiom"
+  },
+  "roadmapColumns": {
+    "now": {
+      "label": "Maintenant",
+      "description": "Ce que nous livrons ou venons de livrer"
+    },
+    "next": {
+      "label": "Ensuite",
+      "description": "Ce qui arrive dans les 60 prochains jours"
+    },
+    "later": {
+      "label": "Plus tard",
+      "description": "Vision à long terme"
+    }
+  },
+  "roadmapItems": {
+    "kanban-core": {
+      "title": "Tableau Kanban principal",
+      "description": "Colonnes et tâches en glisser-déposer, synchronisation temps réel via Pusher Channels."
+    },
+    "ai-intelligence": {
+      "title": "Moteur d'intelligence Axiom",
+      "description": "Priorisation, estimation, détection de blocages et assignation intelligente par IA."
+    },
+    "sprint-analytics": {
+      "title": "Analytique des sprints",
+      "description": "Graphiques de burndown, suivi de vélocité, résumés de santé de sprint générés par IA."
+    },
+    "dark-light": {
+      "title": "Mode sombre et clair",
+      "description": "Système complet de tokens de design avec next-themes et détection de la préférence système."
+    },
+    "cmd-palette": {
+      "title": "Palette de commandes",
+      "description": "Recherche globale ⌘K dans toutes les tâches et tableaux, navigation au clavier."
+    },
+    "premium-redesign": {
+      "title": "Refonte visuelle premium",
+      "description": "Langage de design en verre glacé, couleurs d'accent par priorité, et couverture de traduction française/anglaise complète sur toute l'application."
+    },
+    "workspace-lifecycle": {
+      "title": "Archivage et corbeille d'espaces de travail",
+      "description": "Archivez un espace de travail ou déplacez-le vers la corbeille, avec une page de récupération dédiée, plutôt qu'une suppression instantanée et irréversible."
+    },
+    "team-management": {
+      "title": "Gestion d'équipe et présence",
+      "description": "Invitez des coéquipiers, voyez leur présence en ligne/hors ligne en temps réel, et gérez les invitations en attente depuis une page équipe dédiée."
+    },
+    "toast-notifications": {
+      "title": "Système de notifications toast",
+      "description": "Retour instantané en haut à droite pour chaque action, avec les entrées correspondantes dans la cloche de notifications et le centre de notifications."
+    },
+    "webhooks": {
+      "title": "Webhooks et API publique",
+      "description": "API REST pour les intégrations externes, avec clés API et documentation sur /docs/api."
+    },
+    "pwa": {
+      "title": "Application web progressive",
+      "description": "Installez Axiom sur ordinateur ou mobile et continuez à travailler hors ligne grâce à une page de secours dédiée."
+    },
+    "i18n": {
+      "title": "Internationalisation",
+      "description": "Support complet du français et de l'anglais sur tous les écrans, avec un sélecteur de langue persistant."
+    },
+    "emails": {
+      "title": "E-mails transactionnels",
+      "description": "Notifications par e-mail à l'image d'Axiom pour les invitations aux espaces de travail et les assignations de tâches."
+    },
+    "billing": {
+      "title": "Facturation et forfaits",
+      "description": "Abonnement propulsé par Stripe avec les forfaits Free, Pro et Team, ainsi qu'un historique des factures téléchargeables."
+    },
+    "audit-log": {
+      "title": "Journal d'audit et conformité",
+      "description": "Historique d'activité complet pour les propriétaires d'espace de travail, exportable en CSV."
+    },
+    "push-notifications": {
+      "title": "Notifications push",
+      "description": "Notifications push du navigateur pour les mentions, assignations et jalons de sprint, en s'appuyant sur la PWA installable."
+    },
+    "email-expansion": {
+      "title": "Notifications par e-mail étendues",
+      "description": "E-mails de mentions et de jalons de sprint, en complément du système d'e-mails transactionnels qui envoie déjà les invitations et assignations de tâches."
+    },
+    "native-mobile": {
+      "title": "Application mobile native",
+      "description": "Application React Native avec accès aux tableaux hors ligne et notifications push."
+    },
+    "integrations": {
+      "title": "Intégration GitHub / Linear",
+      "description": "Synchronisez les tâches avec GitHub Issues et les tickets Linear dans les deux sens."
+    }
   },
   "analytics": {
     "noActiveSprintFound": "Aucun sprint actif trouvé.",
@@ -607,7 +871,20 @@
     "yourWorkspaces": "Vos espaces de travail",
     "activeSprint": "Sprint actif",
     "noActiveSprint": "Aucun sprint actif",
-    "recentActivity": "Activité récente"
+    "recentActivity": "Activité récente",
+    "recentActivityDesc": "Vos actions récentes, tous espaces de travail confondus"
+  },
+  "myTasksPage": {
+    "title": "Mes tâches",
+    "subtitle": "Toutes les tâches ouvertes qui vous sont assignées, tous espaces de travail confondus.",
+    "empty": "Aucune tâche ouverte ne vous est assignée pour le moment.",
+    "noDueDate": "Aucune échéance"
+  },
+  "allTasksPage": {
+    "title": "Toutes les tâches",
+    "subtitle": "Toutes les tâches ouvertes de tous vos espaces de travail, quel que soit l'assigné.",
+    "empty": "Aucune tâche ouverte pour le moment.",
+    "noDueDate": "Aucune échéance"
   },
   "notificationPrefs": {
     "title": "Préférences de notification",
@@ -625,6 +902,20 @@
     "ai_suggestionDesc": "Me notifier quand Axiom Intelligence applique une suggestion.",
     "access_requested": "Demandes d'accès",
     "access_requestedDesc": "Me notifier quand quelqu'un demande l'accès à une ressource que je possède.",
+    "welcome_back": "Bon retour",
+    "welcome": "Bienvenue",
+    "workspace_created": "Espace de travail créé",
+    "board_created": "Board créé",
+    "task_created": "Tâche créée",
+    "workspace_archived": "Espace de travail archivé",
+    "board_archived": "Board archivé",
+    "task_archived": "Tâche archivée",
+    "workspace_deleted": "Espace de travail supprimé",
+    "board_deleted": "Board supprimé",
+    "task_deleted": "Tâche supprimée",
+    "name_changed": "Nom modifié",
+    "password_changed": "Mot de passe modifié",
+    "plan_changed": "Forfait modifié",
     "allTypes": "Toutes",
     "quietHours": "Heures calmes",
     "quietHoursDesc": "Différer les notifications non critiques pendant cette période.",

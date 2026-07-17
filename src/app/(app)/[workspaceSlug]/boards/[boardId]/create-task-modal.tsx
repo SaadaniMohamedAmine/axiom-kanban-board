@@ -21,6 +21,7 @@ const PRIORITIES: Priority[] = ["URGENT", "HIGH", "MEDIUM", "LOW"];
 export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalProps) {
   const { isOpen, open, close } = useCreateTask();
   const t = useTranslations("board");
+  const tOnboarding = useTranslations("onboarding");
   const { toast } = useToast();
 
   const [title, setTitle] = useState("");
@@ -89,12 +90,12 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
         await setTaskLabels({ taskId: task.id, labelIds });
       }
 
-      toast("Task created");
+      toast(t("createTaskModal.created"));
       resetForm();
       close();
     } catch (error) {
       console.error("Failed to create task:", error);
-      toast("Failed to create task", "error");
+      toast(t("createTaskModal.failed"), "error");
     } finally {
       setIsSubmitting(false);
     }
@@ -110,7 +111,7 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
       <button
         id="create-task-btn"
         onClick={open}
-        aria-label="Create task"
+        aria-label={t("createTaskModal.title")}
         className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-primary text-on-primary shadow-lg shadow-primary/30 hover:brightness-110 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
       >
         <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24">
@@ -139,7 +140,7 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
               <button
                 type="button"
                 onClick={close}
-                aria-label="Close"
+                aria-label={tOnboarding("close")}
                 className="absolute top-4 right-4 p-1.5 rounded-lg text-on-surface-variant/60 hover:text-on-surface hover:bg-surface-container-high transition-colors cursor-pointer"
               >
                 <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
@@ -147,18 +148,18 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
                 </svg>
               </button>
 
-              <h2 className="text-h3 text-on-surface mb-6">Create Task</h2>
+              <h2 className="text-h3 text-on-surface mb-6">{t("createTaskModal.title")}</h2>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
                   <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-                    Task Title
+                    {t("createTaskModal.titleLabel")}
                   </label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    placeholder="e.g., Fix login redirect bug"
+                    placeholder={t("createTaskModal.titlePlaceholder")}
                     className={inputClass}
                     autoFocus
                   />
@@ -166,12 +167,12 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
 
                 <div className="space-y-2">
                   <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-                    Description
+                    {t("createTaskModal.descriptionLabel")}
                   </label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Add more detail..."
+                    placeholder={t("createTaskModal.descriptionPlaceholder")}
                     rows={3}
                     className={`${inputClass} resize-y`}
                   />
@@ -180,7 +181,7 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-                      Status
+                      {t("createTaskModal.statusLabel")}
                     </label>
                     <div ref={statusRef} className="relative">
                       <button
@@ -216,7 +217,7 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
 
                   <div className="space-y-2">
                     <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-                      Priority
+                      {t("createTaskModal.priorityLabel")}
                     </label>
                     <div ref={priorityRef} className="relative">
                       <button
@@ -253,7 +254,7 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
 
                 <div className="space-y-2">
                   <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-                    Due Date
+                    {t("createTaskModal.dueDateLabel")}
                   </label>
                   <input
                     type="date"
@@ -266,7 +267,7 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
                 {labels.length > 0 && (
                   <div className="space-y-2">
                     <label className="block text-[11px] font-medium text-on-surface-variant uppercase tracking-wider">
-                      Labels
+                      {t("createTaskModal.labelsLabel")}
                     </label>
                     <div className="flex flex-wrap gap-2">
                       {labels.map((label) => {
@@ -294,7 +295,7 @@ export function CreateTaskModal({ boardId, columns, labels }: CreateTaskModalPro
                   disabled={isSubmitting || !title.trim() || !columnId}
                   className="w-full py-2.5 bg-primary text-on-primary rounded-lg text-[13px] font-semibold hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition-all"
                 >
-                  {isSubmitting ? "Creating..." : "Create Task"}
+                  {isSubmitting ? t("createTaskModal.creating") : t("createTaskModal.create")}
                 </button>
               </form>
             </motion.div>
