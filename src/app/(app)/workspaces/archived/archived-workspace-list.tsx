@@ -20,6 +20,11 @@ interface ArchivedWorkspaceListProps {
 export function ArchivedWorkspaceList({ workspaces: initial }: ArchivedWorkspaceListProps) {
   const t = useTranslations("workspacesPage");
   const [workspaces, setWorkspaces] = useState(initial);
+  const [prevInitial, setPrevInitial] = useState(initial);
+  if (initial !== prevInitial) {
+    setPrevInitial(initial);
+    setWorkspaces(initial);
+  }
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const { toast } = useToast();
 

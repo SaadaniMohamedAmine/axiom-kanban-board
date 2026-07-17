@@ -80,7 +80,7 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
   });
 
   revalidatePath("/", "layout");
-  redirect(`/${workspace.slug}`);
+  redirect(`/${workspace.slug}?notify=workspace_created&name=${encodeURIComponent(workspace.name)}`);
 }
 
 export async function renameWorkspace(input: RenameWorkspaceInput) {

@@ -23,6 +23,11 @@ export function TrashBoardList({ boards: initial, canManage }: TrashBoardListPro
   const tActions = useTranslations("actions");
   const tOnboarding = useTranslations("onboarding");
   const [boards, setBoards] = useState(initial);
+  const [prevInitial, setPrevInitial] = useState(initial);
+  if (initial !== prevInitial) {
+    setPrevInitial(initial);
+    setBoards(initial);
+  }
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const [confirmTarget, setConfirmTarget] = useState<TrashedBoard | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);

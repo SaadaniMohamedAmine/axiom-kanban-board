@@ -48,6 +48,17 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
   const [pending, setPending] = useState<PendingAction>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // WorkspaceGrid stays mounted across navigations back to /workspaces (e.g.
+  // after deleteWorkspace's redirect lands on the same route with different
+  // search params), so useState's initial value alone would keep showing
+  // stale data. Adjusting state during render (React's documented escape
+  // hatch for this) instead of an effect avoids the extra render pass.
+  const [prevInitialWorkspaces, setPrevInitialWorkspaces] = useState(initialWorkspaces);
+  if (initialWorkspaces !== prevInitialWorkspaces) {
+    setPrevInitialWorkspaces(initialWorkspaces);
+    setWorkspaces(initialWorkspaces);
+  }
+
   useEffect(() => {
     if (!pending) return;
     function handleKeyDown(e: KeyboardEvent) {

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { createBoard } from "@/lib/actions/board.actions";
+import { useToast } from "@/contexts/toast-context";
 import { MOTION } from "@/lib/motion";
 
 interface BoardCreateModalProps {
@@ -18,6 +19,8 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
   const router = useRouter();
   const t = useTranslations("board");
   const tOnboarding = useTranslations("onboarding");
+  const tNotify = useTranslations("notificationMessages");
+  const { notify } = useToast();
   const [name, setName] = useState("");
   const [template, setTemplate] = useState<"SCRUM" | "KANBAN" | "BUG_TRACKING" | "CUSTOM">("KANBAN");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,7 +51,12 @@ export function BoardCreateModal({ workspaceId, onClose }: BoardCreateModalProps
     setIsSubmitting(true);
     setError(null);
     try {
-      await createBoard({ workspaceId, name: name.trim(), template });
+      const board = await createBoard({ workspaceId, name: name.trim(), template });
+      notify({
+        type: "board_created",
+        title: tNotify("board_created.title"),
+        message: tNotify("board_created.message", { name: board.name }),
+      });
       router.refresh();
       onClose();
     } catch {

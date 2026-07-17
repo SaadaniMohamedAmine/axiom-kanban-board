@@ -19,6 +19,11 @@ interface ArchivedBoardListProps {
 export function ArchivedBoardList({ boards: initial, canManage }: ArchivedBoardListProps) {
   const t = useTranslations("board");
   const [boards, setBoards] = useState(initial);
+  const [prevInitial, setPrevInitial] = useState(initial);
+  if (initial !== prevInitial) {
+    setPrevInitial(initial);
+    setBoards(initial);
+  }
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const { toast } = useToast();
 

@@ -9,7 +9,7 @@ interface NotificationToastListenerProps {
   userName: string;
 }
 
-const VALID_KEYS = ["welcome_back", "welcome", "workspace_deleted"] as const;
+const VALID_KEYS = ["welcome_back", "welcome", "workspace_deleted", "workspace_created"] as const;
 type NotifyKey = (typeof VALID_KEYS)[number];
 
 // Some notification-worthy actions (login, sign-up, deleting a workspace)

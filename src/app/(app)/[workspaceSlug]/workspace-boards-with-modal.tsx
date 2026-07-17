@@ -41,6 +41,17 @@ export function WorkspaceBoardsWithModal({ workspaceId, workspaceSlug, boards: i
   const tOnboarding = useTranslations("onboarding");
   const { toast } = useToast();
 
+  // Stays mounted across router.refresh() after creating a board (the modal
+  // just calls router.refresh() + onClose(), no remount) — without this,
+  // useState's initial value would keep showing the pre-creation list.
+  // Adjusting state during render (React's documented escape hatch) instead
+  // of an effect avoids the extra render pass.
+  const [prevInitialBoards, setPrevInitialBoards] = useState(initialBoards);
+  if (initialBoards !== prevInitialBoards) {
+    setPrevInitialBoards(initialBoards);
+    setBoards(initialBoards);
+  }
+
   useEffect(() => {
     if (!pending) return;
     function handleKeyDown(e: KeyboardEvent) {

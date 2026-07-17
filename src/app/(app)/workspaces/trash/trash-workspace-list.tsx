@@ -24,6 +24,11 @@ export function TrashWorkspaceList({ workspaces: initial }: TrashWorkspaceListPr
   const tActions = useTranslations("actions");
   const tOnboarding = useTranslations("onboarding");
   const [workspaces, setWorkspaces] = useState(initial);
+  const [prevInitial, setPrevInitial] = useState(initial);
+  if (initial !== prevInitial) {
+    setPrevInitial(initial);
+    setWorkspaces(initial);
+  }
   const [restoringId, setRestoringId] = useState<string | null>(null);
   const [confirmTarget, setConfirmTarget] = useState<TrashedWorkspace | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
