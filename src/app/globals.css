@@ -228,17 +228,20 @@ body {
    masked-gradient technique as .onboarding-glass-card, applied to every
    toast in the app (not just the notification-icon ones) via toastClassName. */
 .axiom-toast {
+  /* These are the library's own theming hooks (see ReactToastify.css :root) —
+     setting them here is more reliable than fighting its internal layout
+     with hard padding/border-radius overrides, which fought the progress
+     bar's own corner-rounding logic and ended up with near-zero padding. */
+  --toastify-toast-padding: 16px;
+  --toastify-toast-bd-radius: 16px;
   position: relative;
-  overflow: hidden;
   background: color-mix(in srgb, var(--surface-container-high) 88%, transparent) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   backdrop-filter: blur(16px) !important;
   border: none !important;
-  border-radius: 16px !important;
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.45) !important;
   color: var(--on-surface) !important;
   font-family: inherit !important;
-  padding: 0 !important;
 }
 .axiom-toast::before {
   content: "";
@@ -254,8 +257,6 @@ body {
   pointer-events: none;
 }
 .axiom-toast .Toastify__toast-body {
-  padding: 14px 16px !important;
-  margin: 0 !important;
   gap: 10px !important;
 }
 .axiom-toast .Toastify__progress-bar {
@@ -265,7 +266,6 @@ body {
 .axiom-toast .Toastify__close-button {
   color: var(--on-surface-variant) !important;
   opacity: 0.5 !important;
-  margin: 10px 10px 0 0 !important;
 }
 .axiom-toast .Toastify__close-button:hover {
   opacity: 1 !important;
