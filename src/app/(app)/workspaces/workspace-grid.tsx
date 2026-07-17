@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { archiveWorkspace, deleteWorkspace } from "@/lib/actions/workspace.actions";
+import { isRedirectError } from "@/lib/is-redirect-error";
 import { useToast } from "@/contexts/toast-context";
 import { MOTION } from "@/lib/motion";
 
@@ -69,6 +70,7 @@ export function WorkspaceGrid({ workspaces: initialWorkspaces }: WorkspaceGridPr
         await deleteWorkspace(pending.workspace.id);
       }
     } catch (error) {
+      if (isRedirectError(error)) throw error;
       toast(error instanceof Error ? error.message : tw("actionFailed"), "error");
     } finally {
       setIsSubmitting(false);

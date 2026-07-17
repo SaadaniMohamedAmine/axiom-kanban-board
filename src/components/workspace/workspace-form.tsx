@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { createWorkspace } from "@/lib/actions/workspace.actions";
+import { isRedirectError } from "@/lib/is-redirect-error";
 import { MOTION } from "@/lib/motion";
 
 export function WorkspaceForm() {
@@ -31,8 +32,8 @@ export function WorkspaceForm() {
     try {
       await createWorkspace({ name: name.trim() });
     } catch (err) {
+      if (isRedirectError(err)) throw err;
       setError(err instanceof Error ? err.message : t("createFailed"));
-    } finally {
       setIsSubmitting(false);
     }
   }
