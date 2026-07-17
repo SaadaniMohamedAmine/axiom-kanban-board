@@ -38,37 +38,39 @@ export default async function AppLayout({
     email: session.user.email,
   });
 
-  const memberships = await prisma.workspaceMember.findMany({
-    where: { userId: session.user.id, workspace: { archivedAt: null, deletedAt: null } },
-    include: {
-      workspace: {
-        include: {
-          boards: {
-            select: { id: true, name: true },
+  // These are all independent of each other — running them sequentially
+  // (as separate `await`s) previously added one full DB round-trip per
+  // query to *every* navigation within the app, since this layout re-runs
+  // on every page load.
+  const [memberships, user, unreadNotificationCount, recentNotifications, locale, tSettings] = await Promise.all([
+    prisma.workspaceMember.findMany({
+      where: { userId: session.user.id, workspace: { archivedAt: null, deletedAt: null } },
+      include: {
+        workspace: {
+          include: {
+            boards: {
+              select: { id: true, name: true },
+            },
+            _count: { select: { members: true } },
           },
-          _count: { select: { members: true } },
         },
       },
-    },
-  });
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { onboardingCompleted: true },
-  });
-
-  const unreadNotificationCount = await prisma.notification.count({
-    where: { userId: session.user.id, readAt: null },
-  });
-
-  const recentNotifications = await prisma.notification.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-    take: 6,
-  });
-
-  const locale = (await getLocale()) as "fr" | "en";
-  const tSettings = await getTranslations("settings");
+    }),
+    prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { onboardingCompleted: true },
+    }),
+    prisma.notification.count({
+      where: { userId: session.user.id, readAt: null },
+    }),
+    prisma.notification.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      take: 6,
+    }),
+    getLocale() as Promise<"fr" | "en">,
+    getTranslations("settings"),
+  ]);
 
   const firstBoard = memberships[0]?.workspace?.boards?.[0];
 
