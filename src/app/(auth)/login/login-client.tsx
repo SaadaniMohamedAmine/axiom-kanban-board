@@ -13,6 +13,7 @@ export function LoginClient() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState<SignInInput>({
     email: "",
     password: "",
@@ -155,18 +156,39 @@ export function LoginClient() {
               <label className="block text-sm text-[#c2c6d6] ml-1" htmlFor="password">
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                placeholder="••••••••"
-                className="w-full rounded-lg py-3 px-4 text-[#dfe2f1] placeholder:text-[#c2c6d6]/30 focus:ring-1 focus:ring-[#adc6ff] focus:border-[#adc6ff] transition-all"
-                style={{
-                  background: "rgba(10, 14, 24, 0.8)",
-                  border: "1px solid rgba(66, 71, 84, 0.3)",
-                }}
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  placeholder="••••••••"
+                  className="w-full rounded-lg py-3 pl-4 pr-11 text-[#dfe2f1] placeholder:text-[#c2c6d6]/30 focus:ring-1 focus:ring-[#adc6ff] focus:border-[#adc6ff] transition-all"
+                  style={{
+                    background: "rgba(10, 14, 24, 0.8)",
+                    border: "1px solid rgba(66, 71, 84, 0.3)",
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  className="absolute right-0 top-0 h-full px-3 flex items-center text-[#c2c6d6]/50 hover:text-[#c2c6d6] transition-colors cursor-pointer"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                      <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                      <line x1="2" x2="22" y1="2" y2="22" />
+                    </svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24">
+                      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             <RippleButton
