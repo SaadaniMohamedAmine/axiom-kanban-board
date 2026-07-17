@@ -8,13 +8,23 @@ const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const withPWA = withPWAInit({
   dest: "public",
-  // EMERGENCY: force-disabled — next-pwa's webpack/turbopack config
-  // patching breaks Vercel's serverless output file tracing, causing
-  // every DB-touching route to 500 with "Cannot find module
-  // '@prisma/client-runtime-utils'" in production. Re-enable once a
-  // tracing-safe next-pwa config (or alternative) is confirmed working
-  // on a preview deployment.
-  disable: true,
+  // Previously force-disabled after being suspected in a prod incident
+  // where DB-touching routes 500'd with "Cannot find module
+  // '@prisma/client-runtime-utils'". The real cause was a stray custom
+  // Prisma generator `output` path (unrelated to this plugin) plus a
+  // separate Vercel packaging bug in outputFileTracingIncludes, both
+  // fixed below and in prisma/schema.prisma — next-pwa was never
+  // actually the cause. Re-enabling; still verify on a preview deploy
+  // before merging, since the original incident was never conclusively
+  // cleared of next-pwa involvement.
+  //
+  // IMPORTANT: this plugin only hooks into webpack's config function —
+  // confirmed empirically that it silently generates no service worker
+  // at all under Turbopack (no error, `public/sw.js` just never gets
+  // written). package.json's build script must stay on `next build
+  // --webpack` as long as PWA is enabled; switching back to Turbopack
+  // would make this `disable` flag a no-op lie.
+  disable: process.env.NODE_ENV === "development",
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
@@ -46,16 +56,18 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: path.join(__dirname),
   },
-  // Prisma 7's driver-adapter client loads its runtime via a computed
-  // require() (e.g. "@prisma/client-<hash>"), which Vercel's static file
-  // tracer can't follow — without this, the deployed function is missing
-  // @prisma/client-runtime-utils and every DB-touching route 500s.
-  outputFileTracingIncludes: {
-    "/*": [
-      "./node_modules/.prisma/client/**/*",
-      "./node_modules/@prisma/client-runtime-utils/**/*",
-    ],
-  },
+  // Prisma 7's driver-adapter client loads @prisma/client-runtime-utils via
+  // a computed require(), which Next's automatic file tracer can't follow —
+  // without externalizing it, the deployed function is missing that package
+  // and every DB-touching route 500s. This used to be worked around with
+  // outputFileTracingIncludes, but that glob crosses the pnpm symlink at
+  // node_modules/@prisma/client-runtime-utils without including the symlink
+  // itself, so Next re-creates a dangling symlink in the deploy package —
+  // "The framework produced an invalid deployment package... produces files
+  // in symlinked directories." serverExternalPackages is Next's supported
+  // mechanism for this class of package (it already externalizes
+  // @prisma/client and prisma by default) and doesn't have that bug.
+  serverExternalPackages: ["@prisma/client-runtime-utils"],
 };
 
 export default withSentryConfig(withNextIntl(withPWA(nextConfig)), {
