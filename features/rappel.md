@@ -39,18 +39,13 @@
 
 ## Sentry — vérifier la capture d'erreur réelle en production
 
-**Statut** : ⏭️ À faire après le prochain déploiement
+**Statut** : ✅ Résolu (2026-07-18) — et un vrai bug critique trouvé et corrigé au passage, pas juste "vérifié".
 
-**Contexte** : `sentry.client.config.ts` a `enabled: process.env.NODE_ENV === "production"` — donc **aucune erreur déclenchée en local (`pnpm dev`) ne remonte dans le dashboard Sentry**, même avec le DSN configuré. C'est voulu (évite de polluer le compte avec du bruit de dev). Le fallback `ErrorBoundary` a bien été validé visuellement en local (logo Axiom, "Something went wrong.", boutons Try again/Back to home, `Ref:` généré) — seule la transmission réelle vers Sentry reste à vérifier.
+**Ce qui s'est réellement passé** : le premier test (déclencher une erreur en prod via la console navigateur) n'est **jamais apparu** dans Sentry (dashboard bloqué sur l'écran d'onboarding "Waiting for this project's first error"), même en navigation privée sans extensions. Investigation a révélé que `sentry.client.config.ts` / `sentry.server.config.ts` / `sentry.edge.config.ts` sont la convention **pré-v8** de `@sentry/nextjs` — la version installée (10.65.0) ne les reconnaît plus du tout. Le SDK lui-même documente : *"When using Turbopack, `sentry.client.config.ts` will no longer work"* (ce projet build avec Turbopack). Autrement dit : **Sentry n'avait jamais capturé la moindre erreur, sur aucun environnement**, depuis la montée de version du SDK.
 
-**Bouton de test laissé en place volontairement** : `src/components/ui/test-error-button.tsx`, monté dans `src/app/(app)/[workspaceSlug]/page.tsx` (bouton rouge flottant "💥 Trigger error" en bas à droite). **Marqué TEMPORARY dans le code — à retirer après ce test.**
+**Fix appliqué** : remplacé les 3 fichiers obsolètes par `instrumentation-client.ts` (client) et `instrumentation.ts` avec `register()` (serveur/edge) + les hooks `onRouterTransitionStart`/`onRequestError` requis par le SDK. `global-error.tsx` appelait déjà correctement `Sentry.captureException` — il n'avait juste rien d'initialisé à qui rapporter.
 
-**À faire** :
-1. Redéployer `axiom-kanban-board` en production (les 4 vars `SENTRY_*` sont déjà sur Vercel)
-2. Aller sur le site déployé, se connecter, cliquer sur "💥 Trigger error"
-3. Vérifier que le fallback `ErrorBoundary` s'affiche bien aussi en prod
-4. Aller sur `mohamed-devs.sentry.io` → Issues → confirmer qu'une nouvelle erreur "Test error — manual ErrorBoundary trigger" est apparue (généralement en quelques secondes)
-5. **Une fois confirmé** : supprimer `src/components/ui/test-error-button.tsx` et son import/usage dans `[workspaceSlug]/page.tsx`, puis redéployer une dernière fois
+**Vérifié en prod après déploiement** : erreur de test déclenchée via la console → apparue dans `mohamed-devs.sentry.io` → Issues (`AXIOM-KANBAN-BOARD-1`, "Unhandled", `/dashboard`) en ~16 secondes. Capture confirmée fonctionnelle.
 
 ---
 
