@@ -10,3 +10,7 @@ Sentry.init({
     "Network request failed",
   ],
 });
+
+// Required by @sentry/nextjs so client-side route transitions are captured —
+// without this export the SDK logs an "ACTION REQUIRED" warning at build time.
+export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
