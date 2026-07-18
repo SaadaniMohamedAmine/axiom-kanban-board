@@ -10,9 +10,10 @@ import { MotionCta } from "@/components/marketing/motion-cta";
 
 interface Props {
   currentLocale: "fr" | "en";
+  isAuthenticated?: boolean;
 }
 
-export async function LandingPage({ currentLocale }: Props) {
+export async function LandingPage({ currentLocale, isAuthenticated = false }: Props) {
   const t = await getTranslations("landing");
   const tAi = await getTranslations("ai");
 
@@ -30,6 +31,8 @@ export async function LandingPage({ currentLocale }: Props) {
             subtitle={t("heroSubtitle")}
             startFree={t("startFree")}
             viewDemo={t("viewDemo")}
+            isAuthenticated={isAuthenticated}
+            goToDashboard={t("goToDashboard")}
           />
         </div>
 
@@ -120,22 +123,27 @@ export async function LandingPage({ currentLocale }: Props) {
       </section>
 
       {/* Features bento grid */}
-      <section id="features" className="max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:auto-rows-[220px]">
+      <section id="features" className="relative max-w-6xl mx-auto px-6 py-24 scroll-mt-16">
+        {/* Ambient depth glows behind the grid, theme-safe — gives the glass
+            cards' backdrop-blur something to diffuse. */}
+        <div className="absolute -top-10 left-1/4 w-72 h-72 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-[#8B5CF6]/10 blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-4 md:auto-rows-[220px]">
           {/* AI Priority Engine — the only tile carrying the AI accent (violet/cyan), per brand rules */}
           <FeatureTile
             index={0}
-            className="relative md:col-span-2 md:row-span-2 rounded-3xl p-8 md:p-10 flex flex-col justify-end overflow-hidden border border-outline-variant/20 bg-surface-container"
+            className="feature-card-premium relative md:col-span-2 md:row-span-2 rounded-3xl p-8 md:p-10 flex flex-col justify-end overflow-hidden"
           >
             <div className="absolute top-6 right-6 md:top-8 md:right-8 w-44">
-              <div className="absolute -inset-6 bg-[#8B5CF6]/20 blur-3xl rounded-full pointer-events-none" />
-              <div className="relative rounded-2xl border border-[#8B5CF6]/20 bg-surface-container-lowest/90 backdrop-blur-sm p-4 shadow-lg">
+              <div className="absolute -inset-6 bg-[#8B5CF6]/25 blur-3xl rounded-full pointer-events-none animate-pulse-slow" />
+              <div className="relative rounded-2xl border border-[#8B5CF6]/25 bg-surface-container-lowest/90 backdrop-blur-md p-4 shadow-[0_16px_40px_-12px_rgba(139,92,246,0.35)]">
                 <span className="font-mono text-[9px] uppercase tracking-widest text-[#8B5CF6]">Priority score</span>
                 <PriorityScoreBars />
               </div>
             </div>
 
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 text-[#8B5CF6]">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-gradient-to-br from-[#8B5CF6]/20 to-[#22D3EE]/10 border border-[#8B5CF6]/25 text-[#8B5CF6] shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]">
               <svg fill="none" height="22" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="22">
                 <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" />
                 <path d="M20 3v4" />
@@ -144,22 +152,22 @@ export async function LandingPage({ currentLocale }: Props) {
                 <path d="M5 18H3" />
               </svg>
             </div>
-            <h3 className="text-[22px] md:text-h1 font-semibold text-on-surface mb-3">{t("features.aiTitle")}</h3>
+            <h3 className="text-[22px] md:text-h1 font-semibold text-on-surface mb-3 tracking-tight">{t("features.aiTitle")}</h3>
             <p className="text-on-surface-variant max-w-md leading-relaxed">{t("features.aiDesc")}</p>
           </FeatureTile>
 
-          <FeatureTile index={1} className="rounded-3xl p-8 flex flex-col justify-center border border-outline-variant/20 bg-surface-container">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-surface-container-high border border-outline-variant/20 text-on-surface-variant">
+          <FeatureTile index={1} className="feature-card-premium rounded-3xl p-8 flex flex-col justify-center">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
               <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
               </svg>
             </div>
-            <h3 className="text-h3 font-semibold text-on-surface mb-2">{t("features.analyticsTitle")}</h3>
+            <h3 className="text-h3 font-semibold text-on-surface mb-2 tracking-tight">{t("features.analyticsTitle")}</h3>
             <p className="text-on-surface-variant text-[13px] leading-relaxed">{t("features.analyticsDesc")}</p>
           </FeatureTile>
 
-          <FeatureTile index={2} className="rounded-3xl p-8 flex flex-col justify-center border border-outline-variant/20 bg-surface-container">
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-surface-container-high border border-outline-variant/20 text-on-surface-variant">
+          <FeatureTile index={2} className="feature-card-premium rounded-3xl p-8 flex flex-col justify-center">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
               <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
@@ -167,16 +175,16 @@ export async function LandingPage({ currentLocale }: Props) {
                 <path d="M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
             </div>
-            <h3 className="text-h3 font-semibold text-on-surface mb-2">{t("features.realtimeTitle")}</h3>
+            <h3 className="text-h3 font-semibold text-on-surface mb-2 tracking-tight">{t("features.realtimeTitle")}</h3>
             <p className="text-on-surface-variant text-[13px] leading-relaxed">{t("features.realtimeDesc")}</p>
           </FeatureTile>
 
           <FeatureTile
             index={3}
-            className="md:col-span-2 rounded-3xl p-8 md:p-10 flex items-center justify-between border border-outline-variant/20 bg-surface-container"
+            className="feature-card-premium md:col-span-2 rounded-3xl p-8 md:p-10 flex items-center justify-between"
           >
             <div className="max-w-md">
-              <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-surface-container-high border border-outline-variant/20 text-on-surface-variant">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
                 <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                   <circle cx="12" cy="12" r="3" />
                   <path d="M3 7V5a2 2 0 0 1 2-2h2" />
@@ -185,7 +193,7 @@ export async function LandingPage({ currentLocale }: Props) {
                   <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
                 </svg>
               </div>
-              <h3 className="text-h2 font-semibold text-on-surface mb-3">{t("features.designTitle")}</h3>
+              <h3 className="text-h2 font-semibold text-on-surface mb-3 tracking-tight">{t("features.designTitle")}</h3>
               <p className="text-on-surface-variant leading-relaxed">{t("features.designDesc")}</p>
             </div>
             <div className="hidden sm:flex relative w-24 h-24 rounded-full border border-outline-variant/30 bg-surface-container-lowest items-center justify-center shrink-0">
@@ -194,16 +202,16 @@ export async function LandingPage({ currentLocale }: Props) {
             </div>
           </FeatureTile>
 
-          <FeatureTile index={4} className="relative rounded-3xl p-8 flex flex-col justify-center border border-outline-variant/20 bg-surface-container">
+          <FeatureTile index={4} className="feature-card-premium relative rounded-3xl p-8 flex flex-col justify-center">
             <span className="absolute top-6 right-6 font-mono text-[10px] px-1.5 py-0.5 rounded border border-outline-variant/30 text-on-surface-variant">
-              ⌘K
+              &#8984;K
             </span>
-            <div className="w-11 h-11 rounded-xl flex items-center justify-center mb-5 bg-surface-container-high border border-outline-variant/20 text-on-surface-variant">
+            <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5 bg-primary/15 border border-primary/20 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]">
               <svg fill="none" height="18" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="18">
                 <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
               </svg>
             </div>
-            <h3 className="text-h3 font-semibold text-on-surface mb-2">{t("features.paletteTitle")}</h3>
+            <h3 className="text-h3 font-semibold text-on-surface mb-2 tracking-tight">{t("features.paletteTitle")}</h3>
             <p className="text-on-surface-variant text-[13px] leading-relaxed">{t("features.paletteDesc")}</p>
           </FeatureTile>
         </div>
@@ -229,25 +237,37 @@ export async function LandingPage({ currentLocale }: Props) {
       </section>
 
       {/* CTA */}
-      <section className="max-w-5xl mx-auto px-6 py-24">
-        <div className="relative rounded-[40px] py-20 px-8 text-center overflow-hidden border border-outline-variant/20 bg-surface-container">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+      <section className="relative max-w-5xl mx-auto px-6 py-24">
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-64 bg-primary/10 blur-[120px] rounded-full pointer-events-none" />
+        <div className="relative rounded-[40px] py-20 px-8 text-center overflow-hidden border border-primary/20 bg-surface-container">
+          <div className="absolute inset-0 bg-gradient-to-b from-primary/10 to-transparent pointer-events-none" />
           <div className="relative">
             <h2 className="text-[36px] md:text-display font-semibold text-on-surface mb-6">{t("cta.title")}</h2>
             <p className="text-on-surface-variant text-[18px] max-w-xl mx-auto mb-10 leading-relaxed">{t("cta.subtitle")}</p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <MotionCta
-                href="/sign-up"
-                className="px-8 py-4 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 transition-[background]"
-              >
-                {t("startFree")}
-              </MotionCta>
-              <MotionCta
-                href="/login"
-                className="px-8 py-4 border border-outline-variant text-on-surface rounded-md text-[15px] font-medium hover:bg-surface-container-high transition-colors"
-              >
-                {t("viewDemo")}
-              </MotionCta>
+              {isAuthenticated ? (
+                <MotionCta
+                  href="/dashboard"
+                  className="px-8 py-4 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 transition-[background]"
+                >
+                  {t("goToDashboard")}
+                </MotionCta>
+              ) : (
+                <>
+                  <MotionCta
+                    href="/sign-up"
+                    className="px-8 py-4 bg-primary text-white rounded-md text-[15px] font-semibold hover:brightness-110 transition-[background]"
+                  >
+                    {t("startFree")}
+                  </MotionCta>
+                  <MotionCta
+                    href="/login"
+                    className="px-8 py-4 border border-outline-variant text-on-surface rounded-md text-[15px] font-medium hover:bg-surface-container-high transition-colors"
+                  >
+                    {t("viewDemo")}
+                  </MotionCta>
+                </>
+              )}
             </div>
           </div>
         </div>

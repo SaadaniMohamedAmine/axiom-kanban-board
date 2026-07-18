@@ -30,6 +30,35 @@ const ICON_PATHS: Record<string, React.ReactNode> = {
       <line x1="12" x2="12.01" y1="17" y2="17" />
     </>
   ),
+  welcome_back: <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0" />,
+  welcome: <path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12M12 15a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z" />,
+  workspace_created: <path d="M12 5v14M5 12h14" />,
+  board_created: <path d="M12 5v14M5 12h14" />,
+  task_created: <path d="M12 5v14M5 12h14" />,
+  workspace_archived: <path d="M21 8H3l1-4h16zM4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4" />,
+  board_archived: <path d="M21 8H3l1-4h16zM4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4" />,
+  task_archived: <path d="M21 8H3l1-4h16zM4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8M10 12h4" />,
+  workspace_deleted: <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />,
+  board_deleted: <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />,
+  task_deleted: <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />,
+  name_changed: (
+    <>
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+    </>
+  ),
+  password_changed: (
+    <>
+      <rect height="11" rx="2" ry="2" width="18" x="3" y="11" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </>
+  ),
+  plan_changed: (
+    <>
+      <rect height="14" rx="2" ry="2" width="20" x="2" y="5" />
+      <line x1="2" x2="22" y1="10" y2="10" />
+    </>
+  ),
 };
 
 const DEFAULT_ICON = (

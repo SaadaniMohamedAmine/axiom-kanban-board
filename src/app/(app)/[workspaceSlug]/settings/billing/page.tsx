@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
-import { getPlanLimits, getNextPlan, PLAN_PRICES } from "@/lib/billing/plan-limits";
+import { getPlanLimits, PLAN_PRICES } from "@/lib/billing/plan-limits";
 import { listRecentInvoices } from "@/lib/billing/stripe";
 import { UpgradeCheckoutButton } from "@/components/marketing/upgrade-checkout-button";
 import { DownloadAllInvoicesButton } from "@/components/billing/download-all-invoices-button";
@@ -65,9 +65,13 @@ export default async function BillingPage({ params, searchParams }: Props) {
   const tPricing = await getTranslations("pricing");
 
   const limits = getPlanLimits(workspace.plan);
-  const nextPlan = getNextPlan(workspace.plan);
   const plans = tPricing.raw("plans") as PlanContent[];
-  const nextPlanContent = nextPlan ? plans[PLAN_INDEX[nextPlan]] : null;
+  // Every tier above the current one gets its own card — a FREE workspace
+  // sees Pro *and* Team side by side instead of having to upgrade in
+  // lockstep through Pro first.
+  const upgradeTargets = (["PRO", "TEAM"] as const).filter(
+    (plan) => PLAN_INDEX[plan] > PLAN_INDEX[workspace.plan]
+  );
 
   const invoices = workspace.stripeCustomerId
     ? await listRecentInvoices(workspace.stripeCustomerId)
@@ -116,7 +120,7 @@ export default async function BillingPage({ params, searchParams }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 items-start">
         <div className="md:col-span-2 gradient-border rounded-2xl relative overflow-hidden">
           <svg className="absolute top-4 right-4 text-primary/6 pointer-events-none" fill="none" height="120" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" viewBox="0 0 24 24" width="120">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
@@ -162,30 +166,37 @@ export default async function BillingPage({ params, searchParams }: Props) {
           </div>
         </div>
 
-        {nextPlan && nextPlanContent ? (
-          <div className="rounded-2xl border border-outline-variant/20 bg-surface-container p-8 flex flex-col justify-between">
-            <div>
-              <p className="text-h3 text-on-surface mb-3 leading-snug">
-                {t("upgradeTo", { plan: nextPlanContent.name })}
-              </p>
-              <ul className="space-y-1.5 mb-6">
-                {nextPlanContent.features.slice(0, 4).map((feature) => (
-                  <li key={feature} className="flex items-start gap-2 text-[13px] text-on-surface-variant">
-                    <svg className="text-primary mt-0.5 shrink-0" fill="none" height="13" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="13">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <UpgradeCheckoutButton
-              workspaceId={workspace.id}
-              plan={nextPlan}
-              label={t("upgradeTo", { plan: nextPlanContent.name })}
-              processingLabel={t("processing")}
-              className="w-full py-3 rounded-xl bg-primary text-on-primary text-[13px] font-semibold hover:brightness-110 transition-all"
-            />
+        {upgradeTargets.length > 0 ? (
+          <div className="flex flex-col gap-6">
+            {upgradeTargets.map((plan) => {
+              const content = plans[PLAN_INDEX[plan]];
+              return (
+                <div key={plan} className="rounded-2xl border border-outline-variant/20 bg-surface-container p-8 flex flex-col justify-between flex-1">
+                  <div>
+                    <p className="text-h3 text-on-surface mb-3 leading-snug">
+                      {t("upgradeTo", { plan: content.name })}
+                    </p>
+                    <ul className="space-y-1.5 mb-6">
+                      {content.features.slice(0, 4).map((feature) => (
+                        <li key={feature} className="flex items-start gap-2 text-[13px] text-on-surface-variant">
+                          <svg className="text-primary mt-0.5 shrink-0" fill="none" height="13" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="13">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <UpgradeCheckoutButton
+                    workspaceId={workspace.id}
+                    plan={plan}
+                    label={t("upgradeTo", { plan: content.name })}
+                    processingLabel={t("processing")}
+                    className="w-full py-3 rounded-xl bg-primary text-on-primary text-[13px] font-semibold hover:brightness-110 transition-all"
+                  />
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="gradient-border rounded-2xl">

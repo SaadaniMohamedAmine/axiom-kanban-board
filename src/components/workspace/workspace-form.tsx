@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { createWorkspace } from "@/lib/actions/workspace.actions";
+import { isRedirectError } from "@/lib/is-redirect-error";
+import { UpgradeModal } from "@/components/ui/upgrade-modal";
 import { MOTION } from "@/lib/motion";
 
 export function WorkspaceForm() {
@@ -13,6 +15,7 @@ export function WorkspaceForm() {
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -31,10 +34,28 @@ export function WorkspaceForm() {
     try {
       await createWorkspace({ name: name.trim() });
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("createFailed"));
-    } finally {
+      if (isRedirectError(err)) throw err;
+      const message = err instanceof Error ? err.message : "";
+      if (message.startsWith("PLAN_LIMIT_WORKSPACES")) {
+        setShowUpgrade(true);
+      } else {
+        setError(message || t("createFailed"));
+      }
       setIsSubmitting(false);
     }
+  }
+
+  if (showUpgrade) {
+    return (
+      <UpgradeModal
+        open
+        limitType="workspaces"
+        onClose={() => {
+          setShowUpgrade(false);
+          router.back();
+        }}
+      />
+    );
   }
 
   return (

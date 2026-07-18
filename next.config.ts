@@ -8,23 +8,15 @@ const withNextIntl = createNextIntlPlugin("./src/i18n.ts");
 
 const withPWA = withPWAInit({
   dest: "public",
-  // Previously force-disabled after being suspected in a prod incident
-  // where DB-touching routes 500'd with "Cannot find module
-  // '@prisma/client-runtime-utils'". The real cause was a stray custom
-  // Prisma generator `output` path (unrelated to this plugin) plus a
-  // separate Vercel packaging bug in outputFileTracingIncludes, both
-  // fixed below and in prisma/schema.prisma — next-pwa was never
-  // actually the cause. Re-enabling; still verify on a preview deploy
-  // before merging, since the original incident was never conclusively
-  // cleared of next-pwa involvement.
-  //
-  // IMPORTANT: this plugin only hooks into webpack's config function —
-  // confirmed empirically that it silently generates no service worker
-  // at all under Turbopack (no error, `public/sw.js` just never gets
-  // written). package.json's build script must stay on `next build
-  // --webpack` as long as PWA is enabled; switching back to Turbopack
-  // would make this `disable` flag a no-op lie.
-  disable: process.env.NODE_ENV === "development",
+  // Re-enabling this in production (2026-07-17) broke the Vercel deploy:
+  // "The framework produced an invalid deployment package for a Serverless
+  // Function... produces files in symlinked directories." That's the same
+  // failure mode commit 7ec82a9 already pinned on next-pwa's build-time
+  // config patching interfering with Next's output file tracing — the
+  // stray Prisma `output` path (b047fd5) explained the *500s*, but never
+  // actually cleared next-pwa as a packaging-time suspect. Disabling again
+  // until a tracing-safe next-pwa config is confirmed on a preview deploy.
+  disable: true,
   cacheOnFrontEndNav: true,
   aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
@@ -63,10 +55,10 @@ const nextConfig: NextConfig = {
   // outputFileTracingIncludes, but that glob crosses the pnpm symlink at
   // node_modules/@prisma/client-runtime-utils without including the symlink
   // itself, so Next re-creates a dangling symlink in the deploy package —
-  // "The framework produced an invalid deployment package... produces files
-  // in symlinked directories." serverExternalPackages is Next's supported
-  // mechanism for this class of package (it already externalizes
-  // @prisma/client and prisma by default) and doesn't have that bug.
+  // exactly the "produces files in symlinked directories" Vercel error.
+  // serverExternalPackages is Next's supported mechanism for this class of
+  // package (it already externalizes @prisma/client and prisma by default)
+  // and doesn't have that bug.
   serverExternalPackages: ["@prisma/client-runtime-utils"],
 };
 

@@ -5,6 +5,8 @@ import { prisma } from "../prisma";
 import { requireRole } from "../permissions";
 import { getPlanLimits } from "../billing/plan-limits";
 import { createAuditLog } from "../audit/log";
+import { createNotification } from "../notifications/create";
+import { getTranslations } from "next-intl/server";
 import {
   createWorkspaceSchema,
   renameWorkspaceSchema,
@@ -45,6 +47,18 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
     throw new Error("Workspace with this name already exists");
   }
 
+  // Plan limit: FREE users own at most 1 workspace. Membership in other
+  // people's workspaces doesn't count — only ones this user owns.
+  const ownedWorkspaces = await prisma.workspace.findMany({
+    where: { ownerId: session.user.id, deletedAt: null },
+    orderBy: { createdAt: "asc" },
+    select: { plan: true },
+  });
+  const effectivePlan = ownedWorkspaces[0]?.plan ?? "FREE";
+  if (ownedWorkspaces.length >= getPlanLimits(effectivePlan).maxWorkspaces) {
+    throw new Error(`PLAN_LIMIT_WORKSPACES:${effectivePlan}`);
+  }
+
   const workspace = await prisma.workspace.create({
     data: {
       name,
@@ -69,9 +83,16 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
     targetId: workspace.id,
     targetLabel: workspace.name,
   });
+  const tWsCreated = await getTranslations("notificationMessages");
+  void createNotification({
+    userId: session.user.id,
+    type: "workspace_created",
+    title: tWsCreated("workspace_created.title"),
+    message: tWsCreated("workspace_created.message", { name: workspace.name }),
+  });
 
   revalidatePath("/", "layout");
-  redirect(`/${workspace.slug}`);
+  redirect(`/${workspace.slug}?notify=workspace_created&name=${encodeURIComponent(workspace.name)}`);
 }
 
 export async function renameWorkspace(input: RenameWorkspaceInput) {
@@ -123,10 +144,17 @@ export async function deleteWorkspace(workspaceId: string) {
       targetId: workspaceId,
       targetLabel: workspace.name,
     });
+    const tWsDeleted = await getTranslations("notificationMessages");
+    void createNotification({
+      userId: session.user.id,
+      type: "workspace_deleted",
+      title: tWsDeleted("workspace_deleted.title"),
+      message: tWsDeleted("workspace_deleted.message", { name: workspace.name }),
+    });
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  redirect(`/workspaces?notify=workspace_deleted&name=${encodeURIComponent(workspace.name)}`);
 }
 
 export async function archiveWorkspace(workspaceId: string) {
@@ -139,6 +167,13 @@ export async function archiveWorkspace(workspaceId: string) {
 
   const session = await auth.api.getSession({ headers: await headers() });
   if (session) {
+    const tWsArchived = await getTranslations("notificationMessages");
+    void createNotification({
+      userId: session.user.id,
+      type: "workspace_archived",
+      title: tWsArchived("workspace_archived.title"),
+      message: tWsArchived("workspace_archived.message", { name: workspace.name }),
+    });
     void createAuditLog({
       workspaceId,
       actorId: session.user.id,
@@ -232,7 +267,14 @@ export async function inviteMember(input: InviteMemberInput) {
   });
   if (!workspace) throw new Error("Workspace not found");
   const limits = getPlanLimits(workspace.plan);
-  if (workspace._count.members >= limits.maxMembers) {
+
+  // Pending invitations count toward the limit too — otherwise it's a
+  // no-op gate, since a workspace can queue unlimited invites that only
+  // become real members later (as many as accept, all at once).
+  const pendingInvitationCount = await prisma.invitation.count({
+    where: { workspaceId, status: "PENDING", expiresAt: { gt: new Date() } },
+  });
+  if (workspace._count.members + pendingInvitationCount >= limits.maxMembers) {
     throw new Error(`PLAN_LIMIT_MEMBERS:${workspace.plan}`);
   }
 

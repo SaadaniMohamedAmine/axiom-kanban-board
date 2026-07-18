@@ -21,9 +21,9 @@ export const metadata: Metadata = {
 };
 
 export default async function ChangelogPage() {
-  const entries = await getAllChangelogEntries();
-  const t = await getTranslations("changelog");
   const locale = await getLocale();
+  const entries = await getAllChangelogEntries(locale as "en" | "fr");
+  const t = await getTranslations("changelog");
 
   return (
     <div className="min-h-screen bg-background text-on-surface">

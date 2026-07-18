@@ -14,13 +14,23 @@ export interface ChangelogEntry {
 
 const CHANGELOG_DIR = path.join(process.cwd(), "src/content/changelog");
 
-export async function getAllChangelogEntries(): Promise<ChangelogEntry[]> {
-  const fileNames = fs.readdirSync(CHANGELOG_DIR).filter((f) => f.endsWith(".md"));
+// Canonical entries are `v*.md` (English). A sibling `v*.fr.md` is an
+// optional French translation of the same entry, picked up when it exists.
+export async function getAllChangelogEntries(
+  locale: "en" | "fr" = "en"
+): Promise<ChangelogEntry[]> {
+  const fileNames = fs
+    .readdirSync(CHANGELOG_DIR)
+    .filter((f) => /^v[\d-]+\.md$/.test(f));
 
   const entries = await Promise.all(
     fileNames.map(async (fileName) => {
       const slug = fileName.replace(/\.md$/, "");
-      const fullPath = path.join(CHANGELOG_DIR, fileName);
+      const translatedPath = path.join(CHANGELOG_DIR, `${slug}.fr.md`);
+      const fullPath =
+        locale === "fr" && fs.existsSync(translatedPath)
+          ? translatedPath
+          : path.join(CHANGELOG_DIR, fileName);
       const fileContents = fs.readFileSync(fullPath, "utf8");
       const { data, content } = matter(fileContents);
 

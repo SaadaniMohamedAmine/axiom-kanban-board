@@ -4,6 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { SignOutButton } from "./sign-out-button";
 
+// Same navy + blue tint as .onboarding-glass-card, instead of the neutral
+// --surface-container token, so the app chrome doesn't read as flat grey.
+const NAVY_BG = "linear-gradient(180deg, rgba(17,24,39,0.97) 0%, rgba(13,17,30,0.97) 100%)";
+
 interface MobileSidebarProps {
   memberships: {
     workspace: {
@@ -21,7 +25,10 @@ export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
 
   return (
     <>
-      <header className="md:hidden h-14 bg-surface-container border-b border-outline-variant flex items-center px-4 gap-3 sticky top-0 z-30">
+      <header
+        className="md:hidden h-14 border-b border-primary/10 flex items-center px-4 gap-3 sticky top-0 z-30"
+        style={{ background: NAVY_BG }}
+      >
         <button
           onClick={() => setOpen(true)}
           className="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant"
@@ -44,9 +51,10 @@ export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
       )}
 
       <aside
-        className={`fixed top-0 left-0 h-full w-72 bg-surface-container border-r border-outline-variant z-50 flex flex-col transform transition-transform duration-200 md:hidden ${
+        className={`fixed top-0 left-0 h-full w-72 border-r border-primary/10 z-50 flex flex-col transform transition-transform duration-200 md:hidden ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
+        style={{ background: NAVY_BG }}
       >
         <div className="p-5 border-b border-outline-variant flex items-center justify-between">
           <h1 className="text-[18px] font-semibold text-on-surface">Axiom</h1>

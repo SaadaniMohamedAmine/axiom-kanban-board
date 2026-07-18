@@ -1,5 +1,6 @@
 {
   "nav": {
+    "board": "Board",
     "boards": "Boards",
     "analytics": "Analytics",
     "settings": "Settings",
@@ -24,6 +25,7 @@
     "switchWorkspace": "Switch workspace",
     "myAccount": "My account",
     "myTasks": "My Tasks",
+    "allTasks": "All Tasks",
     "aiInsights": "AI Insights",
     "archive": "Archive",
     "trash": "Trash",
@@ -40,6 +42,7 @@
     "viewDemo": "View demo →",
     "signIn": "Sign in",
     "getStarted": "Get started",
+    "goToDashboard": "Go to Dashboard",
     "features": {
       "aiTitle": "AI Priority Engine",
       "aiDesc": "Axiom Intelligence scores and reprioritizes your backlog automatically based on context, dependencies, and team velocity.",
@@ -89,6 +92,22 @@
       "title": "Access requested",
       "message": "{name} requested access to {resource}."
     }
+  },
+  "notificationMessages": {
+    "welcome_back": { "title": "Welcome back", "message": "Good to see you again, {name}." },
+    "welcome": { "title": "Welcome to Axiom", "message": "Great to have you here, {name}." },
+    "workspace_created": { "title": "Workspace created", "message": "\"{name}\" is ready to go." },
+    "workspace_archived": { "title": "Workspace archived", "message": "\"{name}\" has been archived." },
+    "workspace_deleted": { "title": "Workspace deleted", "message": "\"{name}\" was moved to trash." },
+    "board_created": { "title": "Board created", "message": "\"{name}\" is ready to go." },
+    "board_archived": { "title": "Board archived", "message": "\"{name}\" has been archived." },
+    "board_deleted": { "title": "Board deleted", "message": "\"{name}\" was moved to trash." },
+    "task_created": { "title": "Task created", "message": "{title}" },
+    "task_archived": { "title": "Task archived", "message": "{title}" },
+    "task_deleted": { "title": "Task deleted", "message": "{title}" },
+    "name_changed": { "title": "Name updated", "message": "Your name is now {name}." },
+    "password_changed": { "title": "Password updated", "message": "The password for {email} was changed." },
+    "plan_changed": { "title": "Plan updated", "message": "\"{workspace}\" is now on the {plan} plan." }
   },
   "legal": {
     "eyebrow": "Legal",
@@ -309,7 +328,160 @@
       "HIGH": "High",
       "MEDIUM": "Medium",
       "LOW": "Low"
+    },
+    "templates": {
+      "KANBAN": "Kanban",
+      "SCRUM": "Scrum",
+      "BUG_TRACKING": "Bug Tracking",
+      "CUSTOM": "Custom"
+    },
+    "createBoardModal": {
+      "title": "Create Board",
+      "nameLabel": "Board Name",
+      "namePlaceholder": "e.g., Sprint Planning",
+      "templateLabel": "Template",
+      "creating": "Creating...",
+      "create": "Create",
+      "failed": "Failed to create board"
+    },
+    "createTaskModal": {
+      "title": "Create Task",
+      "titleLabel": "Task Title",
+      "titlePlaceholder": "e.g., Fix login redirect bug",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Add more detail...",
+      "statusLabel": "Status",
+      "priorityLabel": "Priority",
+      "dueDateLabel": "Due Date",
+      "labelsLabel": "Labels",
+      "creating": "Creating...",
+      "create": "Create Task",
+      "created": "Task created",
+      "failed": "Failed to create task"
+    },
+    "boardsList": {
+      "noBoards": "No boards yet",
+      "boardCount": "{count, plural, one {# board} other {# boards}}",
+      "emptyState": "Create your first board to start organizing work.",
+      "createBoard": "Create Board",
+      "columns": "columns",
+      "tasks": "tasks",
+      "openBoard": "Open board",
+      "archiveAction": "Archive board",
+      "moveToTrashAction": "Move to trash",
+      "archiveModalTitle": "Archive board?",
+      "deleteModalTitle": "Move board to trash?",
+      "archiveConfirm": "\"{name}\" will be hidden from the board list. You can restore it later.",
+      "deleteConfirm": "\"{name}\" will be moved to trash. You can restore it later, or delete it permanently from there.",
+      "working": "Working…",
+      "archivedToast": "Board archived",
+      "deletedToast": "Board moved to trash",
+      "actionFailed": "Something went wrong",
+      "restoring": "Restoring…",
+      "restore": "Restore",
+      "restoredToast": "\"{name}\" restored",
+      "restoreFailed": "Failed to restore board",
+      "deleteForever": "Delete forever",
+      "deleting": "Deleting…",
+      "deleteFailed": "Failed to delete board"
+    },
+    "archivedPage": {
+      "desc": "Archived boards are hidden from the board list. Restore one to make it active again.",
+      "empty": "Nothing archived yet.",
+      "archivedOn": "Archived {date}",
+      "backToBoards": "Back to boards"
+    },
+    "trashPage": {
+      "desc": "Deleted boards stay here until you restore them or delete them forever.",
+      "empty": "Trash is empty.",
+      "deletedOn": "Deleted {date}",
+      "backToBoards": "Back to boards",
+      "deleteForeverTitle": "Delete forever",
+      "deleteForeverConfirm": "This permanently deletes \"{name}\" and everything in it — columns and tasks. This cannot be undone.",
+      "deletedForeverToast": "\"{name}\" deleted forever"
     }
+  },
+  "taskDetail": {
+    "taskLabel": "Task {code}",
+    "description": "Description",
+    "noDescriptionYet": "No description yet",
+    "clickToAddDescription": "Click to add description...",
+    "activity": "Activity",
+    "noActivityYet": "No activity yet",
+    "comments": "Comments",
+    "close": "Close",
+    "created": "Created {date}",
+    "priority": "Priority",
+    "estimate": "Estimate (points)",
+    "dueDate": "Due Date",
+    "assignees": "Assignees",
+    "noAssignees": "No assignees",
+    "unknownMember": "Unknown member",
+    "assignedCount": "{count} assigned",
+    "noWorkspaceMembers": "No workspace members",
+    "labels": "Labels",
+    "noLabels": "No labels",
+    "bold": "Bold",
+    "italic": "Italic",
+    "list": "List",
+    "link": "Link",
+    "movedTask": "Moved {title}",
+    "updatedField": "Updated {field} on {title}",
+    "updatedAssignees": "Updated assignees on {title}",
+    "commentedOn": "Commented on {title}",
+    "updatedTask": "Updated {title}",
+    "justNow": "just now",
+    "minutesAgo": "{count}m ago",
+    "hoursAgo": "{count}h ago",
+    "daysAgo": "{count}d ago",
+    "movedColumn": "moved this task from {from} to {to}",
+    "updatedLabelsShort": "updated labels",
+    "changedField": "changed {field} from {from} to {to}",
+    "updatedAssigneesShort": "updated assignees",
+    "assignedNames": "assigned {names}",
+    "unassignedNames": "unassigned {names}",
+    "addedComment": "added a comment",
+    "performedAction": "performed an action",
+    "unknownColumn": "Unknown",
+    "userFallback": "User {id}",
+    "updateFailed": "Failed to save changes",
+    "archive": "Archive",
+    "archivedToast": "Task archived",
+    "deletedToast": "Task deleted",
+    "archiveModalTitle": "Archive task?",
+    "deleteModalTitle": "Delete task?",
+    "archiveConfirm": "\"{title}\" will be hidden from the board. You can restore it later.",
+    "deleteConfirm": "This permanently deletes \"{title}\". This cannot be undone.",
+    "working": "Working…"
+  },
+  "workspacesPage": {
+    "openWorkspace": "Open workspace",
+    "archiveModalTitle": "Archive workspace",
+    "deleteModalTitle": "Move to Trash",
+    "archiveConfirm": "\"{name}\" will be archived and hidden from your workspace list. You can restore it later.",
+    "deleteConfirm": "\"{name}\" will be moved to Trash and hidden from your workspace list. You can restore it, or delete it forever, from Trash.",
+    "working": "Working...",
+    "archiveAction": "Archive workspace",
+    "moveToTrashAction": "Move to Trash",
+    "backToWorkspaces": "Back to Workspaces",
+    "archivedDesc": "Archived workspaces are hidden from your list. Restore one to make it active again.",
+    "nothingArchived": "Nothing archived yet.",
+    "trashDesc": "Deleted workspaces stay here until you restore them or delete them forever.",
+    "trashEmpty": "Trash is empty.",
+    "archivedOn": "Archived {date}",
+    "deletedOn": "Deleted {date}",
+    "restoring": "Restoring...",
+    "restore": "Restore",
+    "deleteForever": "Delete forever",
+    "deleteForeverTitle": "Delete forever",
+    "deleteForeverConfirm": "This permanently deletes \"{name}\" and everything in it — boards, tasks, and members. This cannot be undone.",
+    "deleting": "Deleting...",
+    "restoreFailed": "Failed to restore workspace",
+    "deleteFailed": "Failed to delete workspace",
+    "archivedToast": "Workspace archived",
+    "actionFailed": "Action failed",
+    "restoredToast": "\"{name}\" restored",
+    "deletedForeverToast": "\"{name}\" deleted forever"
   },
   "ai": {
     "name": "Axiom Intelligence",
@@ -330,7 +502,7 @@
     "remainingLabel": "remaining",
     "infoLine1": "The daily limit applies across all AI features — priority, estimation, description, blocker detection, and smart assignment.",
     "infoLine2": "The counter resets automatically at midnight UTC every day.",
-    "infoLine3": "To adjust the limit, set the AI_DAILY_LIMIT environment variable and redeploy."
+    "infoLine3": "Your daily limit depends on your plan — Free: 10, Pro: 200, Team: 500 requests per day."
   },
   "sprint": {
     "active": "Active sprint",
@@ -411,7 +583,43 @@
     "noStripeAccount": "No billing account on file yet — invoices will appear here after your first payment.",
     "manageBilling": "Manage billing",
     "downloadAllReceipts": "Download All Receipts",
-    "subscriptionActivated": "Subscription activated. Welcome to {plan}."
+    "subscriptionActivated": "Subscription activated. Welcome to {plan}.",
+    "boardsUsage": "Boards",
+    "aiUsage": "AI today",
+    "upgradeModal": {
+      "planName": "Axiom Pro — ${price}/month",
+      "later": "Later",
+      "upgradeCta": "Upgrade to Pro →",
+      "redirecting": "Redirecting…",
+      "features": [
+        "Unlimited workspaces",
+        "Unlimited boards",
+        "200 AI requests / day",
+        "Webhooks & Public API",
+        "Audit log (90 days)",
+        "50 members per workspace"
+      ],
+      "workspaces": {
+        "title": "Workspace limit reached",
+        "description": "The Free plan includes 1 workspace. Upgrade to Pro to create unlimited workspaces.",
+        "highlight": "Unlimited workspaces"
+      },
+      "boards": {
+        "title": "Board limit reached",
+        "description": "The Free plan includes 2 boards per workspace. Upgrade to Pro for unlimited boards.",
+        "highlight": "Unlimited boards"
+      },
+      "ai": {
+        "title": "Axiom Intelligence quota reached",
+        "description": "You've used your 10 free AI requests today. Your quota resets at midnight UTC.",
+        "highlight": "200 AI requests / day"
+      },
+      "members": {
+        "title": "Member limit reached",
+        "description": "The Free plan includes 10 members. Upgrade to Pro to invite up to 50 members.",
+        "highlight": "50 members per workspace"
+      }
+    }
   },
   "errors": {
     "generic": "Something went wrong. Please try again.",
@@ -437,6 +645,98 @@
     "considering": "Considering",
     "lastUpdated": "Last updated July 2026",
     "backToAxiom": "Back to Axiom"
+  },
+  "roadmapColumns": {
+    "now": {
+      "label": "Now",
+      "description": "What we're shipping or just shipped"
+    },
+    "next": {
+      "label": "Next",
+      "description": "What's coming in the next 60 days"
+    },
+    "later": {
+      "label": "Later",
+      "description": "Longer-term vision"
+    }
+  },
+  "roadmapItems": {
+    "kanban-core": {
+      "title": "Core Kanban Board",
+      "description": "Drag-and-drop columns and tasks, real-time sync via Pusher Channels."
+    },
+    "ai-intelligence": {
+      "title": "Axiom Intelligence Engine",
+      "description": "AI-powered prioritization, estimation, blocker detection, and smart assignment."
+    },
+    "sprint-analytics": {
+      "title": "Sprint Analytics",
+      "description": "Burndown charts, velocity tracking, AI-generated sprint health summaries."
+    },
+    "dark-light": {
+      "title": "Dark & Light Mode",
+      "description": "Full design token system with next-themes and system preference detection."
+    },
+    "cmd-palette": {
+      "title": "Command Palette",
+      "description": "Global ⌘K search across all tasks and boards with keyboard navigation."
+    },
+    "premium-redesign": {
+      "title": "Premium Visual Redesign",
+      "description": "Glass-card design language, priority accent colors, and full French/English translation coverage across the entire app."
+    },
+    "workspace-lifecycle": {
+      "title": "Workspace Archive & Trash",
+      "description": "Archive a workspace or move it to Trash with a dedicated recovery page, instead of an instant, irreversible delete."
+    },
+    "team-management": {
+      "title": "Team Management & Presence",
+      "description": "Invite teammates, see real-time online/offline presence, and manage pending invitations from a dedicated team page."
+    },
+    "toast-notifications": {
+      "title": "Toast Notification System",
+      "description": "Instant top-right feedback for every action, with matching entries in the notification bell and notification center."
+    },
+    "webhooks": {
+      "title": "Webhooks & Public API",
+      "description": "REST API for external integrations, with API keys and docs at /docs/api."
+    },
+    "pwa": {
+      "title": "Progressive Web App",
+      "description": "Install Axiom on desktop or mobile and keep working offline with a dedicated fallback page."
+    },
+    "i18n": {
+      "title": "Internationalization",
+      "description": "Full French and English support across every screen, with a persistent locale switcher."
+    },
+    "emails": {
+      "title": "Transactional Emails",
+      "description": "On-brand email notifications for workspace invitations and task assignments."
+    },
+    "billing": {
+      "title": "Billing & Pricing Plans",
+      "description": "Stripe-powered subscription with Free, Pro, and Team tiers, plus an invoice history with downloads."
+    },
+    "audit-log": {
+      "title": "Audit Log & Compliance",
+      "description": "Full activity audit trail for workspace owners, exportable as CSV."
+    },
+    "push-notifications": {
+      "title": "Push Notifications",
+      "description": "Browser push notifications for mentions, assignments, and sprint milestones, building on the installable PWA."
+    },
+    "email-expansion": {
+      "title": "Expanded Email Notifications",
+      "description": "Mention and sprint-milestone emails, extending the transactional email system already sending invitations and task assignments."
+    },
+    "native-mobile": {
+      "title": "Native Mobile App",
+      "description": "React Native app with offline board access and push notifications."
+    },
+    "integrations": {
+      "title": "GitHub / Linear Integration",
+      "description": "Sync tasks with GitHub Issues and Linear tickets bidirectionally."
+    }
   },
   "analytics": {
     "noActiveSprintFound": "No active sprint found.",
@@ -506,6 +806,7 @@
     "sending": "Sending...",
     "invite": "Invite",
     "inviteFailed": "Failed to send invitation",
+    "invitationSent": "Invitation sent",
     "members": "Members",
     "you": "(You)",
     "joined": "Joined",
@@ -607,7 +908,20 @@
     "yourWorkspaces": "Your workspaces",
     "activeSprint": "Active sprint",
     "noActiveSprint": "No active sprint",
-    "recentActivity": "Recent activity"
+    "recentActivity": "Recent activity",
+    "recentActivityDesc": "Your recent actions across every workspace"
+  },
+  "myTasksPage": {
+    "title": "My Tasks",
+    "subtitle": "Every open task assigned to you, across all your workspaces.",
+    "empty": "No open tasks assigned to you right now.",
+    "noDueDate": "No due date"
+  },
+  "allTasksPage": {
+    "title": "All Tasks",
+    "subtitle": "Every open task across all your workspaces, regardless of assignee.",
+    "empty": "No open tasks right now.",
+    "noDueDate": "No due date"
   },
   "notificationPrefs": {
     "title": "Notification preferences",
@@ -625,6 +939,20 @@
     "ai_suggestionDesc": "Notify me when Axiom Intelligence applies a suggestion.",
     "access_requested": "Access requests",
     "access_requestedDesc": "Notify me when someone requests access to a resource I own.",
+    "welcome_back": "Welcome back",
+    "welcome": "Welcome",
+    "workspace_created": "Workspace created",
+    "board_created": "Board created",
+    "task_created": "Task created",
+    "workspace_archived": "Workspace archived",
+    "board_archived": "Board archived",
+    "task_archived": "Task archived",
+    "workspace_deleted": "Workspace deleted",
+    "board_deleted": "Board deleted",
+    "task_deleted": "Task deleted",
+    "name_changed": "Name changed",
+    "password_changed": "Password changed",
+    "plan_changed": "Plan changed",
     "allTypes": "All",
     "quietHours": "Quiet hours",
     "quietHoursDesc": "Buffer non-critical notifications during this window.",

@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { UpgradeModal } from "@/components/ui/upgrade-modal";
 
 interface ReasoningStreamProps {
   endpoint: string;
@@ -17,9 +19,11 @@ export function ReasoningStream({
   onError,
   autoStart = false,
 }: ReasoningStreamProps) {
+  const router = useRouter();
   const [text, setText] = useState("");
   const [status, setStatus] = useState<"idle" | "streaming" | "done" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
   async function startStream() {
@@ -39,8 +43,11 @@ export function ReasoningStream({
       });
 
       if (res.status === 429) {
-        const data = await res.json() as { error: string };
-        setErrorMsg(data.error);
+        const data = await res.json() as { error: string; message?: string };
+        if (data.error === "quota_exceeded") {
+          setShowUpgrade(true);
+        }
+        setErrorMsg(data.message ?? data.error);
         setStatus("error");
         onError?.(data.error);
         return;
@@ -89,6 +96,10 @@ export function ReasoningStream({
             if (parsed.done && parsed.logId) {
               setStatus("done");
               onDone?.(parsed.logId);
+              // incrementWorkspaceQuota already ran server-side — refresh so
+              // the sidebar's "AI today" usage bar reflects it immediately
+              // instead of waiting for the next unrelated navigation.
+              router.refresh();
               return;
             }
           } catch {
@@ -164,6 +175,12 @@ export function ReasoningStream({
           Regenerate
         </button>
       )}
+
+      <UpgradeModal
+        open={showUpgrade}
+        limitType="ai"
+        onClose={() => setShowUpgrade(false)}
+      />
     </div>
   );
 }

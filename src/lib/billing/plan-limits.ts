@@ -1,6 +1,7 @@
 import { WorkspacePlan } from "@prisma/client";
 
 export interface PlanLimits {
+  maxWorkspaces: number;
   maxBoards: number;
   maxMembers: number;
   maxAIRequestsPerDay: number;
@@ -11,14 +12,16 @@ export interface PlanLimits {
 
 export const PLAN_LIMITS: Record<WorkspacePlan, PlanLimits> = {
   FREE: {
-    maxBoards: 3,
+    maxWorkspaces: 1,
+    maxBoards: 2,
     maxMembers: 10,
-    maxAIRequestsPerDay: 20,
+    maxAIRequestsPerDay: 10,
     hasWebhooks: false,
     hasAuditLog: false,
     auditLogRetentionDays: 0,
   },
   PRO: {
+    maxWorkspaces: Infinity,
     maxBoards: Infinity,
     maxMembers: 50,
     maxAIRequestsPerDay: 200,
@@ -27,6 +30,7 @@ export const PLAN_LIMITS: Record<WorkspacePlan, PlanLimits> = {
     auditLogRetentionDays: 90,
   },
   TEAM: {
+    maxWorkspaces: Infinity,
     maxBoards: Infinity,
     maxMembers: Infinity,
     maxAIRequestsPerDay: 500,

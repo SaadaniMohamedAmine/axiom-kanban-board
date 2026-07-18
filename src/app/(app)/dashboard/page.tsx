@@ -36,6 +36,7 @@ export default async function DashboardPage() {
         dueDate: { lt: endOfToday },
         assignees: { some: { userId: session.user.id } },
         column: { name: { not: "Done" } },
+        archivedAt: null,
       },
       include: {
         board: { select: { name: true, workspace: { select: { slug: true } } } },
@@ -83,6 +84,7 @@ export default async function DashboardPage() {
   const tAi = await getTranslations("ai");
   const tNav = await getTranslations("nav");
   const tActions = await getTranslations("auditActions");
+  const tTaskDetail = await getTranslations("taskDetail");
 
   const todayLabel = now.toLocaleDateString(locale, { weekday: "long", month: "long", day: "numeric" });
 
@@ -90,13 +92,15 @@ export default async function DashboardPage() {
     const p = (payload ?? {}) as Record<string, unknown>;
     switch (type) {
       case "STATUS_CHANGE":
-        return p.field === "column" ? `Moved ${taskTitle}` : `Updated ${p.field} on ${taskTitle}`;
+        return p.field === "column"
+          ? tTaskDetail("movedTask", { title: taskTitle })
+          : tTaskDetail("updatedField", { field: String(p.field), title: taskTitle });
       case "ASSIGNED":
-        return `Updated assignees on ${taskTitle}`;
+        return tTaskDetail("updatedAssignees", { title: taskTitle });
       case "COMMENTED":
-        return `Commented on ${taskTitle}`;
+        return tTaskDetail("commentedOn", { title: taskTitle });
       default:
-        return `Updated ${taskTitle}`;
+        return tTaskDetail("updatedTask", { title: taskTitle });
     }
   }
 
@@ -218,7 +222,7 @@ export default async function DashboardPage() {
 
       <section>
         <h2 className="text-h3 text-on-surface mb-1">{t("recentActivity")}</h2>
-        <p className="text-[13px] text-on-surface-variant mb-4">Your recent actions across every workspace</p>
+        <p className="text-[13px] text-on-surface-variant mb-4">{t("recentActivityDesc")}</p>
         {recentActivityFeed.length === 0 ? (
           <div className="border border-dashed border-outline-variant/40 rounded-xl p-8 text-center text-on-surface-variant">
             {tSettings("nothingHereYet")}

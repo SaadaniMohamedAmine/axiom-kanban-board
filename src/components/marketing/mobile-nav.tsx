@@ -3,14 +3,18 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { MOTION } from "@/lib/motion";
 import { LocaleSwitcher } from "@/components/ui/locale-switcher";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { MotionCta } from "@/components/marketing/motion-cta";
+import { authClient } from "@/lib/auth-client";
+import { SPLASH_EVENT } from "@/components/app-splash";
 
 interface MobileNavProps {
   currentLocale: "fr" | "en";
+  user: { name: string; email: string } | null;
   labels: {
     features: string;
     pricing: string;
@@ -18,6 +22,8 @@ interface MobileNavProps {
     roadmap: string;
     signIn: string;
     getStarted: string;
+    dashboard: string;
+    signOut: string;
   };
 }
 
@@ -27,12 +33,24 @@ const drawerVariants = {
   exit: { x: "100%", transition: { duration: MOTION.duration.normal, ease: MOTION.ease.accelerate } },
 };
 
-export function MobileNav({ currentLocale, labels }: MobileNavProps) {
+export function MobileNav({ currentLocale, user, labels }: MobileNavProps) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => setMounted(true), []);
+
+  async function handleSignOut() {
+    if (isSigningOut) return;
+    setIsSigningOut(true);
+    setOpen(false);
+    window.dispatchEvent(new Event(SPLASH_EVENT));
+    await authClient.signOut();
+    router.push("/login");
+    router.refresh();
+  }
 
   return (
     <div className="md:hidden">
@@ -105,21 +123,43 @@ export function MobileNav({ currentLocale, labels }: MobileNavProps) {
                       <ThemeToggle />
                       <LocaleSwitcher currentLocale={currentLocale} />
                     </div>
-                    <Link
-                      href="/login"
-                      onClick={() => setOpen(false)}
-                      className="text-[14px] text-on-surface-variant hover:text-on-surface transition-colors"
-                    >
-                      {labels.signIn}
-                    </Link>
+                    {!user && (
+                      <Link
+                        href="/login"
+                        onClick={() => setOpen(false)}
+                        className="text-[14px] text-on-surface-variant hover:text-on-surface transition-colors"
+                      >
+                        {labels.signIn}
+                      </Link>
+                    )}
                   </div>
-                  <MotionCta
-                    href="/sign-up"
-                    onClick={() => setOpen(false)}
-                    className="mt-2 px-4 py-2.5 bg-primary text-white rounded-md text-[14px] font-medium text-center hover:brightness-110 transition-all"
-                  >
-                    {labels.getStarted}
-                  </MotionCta>
+                  {user ? (
+                    <>
+                      <div className="px-3 py-2 text-[13px] text-on-surface-variant truncate">{user.email}</div>
+                      <MotionCta
+                        href="/dashboard"
+                        onClick={() => setOpen(false)}
+                        className="mt-2 px-4 py-2.5 bg-primary text-white rounded-md text-[14px] font-medium text-center hover:brightness-110 transition-all"
+                      >
+                        {labels.dashboard}
+                      </MotionCta>
+                      <button
+                        onClick={handleSignOut}
+                        disabled={isSigningOut}
+                        className="mt-2 px-4 py-2.5 border border-outline-variant rounded-md text-[14px] font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors disabled:opacity-50 cursor-pointer"
+                      >
+                        {labels.signOut}
+                      </button>
+                    </>
+                  ) : (
+                    <MotionCta
+                      href="/sign-up"
+                      onClick={() => setOpen(false)}
+                      className="mt-2 px-4 py-2.5 bg-primary text-white rounded-md text-[14px] font-medium text-center hover:brightness-110 transition-all"
+                    >
+                      {labels.getStarted}
+                    </MotionCta>
+                  )}
                 </motion.div>
               </>
             )}

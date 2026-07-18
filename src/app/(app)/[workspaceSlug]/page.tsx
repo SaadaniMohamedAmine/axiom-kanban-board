@@ -3,7 +3,6 @@ import { prisma } from "@/lib/prisma";
 import { headers } from "next/headers";
 import { redirect, notFound } from "next/navigation";
 import { WorkspaceBoardsWithModal } from "./workspace-boards-with-modal";
-import { TestErrorButton } from "@/components/ui/test-error-button";
 
 export default async function WorkspacePage({
   params,
@@ -26,6 +25,7 @@ export default async function WorkspacePage({
         where: { userId: session.user.id },
       },
       boards: {
+        where: { archivedAt: null, deletedAt: null },
         orderBy: { createdAt: "asc" },
         include: {
           _count: { select: { columns: true, tasks: true } },
@@ -49,7 +49,6 @@ export default async function WorkspacePage({
         boards={workspace.boards}
         canCreateBoard={canCreateBoard}
       />
-      <TestErrorButton />
     </div>
   );
 }

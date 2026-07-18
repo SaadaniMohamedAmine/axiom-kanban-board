@@ -2,7 +2,7 @@
 
 > Portfolio project 02/30 | Senior Frontend Dev & Product Tech Manager
 
-[![CI](https://github.com/YOUR_GITHUB/axiom-kanban-board/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_GITHUB/axiom-kanban-board/actions)
+[![CI](https://github.com/SaadaniMohamedAmine/axiom-kanban-board/actions/workflows/ci.yml/badge.svg)](https://github.com/SaadaniMohamedAmine/axiom-kanban-board/actions)
 [![Live Demo](https://img.shields.io/badge/demo-axiom--kanban.vercel.app-8B5CF6?style=flat)](https://axiom-kanban.vercel.app)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript)](https://www.typescriptlang.org)
@@ -81,7 +81,7 @@ src/
 ## Local setup
 
 ```bash
-git clone https://github.com/YOUR_GITHUB/axiom-kanban-board
+git clone https://github.com/SaadaniMohamedAmine/axiom-kanban-board
 cd axiom-kanban-board
 pnpm install
 
