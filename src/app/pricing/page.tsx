@@ -11,6 +11,9 @@ import { UpgradeCheckoutButton } from "@/components/marketing/upgrade-checkout-b
 export const metadata: Metadata = {
   title: "Pricing — Axiom",
   description: "Simple, transparent pricing for elite engineering teams.",
+  alternates: {
+    canonical: "/pricing",
+  },
 };
 
 const PLAN_META = [

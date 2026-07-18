@@ -387,6 +387,16 @@ export async function acceptInvitation(input: AcceptInvitationInput) {
     }),
   ]);
 
+  void createAuditLog({
+    workspaceId: invitation.workspaceId,
+    actorId: session.user.id,
+    actorEmail: session.user.email,
+    action: "MEMBER_JOINED",
+    targetType: "member",
+    targetId: session.user.id,
+    targetLabel: session.user.email,
+  });
+
   revalidatePath("/", "layout");
   redirect(`/${invitation.workspace.slug}`);
 }

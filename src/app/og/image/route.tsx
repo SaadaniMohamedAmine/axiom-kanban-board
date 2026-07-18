@@ -6,7 +6,10 @@ import { ImageResponse } from "next/og";
 // image generation isn't latency-sensitive, so Node.js is fine.
 export const runtime = "nodejs";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const title = searchParams.get("title");
+
   return new ImageResponse(
     (
       <div
@@ -88,9 +91,13 @@ export async function GET() {
             maxWidth: "900px",
           }}
         >
-          The intelligence layer
-          <br />
-          for elite teams.
+          {title ?? (
+            <>
+              The intelligence layer
+              <br />
+              for elite teams.
+            </>
+          )}
         </h1>
 
         {/* Subtitle */}

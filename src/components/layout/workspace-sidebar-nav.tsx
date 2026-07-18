@@ -100,6 +100,16 @@ export function WorkspaceSidebarNav({ memberships }: WorkspaceSidebarNavProps) {
       active: pathname === "/workspaces/trash",
       icon: iconTrash,
     },
+    ...(slug
+      ? [
+          {
+            href: `/${slug}/audit-log`,
+            label: t("auditLog"),
+            active: pathname === `/${slug}/audit-log`,
+            icon: iconAuditLog,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -322,6 +332,16 @@ const iconTrash = (
     <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
     <line x1="10" x2="10" y1="11" y2="17" />
     <line x1="14" x2="14" y1="11" y2="17" />
+  </svg>
+);
+
+const iconAuditLog = (
+  <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+    <path d="M9 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" />
+    <path d="M9 3a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1" />
+    <line x1="9" x2="15" y1="10" y2="10" />
+    <line x1="9" x2="15" y1="14" y2="14" />
+    <line x1="9" x2="12" y1="18" y2="18" />
   </svg>
 );
 

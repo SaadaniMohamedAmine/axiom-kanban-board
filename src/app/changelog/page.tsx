@@ -3,13 +3,20 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { getAllChangelogEntries } from "@/lib/changelog";
 import { SiteNav } from "@/components/marketing/site-nav";
 import { SiteFooter } from "@/components/marketing/site-footer";
+import { JsonLd } from "@/components/seo/json-ld";
+
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban-board.vercel.app";
 
 export const metadata: Metadata = {
   title: "Changelog",
   description: "Latest updates and improvements to Axiom.",
+  alternates: {
+    canonical: "/changelog",
+  },
   openGraph: {
     title: "Axiom Changelog",
     description: "Latest updates and improvements to Axiom.",
+    images: [{ url: "/og/image?title=Changelog", width: 1200, height: 630, alt: "Axiom Changelog" }],
   },
 };
 
@@ -20,6 +27,19 @@ export default async function ChangelogPage() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface">
+      {entries.map((entry) => (
+        <JsonLd
+          key={entry.slug}
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: entry.title,
+            datePublished: entry.date,
+            url: `${APP_URL}/changelog#v${entry.version}`,
+            author: { "@type": "Organization", name: "Axiom" },
+          }}
+        />
+      ))}
       <SiteNav currentLocale={locale as "fr" | "en"} />
 
       <main className="max-w-4xl mx-auto px-6 pt-32 pb-16">
@@ -40,7 +60,7 @@ export default async function ChangelogPage() {
 
           <div className="space-y-16">
             {entries.map((entry, index) => (
-              <div key={entry.slug} className="md:pl-8 relative">
+              <div key={entry.slug} id={`v${entry.version}`} className="md:pl-8 relative scroll-mt-24">
                 <div className="absolute left-0 top-2 w-3.5 h-3.5 rounded-full border-2 border-primary bg-background hidden md:block" />
 
                 <div className="flex items-center gap-3 flex-wrap mb-6">

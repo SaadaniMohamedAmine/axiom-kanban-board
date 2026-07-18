@@ -4,11 +4,14 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "API Reference",
   description: "Axiom REST API documentation. Integrate Axiom into your tools.",
+  alternates: {
+    canonical: "/docs/api",
+  },
 };
 
 export const dynamic = "force-static";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban-board.vercel.app";
 
 const ENDPOINTS = [
   {

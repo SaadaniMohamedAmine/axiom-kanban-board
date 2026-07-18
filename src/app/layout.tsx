@@ -7,7 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { AppSplash } from "@/components/app-splash";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban-board.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   keywords: ["kanban", "project management", "AI", "sprint planning", "team collaboration"],
   authors: [{ name: "Axiom Team" }],
   creator: "Axiom",
+  alternates: {
+    canonical: "/",
+  },
   robots: {
     index: true,
     follow: true,

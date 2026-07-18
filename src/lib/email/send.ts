@@ -4,7 +4,7 @@ import { InvitationEmail } from "./templates/invitation";
 import { WelcomeEmail } from "./templates/welcome";
 import { TaskAssignedEmail } from "./templates/task-assigned";
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban.vercel.app";
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://axiom-kanban-board.vercel.app";
 
 export async function sendInvitationEmail(params: {
   to: string;
