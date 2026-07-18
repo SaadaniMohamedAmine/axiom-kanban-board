@@ -39,8 +39,12 @@ export function PlanCard({ memberships }: PlanCardProps) {
 
   const { workspace } = current;
   const isTopPlan = workspace.plan === "TEAM";
-  const isFree = workspace.plan === "FREE";
   const limits = getPlanLimits(workspace.plan);
+  // Boards has no ceiling past FREE, but AI/members quotas stay finite on
+  // every plan (Pro: 200/50, Team: 500/∞) — so those bars stay visible
+  // there too, just against a bigger number.
+  const hasBoardsLimit = Number.isFinite(limits.maxBoards);
+  const hasMembersLimit = Number.isFinite(limits.maxMembers);
 
   return (
     <div className="mx-4 mb-3 p-4 rounded-xl border border-outline-variant/20 bg-surface-container-high/60 space-y-3">
@@ -53,12 +57,15 @@ export function PlanCard({ memberships }: PlanCardProps) {
         </div>
       </div>
 
-      {isFree && (
-        <div className="space-y-2">
+      <div className="space-y-2">
+        {hasBoardsLimit && (
           <UsageBar label={t("boardsUsage")} used={workspace.boards.length} max={limits.maxBoards} />
-          <UsageBar label={t("aiUsage")} used={workspace.aiRequestsToday} max={limits.maxAIRequestsPerDay} />
-        </div>
-      )}
+        )}
+        <UsageBar label={t("aiUsage")} used={workspace.aiRequestsToday} max={limits.maxAIRequestsPerDay} />
+        {hasMembersLimit && (
+          <UsageBar label={t("membersUsage")} used={workspace._count.members} max={limits.maxMembers} />
+        )}
+      </div>
 
       <Link
         href={`/${workspace.slug}/settings/billing`}
