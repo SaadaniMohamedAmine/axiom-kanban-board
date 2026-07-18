@@ -77,7 +77,7 @@ export async function createBoard(input: CreateBoardInput) {
 
   const workspace = await prisma.workspace.findUnique({
     where: { id: workspaceId },
-    select: { plan: true, _count: { select: { boards: true } } },
+    select: { plan: true, _count: { select: { boards: { where: { archivedAt: null, deletedAt: null } } } } },
   });
   if (!workspace) throw new Error("Workspace not found");
   const limits = getPlanLimits(workspace.plan);

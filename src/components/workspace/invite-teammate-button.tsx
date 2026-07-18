@@ -5,22 +5,27 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { inviteMember } from "@/lib/actions/workspace.actions";
+import { UpgradeModal } from "@/components/ui/upgrade-modal";
+import { useToast } from "@/contexts/toast-context";
 import { MOTION } from "@/lib/motion";
 
 interface InviteTeammateButtonProps {
   workspaceId: string;
+  workspaceSlug: string;
 }
 
-export function InviteTeammateButton({ workspaceId }: InviteTeammateButtonProps) {
+export function InviteTeammateButton({ workspaceId, workspaceSlug }: InviteTeammateButtonProps) {
   const router = useRouter();
   const t = useTranslations("membersPage");
   const tTeam = useTranslations("teamPage");
   const tOnboarding = useTranslations("onboarding");
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [role, setRole] = useState<"ADMIN" | "MEMBER" | "VIEWER">("MEMBER");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -41,9 +46,16 @@ export function InviteTeammateButton({ workspaceId }: InviteTeammateButtonProps)
       await inviteMember({ workspaceId, email: email.trim(), role });
       setEmail("");
       setIsOpen(false);
+      toast(t("invitationSent"));
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t("inviteFailed"));
+      const message = err instanceof Error ? err.message : "";
+      if (message.startsWith("PLAN_LIMIT_MEMBERS")) {
+        setIsOpen(false);
+        setShowUpgrade(true);
+      } else {
+        setError(message || t("inviteFailed"));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -128,6 +140,13 @@ export function InviteTeammateButton({ workspaceId }: InviteTeammateButtonProps)
           </div>
         )}
       </AnimatePresence>
+
+      <UpgradeModal
+        open={showUpgrade}
+        limitType="members"
+        workspaceSlug={workspaceSlug}
+        onClose={() => setShowUpgrade(false)}
+      />
     </>
   );
 }

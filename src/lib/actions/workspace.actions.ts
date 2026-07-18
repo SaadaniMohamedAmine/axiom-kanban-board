@@ -47,6 +47,18 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
     throw new Error("Workspace with this name already exists");
   }
 
+  // Plan limit: FREE users own at most 1 workspace. Membership in other
+  // people's workspaces doesn't count — only ones this user owns.
+  const ownedWorkspaces = await prisma.workspace.findMany({
+    where: { ownerId: session.user.id, deletedAt: null },
+    orderBy: { createdAt: "asc" },
+    select: { plan: true },
+  });
+  const effectivePlan = ownedWorkspaces[0]?.plan ?? "FREE";
+  if (ownedWorkspaces.length >= getPlanLimits(effectivePlan).maxWorkspaces) {
+    throw new Error(`PLAN_LIMIT_WORKSPACES:${effectivePlan}`);
+  }
+
   const workspace = await prisma.workspace.create({
     data: {
       name,
@@ -255,7 +267,14 @@ export async function inviteMember(input: InviteMemberInput) {
   });
   if (!workspace) throw new Error("Workspace not found");
   const limits = getPlanLimits(workspace.plan);
-  if (workspace._count.members >= limits.maxMembers) {
+
+  // Pending invitations count toward the limit too — otherwise it's a
+  // no-op gate, since a workspace can queue unlimited invites that only
+  // become real members later (as many as accept, all at once).
+  const pendingInvitationCount = await prisma.invitation.count({
+    where: { workspaceId, status: "PENDING", expiresAt: { gt: new Date() } },
+  });
+  if (workspace._count.members + pendingInvitationCount >= limits.maxMembers) {
     throw new Error(`PLAN_LIMIT_MEMBERS:${workspace.plan}`);
   }
 

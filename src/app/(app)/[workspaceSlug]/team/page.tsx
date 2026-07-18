@@ -49,7 +49,7 @@ export default async function TeamPage({ params }: Props) {
             {t("membersActive", { count: workspace.members.length, name: workspace.name })}
           </p>
         </div>
-        {canInvite && <InviteTeammateButton workspaceId={workspace.id} />}
+        {canInvite && <InviteTeammateButton workspaceId={workspace.id} workspaceSlug={workspaceSlug} />}
       </div>
 
       <TeamMemberTable workspaceId={workspace.id} members={workspace.members} currentUserId={session.user.id} />

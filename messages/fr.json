@@ -502,7 +502,7 @@
     "remainingLabel": "restantes",
     "infoLine1": "La limite quotidienne s'applique à toutes les fonctionnalités IA — priorité, estimation, description, détection de blocages et assignation intelligente.",
     "infoLine2": "Le compteur se réinitialise automatiquement à minuit UTC chaque jour.",
-    "infoLine3": "Pour ajuster la limite, configurez la variable d'environnement AI_DAILY_LIMIT et redéployez."
+    "infoLine3": "Votre limite quotidienne dépend de votre offre — Free : 10, Pro : 200, Team : 500 requêtes par jour."
   },
   "sprint": {
     "active": "Sprint actif",
@@ -583,7 +583,43 @@
     "noStripeAccount": "Aucun compte de facturation enregistré pour l'instant — les factures apparaîtront ici après votre premier paiement.",
     "manageBilling": "Gérer la facturation",
     "downloadAllReceipts": "Télécharger tous les reçus",
-    "subscriptionActivated": "Abonnement activé. Bienvenue sur {plan}."
+    "subscriptionActivated": "Abonnement activé. Bienvenue sur {plan}.",
+    "boardsUsage": "Boards",
+    "aiUsage": "IA aujourd'hui",
+    "upgradeModal": {
+      "planName": "Axiom Pro — {price}$/mois",
+      "later": "Plus tard",
+      "upgradeCta": "Passer en Pro →",
+      "redirecting": "Redirection…",
+      "features": [
+        "Workspaces illimités",
+        "Boards illimités",
+        "200 requêtes IA / jour",
+        "Webhooks & API publique",
+        "Journal d'audit (90 jours)",
+        "50 membres par workspace"
+      ],
+      "workspaces": {
+        "title": "Limite de workspaces atteinte",
+        "description": "L'offre Free inclut 1 workspace. Passez en Pro pour créer des workspaces illimités.",
+        "highlight": "Workspaces illimités"
+      },
+      "boards": {
+        "title": "Limite de boards atteinte",
+        "description": "L'offre Free inclut 2 boards par workspace. Passez en Pro pour des boards illimités.",
+        "highlight": "Boards illimités"
+      },
+      "ai": {
+        "title": "Quota Axiom Intelligence atteint",
+        "description": "Vous avez utilisé vos 10 requêtes IA gratuites aujourd'hui. Le quota se réinitialise à minuit UTC.",
+        "highlight": "200 requêtes IA / jour"
+      },
+      "members": {
+        "title": "Limite de membres atteinte",
+        "description": "L'offre Free inclut 10 membres. Passez en Pro pour inviter jusqu'à 50 membres.",
+        "highlight": "50 membres par workspace"
+      }
+    }
   },
   "errors": {
     "generic": "Une erreur est survenue. Veuillez réessayer.",
@@ -770,6 +806,7 @@
     "sending": "Envoi...",
     "invite": "Inviter",
     "inviteFailed": "Échec de l'envoi de l'invitation",
+    "invitationSent": "Invitation envoyée",
     "members": "Membres",
     "you": "(Vous)",
     "joined": "Rejoint le",

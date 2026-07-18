@@ -194,7 +194,7 @@ export function WorkspaceBoardsWithModal({ workspaceId, workspaceSlug, boards: i
       )}
 
       {isCreating && (
-        <BoardCreateModal workspaceId={workspaceId} onClose={() => setIsCreating(false)} />
+        <BoardCreateModal workspaceId={workspaceId} workspaceSlug={workspaceSlug} onClose={() => setIsCreating(false)} />
       )}
 
       <AnimatePresence>

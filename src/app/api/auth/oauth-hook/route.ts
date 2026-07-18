@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { createNotification } from "@/lib/notifications/create";
 import { sendWelcomeEmail } from "@/lib/email/send";
 import { notifyLogin } from "@/lib/actions/notification.actions";
+import { prisma } from "@/lib/prisma";
 
 // Better Auth redirects the browser here (GET) once an OAuth callback
 // succeeds — there's no client-side "success" moment to hook into like the
@@ -30,5 +31,16 @@ export async function GET(req: NextRequest) {
   }
 
   const notifyKey = type === "signup" ? "welcome" : "welcome_back";
-  return NextResponse.redirect(new URL(`/dashboard?notify=${notifyKey}`, req.url));
+
+  // /dashboard server-redirects to /workspaces/new for a 0-workspace account
+  // (true for every fresh signup, and possible for a login too if the user
+  // left/deleted all their workspaces). Landing the client mid-transition on
+  // /dashboard just to get bounced elsewhere corrupts Next's router state —
+  // resolve the real destination here instead.
+  const hasWorkspace = session
+    ? (await prisma.workspaceMember.count({ where: { userId: session.user.id } })) > 0
+    : false;
+  const destination = hasWorkspace ? "/dashboard" : "/workspaces/new";
+
+  return NextResponse.redirect(new URL(`${destination}?notify=${notifyKey}`, req.url));
 }
