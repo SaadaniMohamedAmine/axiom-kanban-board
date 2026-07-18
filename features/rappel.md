@@ -6,7 +6,7 @@
 
 ## Vercel Speed Insights — non activé sur axiom-kanban-board
 
-**Statut** : ⏭️ Reporté (pas bloquant)
+**Statut** : ✅ Résolu — décision actée, rien de plus à faire ici
 
 **Contexte** : Le composant `<SpeedInsights />` est bien intégré dans le code (`src/app/layout.tsx`), mais **la collecte de données n'est pas active** sur le projet `axiom-kanban-board` côté dashboard Vercel.
 
@@ -23,24 +23,17 @@
 **Vérifications correspondantes toujours valables (dans `src/app/layout.tsx`)** :
 - [x] `<Analytics />` correctement monté et actif (Web Analytics activé, confirmé fonctionnel)
 - [x] `<SpeedInsights />` correctement monté dans le code (aucune erreur console, aucun impact DX en dev)
-- [ ] Données Speed Insights réelles → **non applicable ici**, remplacé par Lighthouse/PageSpeed en Phase 10
+- [x] Données Speed Insights réelles → non applicable par décision ; remplacées par Lighthouse/PageSpeed manuel en Phase 10
 
 ---
 
-## Sentry — Auth Token pour les source maps non configuré
+## Sentry — Auth Token pour les source maps
 
-**Statut** : ⏭️ Reporté (pas bloquant)
+**Statut** : ✅ Résolu (2026-07-18) — token généré (scopes Project: Read & Write, Release: Admin, Organization: Read) et ajouté sur Vercel → `SENTRY_AUTH_TOKEN` (Production) via le CLI.
 
-**Contexte** : Le projet Sentry `axiom-kanban-board` (org `mohamed-devs`) est créé, le DSN est configuré. Les 4 vars (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`) sont déjà ajoutées dans `.env.local` **et** dans Vercel → Environment Variables (Production), via le CLI. La capture d'erreurs fonctionnera donc dès le prochain redéploiement.
+**Contexte** : Le projet Sentry `axiom-kanban-board` (org `mohamed-devs`) est créé, le DSN est configuré. Les 4 vars (`SENTRY_DSN`, `NEXT_PUBLIC_SENTRY_DSN`, `SENTRY_ORG`, `SENTRY_PROJECT`) + maintenant `SENTRY_AUTH_TOKEN` sont toutes sur Vercel → Environment Variables (Production).
 
-**Ce qui manque** : un **`SENTRY_AUTH_TOKEN`** (généré depuis Sentry → Settings → Auth Tokens) n'a pas été créé. Sans lui, `withSentryConfig` (dans `next.config.ts`) ne peut pas uploader automatiquement les source maps pendant le build CI.
-
-**Impact concret** : les erreurs remontent quand même dans Sentry en prod, mais les stack traces pointeront vers du **code JS minifié** (illisible) au lieu du code source TypeScript original — plus difficile à déboguer, mais pas bloquant pour que le monitoring fonctionne.
-
-**Pour finaliser plus tard** :
-1. Sentry → Settings → Auth Tokens → générer un token avec les scopes `project:releases` et `org:read` minimum
-2. L'ajouter dans Vercel → Environment Variables sous `SENTRY_AUTH_TOKEN`
-3. Redéployer — les prochaines erreurs captées auront des stack traces lisibles (code source réel, pas minifié)
+**Reste à faire** : redéployer — seulement à ce moment-là `withSentryConfig` (dans `next.config.ts`) uploadera les source maps pendant le build, et les prochaines erreurs captées auront des stack traces lisibles (code source réel, pas minifié) au lieu du JS minifié actuel.
 
 ---
 
@@ -71,11 +64,9 @@
 
 Corrigé côté Vercel pendant Phase D (env var ajoutée), et le fallback codé en dur a maintenant aussi été corrigé dans le code (`axiom-kanban.vercel.app` → `axiom-kanban-board.vercel.app`, 8 fichiers) — la var Vercel n'est plus un point de défaillance unique.
 
-### 🟠 2. Favicon / icônes manquants — toujours ouvert sur cette branche
+### ✅ 2. RÉSOLU — Favicon / icônes
 
-Aucun fichier `favicon.ico`, `icon.tsx`/`icon.png`, `apple-icon.tsx`/`apple-icon.png` dans `src/app/` **sur cette branche** (`fix-rappel-cleanup`, partie de `main`). Hors scope de ce nettoyage — déjà résolu indépendamment sur une autre branche en cours (redesign), à vérifier après fusion.
-
-**Fix** : créer `src/app/icon.tsx` (réutiliser le même logo SVG que la nav/OG image, généré dynamiquement comme `og/route.tsx`), + `apple-icon.tsx` en 180×180.
+`src/app/icon.tsx` et `src/app/apple-icon.tsx` existent maintenant — arrivés via le merge de `main` dans `fix-rappel-cleanup` (2026-07-18).
 
 ### ✅ 3. RÉSOLU — Données structurées JSON-LD (schema.org)
 
@@ -95,19 +86,19 @@ Aucun fichier `favicon.ico`, `icon.tsx`/`icon.png`, `apple-icon.tsx`/`apple-icon
 
 ---
 
-## Phase D — Emails transactionnels (Feature 024) pas encore testés en bout-en-bout
+## Phase D — Emails transactionnels (Feature 024) — test bout-en-bout écarté par décision (2026-07-18)
 
-**Statut** : ⏭️ À faire avant de merger la PR Phase D
+**Statut** : ✅ Clôturé par décision — **non testé**, choix assumé de ne pas le faire
 
-**Contexte** : `RESEND_API_KEY` et `RESEND_FROM` sont configurées sur Vercel (Production) depuis le 2026-07-11, avec l'adresse d'expédition sandbox `onboarding@resend.dev` (pas de domaine personnalisé vérifié — le projet tourne sur `axiom-kanban-board.vercel.app`, qui n'est pas vérifiable comme domaine d'envoi Resend). Le reste de Phase D (Rate Limiting, PWA, Webhooks/API) a été testé/validé en priorité, les emails ont été **volontairement reportés** car le compte Resend gratuit/sandbox limite l'envoi (quota bas, de l'ordre de quelques emails/heure).
+**Contexte** : `RESEND_API_KEY` et `RESEND_FROM` sont configurées sur Vercel (Production) depuis le 2026-07-11, avec l'adresse d'expédition sandbox `onboarding@resend.dev` (pas de domaine personnalisé vérifié — le projet tourne sur `axiom-kanban-board.vercel.app`, qui n'est pas vérifiable comme domaine d'envoi Resend). Le reste de Phase D (Rate Limiting, PWA, Webhooks/API) a été testé/validé en priorité ; les emails avaient d'abord été reportés à cause du quota bas du compte Resend gratuit/sandbox, puis la décision a été prise de ne pas exécuter ce test du tout avant la livraison.
 
-**À tester avant merge** :
-1. Email d'invitation (`inviteMember` → `sendInvitationEmail`) : inviter un membre depuis Settings → Members, vérifier réception + rendu du template `invitation.tsx`
-2. Email de bienvenue (`sendWelcomeEmail`) : créer un nouveau compte via `/sign-up` (email/password), vérifier réception + rendu du template `welcome.tsx` — la route `/api/auth/signup-hook` a été re-câblée pendant la review (elle ne l'était pas dans l'implémentation initiale), donc ce test valide aussi ce fix
-3. Vérifier dans le dashboard Resend (resend.com/logs) que les envois apparaissent bien, sans erreur
-4. Confirmer que le lien de désinscription et les liens dans les emails pointent vers la bonne URL (`https://axiom-kanban-board.vercel.app`, plus l'ancien domaine cassé)
+**Ce qui reste non vérifié en conséquence** (à garder en tête si un souci de délivrabilité remonte plus tard) :
+1. Email d'invitation (`inviteMember` → `sendInvitationEmail`) : rendu réel du template `invitation.tsx`, réception effective
+2. Email de bienvenue (`sendWelcomeEmail`) : rendu réel du template `welcome.tsx` — la route `/api/auth/signup-hook` avait été re-câblée pendant une review antérieure, ce test aurait aussi validé ce câblage
+3. Dashboard Resend (resend.com/logs) : pas vérifié que les envois arrivent sans erreur
+4. Liens dans les emails (désinscription, URL de base) : pas reconfirmés en conditions réelles
 
-**Note** : `sendTaskAssignedEmail` (template `task-assigned.tsx`) existe mais n'est câblé nulle part dans le code — hors scope des tâches originales de Phase D. Pas la peine de le tester, il ne se déclenche jamais actuellement.
+**Note** : `sendTaskAssignedEmail` (template `task-assigned.tsx`) existe mais n'est câblé nulle part dans le code — hors scope, ne se déclenche jamais actuellement.
 
 ---
 
@@ -135,32 +126,34 @@ Ce `output` custom existait depuis la Phase 2 (commit `8c83039`, tout début du 
 
 **Deux changements "de guerre" — résolu différemment que prévu (branche `fix-rappel-cleanup`, 2026-07-17)** :
 
-1. **`package.json` — `"build": "prisma generate && next build --webpack"`** : **gardé intentionnellement**, pas une dette à nettoyer. Testé le rebascule vers Turbopack (juste `next build`) : le build réussit, mais `@ducanh2912/next-pwa` **ne génère plus aucun service worker du tout** (aucune erreur, `public/sw.js` n'est simplement jamais écrit — ce plugin ne patche que la config webpack). Tant que PWA est actif, le build doit rester sur `--webpack`. Documenté directement dans `next.config.ts` pour ne pas se refaire avoir.
+1. **`package.json` — `"build"`** : redevenu `"prisma generate && next build"` (Turbopack, sans `--webpack`) maintenant que la PWA est désactivée en permanence (voir section suivante) — plus besoin de forcer Webpack juste pour que `next-pwa` génère un service worker. Si la PWA est un jour réactivée, il faudra remettre `--webpack`, sinon `@ducanh2912/next-pwa` ne génère plus aucun service worker (aucune erreur, `public/sw.js` n'est simplement jamais écrit — ce plugin ne patche que la config webpack).
 
 2. **`next.config.ts` — next-pwa `disable: true` en dur** : ✅ résolu, voir section suivante.
 
 ---
 
-## Phase D — PWA (Feature 020) réactivée en prod (branche `fix-rappel-cleanup`, 2026-07-17)
+## Phase D — PWA (Feature 020) — désactivée, ne pas retenter avant livraison (mis à jour 2026-07-18)
 
-**Statut** : ✅ Code fait et vérifié en local — ⏭️ reste seulement la vérification sur un déploiement preview avant de merger
+**Statut** : ⛔ Décision — reste désactivée (`disable: true`), ne pas réactiver avant un chantier dédié post-livraison
 
 **C'est quoi cette feature, concrètement** : la PWA (Progressive Web App) permet à Axiom de se comporter comme une vraie app installable :
 - **Installation / "Add to Home Screen"** : sur mobile (et desktop Chrome), le navigateur propose d'installer Axiom comme une app avec icône sur l'écran d'accueil, ouverture en plein écran sans barre d'adresse — comme une app native.
 - **Mode offline** : un service worker met les pages visitées en cache ; en cas de perte de connexion, au lieu de l'écran d'erreur navigateur générique, l'utilisateur voit la page `/offline` on-brand ("You are offline. Try again") avec bouton de reconnexion.
 - **Manifest** : nom de l'app, icônes 192px/512px, couleur de thème (`#0f131d`), raccourci direct "New Board" accessible en long-press sur l'icône de l'app.
 
-**Ce qui a été fait** :
-1. `next.config.ts` : `disable: true` → `disable: process.env.NODE_ENV === "development"`.
-2. Porté un fix découvert sur une autre branche pendant ce même nettoyage : `outputFileTracingIncludes` (l'ancien contournement pour `@prisma/client-runtime-utils`) traverse un symlink pnpm sans inclure le symlink lui-même, ce qui fait planter le packaging Vercel ("produces files in symlinked directories") — remplacé par `serverExternalPackages: ["@prisma/client-runtime-utils"]`, le mécanisme officiel de Next.js pour ce cas. Sans ce fix, réactiver PWA aurait probablement recassé le déploiement Vercel une deuxième fois.
-3. `pnpm build` en local confirmé : `public/sw.js` et `workbox-*.js` générés, `.next/server/.../route.js.nft.json` référence toujours correctement `client-runtime-utils`.
+**Historique complet des tentatives (3 essais, 3 échecs identiques)** :
+1. `7ec82a9` — PWA activée dès le départ → 1er incident : casse le tracing serverless Vercel → désactivée.
+2. `0f30c8e` → tentative de fix via `outputFileTracingIncludes` → PWA réactivée → `a4461b1` **2ème incident**, même erreur ("produces files in symlinked directories") → désactivée à nouveau.
+3. `cbb4aa4` — vrai fix trouvé pour le symlink Prisma : `outputFileTracingIncludes` remplacé par `serverExternalPackages: ["@prisma/client-runtime-utils"]` (mécanisme officiel Next.js).
+4. `28e5883` (cette branche, `fix-rappel-cleanup`) — PWA réactivée **par-dessus ce fix**, en pensant le problème du symlink réglé. `pnpm build` en local confirmait bien `public/sw.js`/`workbox-*.js` générés.
+5. `3f3f31d` (`main`, 2026-07-17) — **3ème incident** : réactivée en prod, a de nouveau cassé le déploiement Vercel avec exactement la même erreur, malgré le fix `serverExternalPackages` déjà en place → redésactivée (`disable: true`), état actuel.
 
-**Ce qui reste** : déployer en **Preview d'abord** (pas `--prod`, pas push direct sur `main`) et suivre le scénario de test :
-- Chrome DevTools → **Application** → **Manifest** : `name`, `icons` (192/512), `theme_color` (`#0f131d`) corrects
-- Chrome DevTools → **Lighthouse** → "Progressive Web App" → doit être vert
-- Mobile (ou device emulation) : doit proposer "Add to Home Screen" / "Install app"
-- Réseau coupé (DevTools → Network → Offline) + reload → doit afficher `/offline` avec "Try again"
-- Si tout est vert → merger, puis reconfirmer sur `https://axiom-kanban-board.vercel.app`
+**Conclusion** : `serverExternalPackages` résout bien le problème de symlink Prisma isolément, mais ne suffit pas à rendre next-pwa compatible avec ce pipeline de déploiement (Vercel + pnpm + Prisma) — il y a un conflit de packaging plus profond, non identifié. Deux tentatives de réactivation avec des fixes différents ont chacune recassé la prod. Vu la proximité de la livraison, on ne retente pas une 4ème fois sans certitude.
+
+**Pour un futur chantier PWA (post-livraison)** :
+- Ne jamais pousser directement en prod — toujours valider sur un déploiement **Preview** d'abord.
+- Creuser la cause réelle du conflit de packaging (probablement une interaction entre le patch webpack de `next-pwa` et le output file tracing de Next/Vercel, indépendante du symlink Prisma déjà réglé).
+- Scénario de test une fois un fix candidat trouvé : Chrome DevTools → Manifest (name/icons/theme_color), Lighthouse PWA (vert), "Add to Home Screen" sur mobile, mode offline (Network → Offline → reload → `/offline`).
 
 ---
 
@@ -168,15 +161,7 @@ Ce `output` custom existait depuis la Phase 2 (commit `8c83039`, tout début du 
 
 ### US2 — Billing / Stripe
 
-**Statut** : ✅ Stale — le bouton "Upgrade to Pro" décrit ci-dessous comme une ancre morte est déjà branché sur `UpgradeCheckoutButton` → `/api/billing/checkout` dans le code actuel de cette branche. Reste un test manuel de bout en bout (carte test Stripe), pas un bug de code.
-
-1. Connecté, va sur `/{workspace}/settings/billing`. Tu trouveras le plan actuel ("Free"), un bloc d'usage "Boards X / 3" et "Members X / 10", et un lien "Upgrade to Pro" (visible seulement en plan Free).
-2. Clique "Upgrade to Pro" → amène sur `/pricing` (3 cartes Free/Pro/Team).
-3. Ce qui marche déjà et est testable : plan-limit enforcement. Crée des tableaux jusqu'à 3 sur un workspace Free → le 4ème doit lever `PLAN_LIMIT_BOARDS:FREE` (vérifier si un message on-brand s'affiche ou si c'est une erreur brute non gérée côté UI).
-4. Pareil sur `/settings/members` : inviter jusqu'à 10 membres en Free → le 11ème doit lever `PLAN_LIMIT_MEMBERS:FREE`.
-5. Webhook Stripe (`/api/billing/webhook`) : déjà créé côté Stripe Dashboard (test mode, endpoint `https://axiom-kanban-board.vercel.app/api/billing/webhook`, events `checkout.session.completed`/`customer.subscription.updated`/`customer.subscription.deleted`) — non testé de bout en bout avec un vrai paiement.
-
-**À faire avant de considérer US2 validée** : tester un paiement réel en carte test Stripe (`4242 4242 4242 4242`) et vérifier que `Workspace.plan` passe à `PRO` après webhook. Test uniquement, pas de code à écrire.
+**Statut** : ✅ RÉSOLU (branche `feat-updaet-paiment-system-and-credentials`, 2026-07-18) — plan-limit enforcement réel implémenté (1 workspace / 2 boards / 10 requêtes IA par jour en FREE, `<UpgradeModal>` branché sur les 4 gates : workspace, board, membres, IA) et paiement réel testé de bout en bout plusieurs fois : checkout Stripe test mode (carte `4242 4242 4242 4242`) → webhook `checkout.session.completed` forwardé via `stripe listen` → `Workspace.plan` confirmé passé à `PRO` en base ; puis annulation → webhook `customer.subscription.deleted` → confirmé revenu à `FREE`. Cartes "Upgrade to Pro" et "Upgrade to Team" toutes les deux fonctionnelles sur `/settings/billing`.
 
 ### US3 — Audit Log
 
@@ -193,22 +178,21 @@ Ce `output` custom existait depuis la Phase 2 (commit `8c83039`, tout début du 
 - `MEMBER_ROLE_CHANGED` : pas de fonction de changement de rôle.
 - `AI_SUGGESTION_APPLIED` : les suggestions IA s'appliquent via les actions génériques de mise à jour de tâche (`task.actions.ts`), pas un point d'entrée dédié — instrumenter proprement demanderait de faire passer un flag "vient d'une suggestion IA" à travers plusieurs call sites.
 
-1. Va sur `/{workspace}/audit-log` (lien "Journal d'audit" en bas de la sidebar). Si tu n'es pas OWNER/ADMIN, tu trouveras un écran "Access restricted" — pas de 500, comportement correct.
-2. En tant qu'OWNER/ADMIN, tu trouveras un tableau avec colonnes Date/Actor/Action/Target, des filtres (email, action, période 7/30/90 jours), et un bouton "Export CSV".
-3. Teste l'export CSV : clique le bouton, vérifie que le fichier téléchargé a les colonnes Date/Actor/Action/Target Type/Target/IP Address.
+**Test manuel** : ✅ Fait (2026-07-18) — page, filtres (email/action/période) et Export CSV tous vérifiés fonctionnels. A fait remonter un vrai bug au passage : 11 types d'action ajoutés cette session (`WORKSPACE_ARCHIVED`/`UNARCHIVED`/`TRASHED`/`RESTORED`, `BOARD_ARCHIVED`/`UNARCHIVED`/`TRASHED`/`RESTORED`, `TASK_CREATED`/`ARCHIVED`/`UNARCHIVED`) n'avaient pas de label de traduction — la colonne Action affichait la clé brute (`auditActions.TASK_CREATED`) au lieu du libellé. Corrigé, plus le lien "Audit Log" ajouté dans la sidebar (n'existait qu'via Settings avant).
+
 4. Vérifie qu'aucune route ne permet de supprimer une entrée (pas de `DELETE` sur `/api/audit-log/*`) — confirmé déjà par audit de code, pas de UI à tester ici.
 
 ### US4 — Recruiter-Ready Packaging
 
-**Statut** : ⚠️ Contenu présent mais avec des placeholders non remplacés + une incohérence de statut.
+**Statut** : ✅ Résolu (2026-07-18) — README entièrement réécrit (premium, showcase complet de toutes les features livrées cette session), les 2 placeholders remplacés par les vraies URLs (portfolio : `https://portfolio-mas-eight.vercel.app/` ; le lien GitHub était en fait déjà correct).
 
-1. Ouvre `README.md` à la racine du repo. Tu trouveras les badges (CI, demo, Next.js, TypeScript), une table "What it does", une section "Why this stack", l'arborescence technique, les instructions de setup local, la section tests.
-2. **Bug connu** : les liens `https://github.com/YOUR_GITHUB/axiom-kanban-board` (badge CI + commande `git clone`) et `https://your-portfolio.com` (lien portfolio) sont des placeholders jamais remplacés par les vraies URLs.
-3. Va sur l'onglet Actions du repo GitHub : le badge CI dans le README doit pointer vers un run réellement vert. Avec les fixes CI de cette session, ça devrait être le cas maintenant — à reconfirmer après le merge de cette PR.
-4. En local, lance `pnpm db:seed` : doit créer sans erreur le workspace `axiom-demo` + 12 tâches (AX-1 à AX-12) + un sprint actif.
-5. Vérifie que la démo publique Vercel (`https://axiom-kanban-board.vercel.app`) a bien ces données de seed peuplées — pas vérifiable depuis le code, à checker manuellement en visitant le site.
+1. Ouvre `README.md` à la racine du repo. Tu trouveras les badges (CI, demo, Next.js, TypeScript, Prisma), une présentation par catégorie (Axiom Intelligence, gestion de projet, collaboration temps réel, billing, sécurité/audit, i18n/polish), la section "Why this stack", l'arborescence technique, les instructions de setup local, la section tests.
+2. ✅ Placeholders corrigés — plus aucun lien factice dans le README.
+3. ✅ Clôturé par décision (2026-07-18) — vérifié via `gh run list` : `Lint & Type Check` passe (vert), le job `Playwright E2E` échoue sur le run le plus récent (PR #18) et les précédents. Décision explicite : ne pas creuser davantage, considérer ce point validé tel quel.
+4. En local, lance `pnpm db:seed` : doit créer sans erreur le workspace `axiom-demo` + 12 tâches (AX-1 à AX-12) + un sprint actif. — pas re-testé cette session.
+5. Vérifie que la démo publique Vercel (`https://axiom-kanban-board.vercel.app`) a bien ces données de seed peuplées — pas vérifié cette session.
 6. Ouvre `PROGRESS.md` : la ligne finale a été corrigée cette session pour refléter l'état réel (Phase E code écrit mais pas 100% fonctionnel) plutôt que le claim erroné "24/24 — 100%" d'avant.
 
-**À faire avant de considérer US4 validée** : remplacer les 2 placeholders dans le README avec les vraies URLs (github.com/SaadaniMohamedAmine/axiom-kanban-board et l'URL du portfolio), confirmer le badge CI vert après merge, et peupler/vérifier la démo Vercel.
+**Reste optionnel** : re-tester `pnpm db:seed` et vérifier la démo Vercel peuplée (points 4-5) si on veut une validation à 100 % avant présentation à un recruteur — non bloquant pour la livraison.
 
 ---
