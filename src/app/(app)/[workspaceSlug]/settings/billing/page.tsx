@@ -120,7 +120,7 @@ export default async function BillingPage({ params, searchParams }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 items-start">
         <div className="md:col-span-2 gradient-border rounded-2xl relative overflow-hidden">
           <svg className="absolute top-4 right-4 text-primary/6 pointer-events-none" fill="none" height="120" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" viewBox="0 0 24 24" width="120">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
