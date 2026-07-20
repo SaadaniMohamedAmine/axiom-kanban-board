@@ -48,7 +48,7 @@ export function Column({ column, tasks, onTaskClick, canEdit, conflictedTaskIds,
           </button>
         )}
       </div>
-      <div ref={setNodeRef} className="flex-1 min-h-[200px] space-y-4 p-3 rounded-xl border border-dashed border-outline-variant/20 bg-surface-container-low/30">
+      <div ref={setNodeRef} className="flex-1 min-h-0 overflow-y-auto space-y-4 p-3 rounded-xl border border-dashed border-outline-variant/20 bg-surface-container-low/30">
         {tasks.length === 0 && (
           <div className="h-full flex items-center justify-center text-center px-4">
             <p className="text-[13px] text-on-surface-variant/40">{t("emptyColumn")}</p>
