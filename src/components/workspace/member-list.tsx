@@ -33,10 +33,14 @@ export function MemberList({ workspaceId, members, invitations, currentUserId, c
     setIsSubmitting(true);
     setError(null);
     try {
-      await inviteMember({ workspaceId, email: email.trim(), role });
+      const result = await inviteMember({ workspaceId, email: email.trim(), role });
+      if (result.error) {
+        setError(t("inviteFailed"));
+        return;
+      }
       setEmail("");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("inviteFailed"));
+    } catch {
+      setError(t("inviteFailed"));
     } finally {
       setIsSubmitting(false);
     }

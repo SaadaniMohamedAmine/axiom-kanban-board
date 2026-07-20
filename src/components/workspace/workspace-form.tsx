@@ -32,15 +32,16 @@ export function WorkspaceForm() {
     setIsSubmitting(true);
     setError(null);
     try {
-      await createWorkspace({ name: name.trim() });
+      const result = await createWorkspace({ name: name.trim() });
+      if (result?.error === "PLAN_LIMIT_WORKSPACES") {
+        setShowUpgrade(true);
+      } else if (result?.error) {
+        setError(t("createFailed"));
+      }
+      setIsSubmitting(false);
     } catch (err) {
       if (isRedirectError(err)) throw err;
-      const message = err instanceof Error ? err.message : "";
-      if (message.startsWith("PLAN_LIMIT_WORKSPACES")) {
-        setShowUpgrade(true);
-      } else {
-        setError(message || t("createFailed"));
-      }
+      setError(t("createFailed"));
       setIsSubmitting(false);
     }
   }

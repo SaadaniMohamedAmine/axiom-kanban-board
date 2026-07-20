@@ -54,21 +54,24 @@ export function BoardCreateModal({ workspaceId, workspaceSlug, onClose }: BoardC
     setIsSubmitting(true);
     setError(null);
     try {
-      const board = await createBoard({ workspaceId, name: name.trim(), template });
+      const result = await createBoard({ workspaceId, name: name.trim(), template });
+      if ("error" in result) {
+        if (result.error === "PLAN_LIMIT_BOARDS") {
+          setShowUpgrade(true);
+        } else {
+          setError(t("createBoardModal.failed"));
+        }
+        return;
+      }
       notify({
         type: "board_created",
         title: tNotify("board_created.title"),
-        message: tNotify("board_created.message", { name: board.name }),
+        message: tNotify("board_created.message", { name: result.name }),
       });
       router.refresh();
       onClose();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "";
-      if (message.startsWith("PLAN_LIMIT_BOARDS")) {
-        setShowUpgrade(true);
-      } else {
-        setError(t("createBoardModal.failed"));
-      }
+    } catch {
+      setError(t("createBoardModal.failed"));
     } finally {
       setIsSubmitting(false);
     }

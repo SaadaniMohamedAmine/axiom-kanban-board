@@ -43,19 +43,22 @@ export function InviteTeammateButton({ workspaceId, workspaceSlug }: InviteTeamm
     setIsSubmitting(true);
     setError(null);
     try {
-      await inviteMember({ workspaceId, email: email.trim(), role });
+      const result = await inviteMember({ workspaceId, email: email.trim(), role });
+      if (result.error === "PLAN_LIMIT_MEMBERS") {
+        setIsOpen(false);
+        setShowUpgrade(true);
+        return;
+      }
+      if (result.error) {
+        setError(t("inviteFailed"));
+        return;
+      }
       setEmail("");
       setIsOpen(false);
       toast(t("invitationSent"));
       router.refresh();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : "";
-      if (message.startsWith("PLAN_LIMIT_MEMBERS")) {
-        setIsOpen(false);
-        setShowUpgrade(true);
-      } else {
-        setError(message || t("inviteFailed"));
-      }
+    } catch {
+      setError(t("inviteFailed"));
     } finally {
       setIsSubmitting(false);
     }

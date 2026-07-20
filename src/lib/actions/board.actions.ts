@@ -82,7 +82,10 @@ export async function createBoard(input: CreateBoardInput) {
   if (!workspace) throw new Error("Workspace not found");
   const limits = getPlanLimits(workspace.plan);
   if (workspace._count.boards >= limits.maxBoards) {
-    throw new Error(`PLAN_LIMIT_BOARDS:${workspace.plan}`);
+    // Next.js redacts thrown-error messages from Server Actions in
+    // production — expected failures must be return values instead (see
+    // board-create-modal.tsx).
+    return { error: "PLAN_LIMIT_BOARDS" as const, plan: workspace.plan };
   }
 
   const defaultColumns = DEFAULT_COLUMNS[template] ?? DEFAULT_COLUMNS.CUSTOM;

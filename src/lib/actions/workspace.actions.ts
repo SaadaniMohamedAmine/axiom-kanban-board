@@ -44,7 +44,7 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
   });
 
   if (existingWorkspace) {
-    throw new Error("Workspace with this name already exists");
+    return { error: "DUPLICATE_SLUG" as const };
   }
 
   // Plan limit: FREE users own at most 1 workspace. Membership in other
@@ -56,7 +56,11 @@ export async function createWorkspace(input: CreateWorkspaceInput) {
   });
   const effectivePlan = ownedWorkspaces[0]?.plan ?? "FREE";
   if (ownedWorkspaces.length >= getPlanLimits(effectivePlan).maxWorkspaces) {
-    throw new Error(`PLAN_LIMIT_WORKSPACES:${effectivePlan}`);
+    // Next.js redacts thrown-error messages from Server Actions in
+    // production (only a generic digest reaches the client) — expected,
+    // business-rule failures must be modeled as return values instead so
+    // the client can actually branch on them (see workspace-form.tsx).
+    return { error: "PLAN_LIMIT_WORKSPACES" as const, plan: effectivePlan };
   }
 
   const workspace = await prisma.workspace.create({
@@ -275,7 +279,10 @@ export async function inviteMember(input: InviteMemberInput) {
     where: { workspaceId, status: "PENDING", expiresAt: { gt: new Date() } },
   });
   if (workspace._count.members + pendingInvitationCount >= limits.maxMembers) {
-    throw new Error(`PLAN_LIMIT_MEMBERS:${workspace.plan}`);
+    // Next.js redacts thrown-error messages from Server Actions in
+    // production — expected failures must be return values instead (see
+    // invite-teammate-button.tsx).
+    return { error: "PLAN_LIMIT_MEMBERS" as const, plan: workspace.plan };
   }
 
   const existingMember = await prisma.workspaceMember.findFirst({
@@ -286,7 +293,7 @@ export async function inviteMember(input: InviteMemberInput) {
   });
 
   if (existingMember) {
-    throw new Error("User is already a member of this workspace");
+    return { error: "ALREADY_MEMBER" as const };
   }
 
   const existingInvitation = await prisma.invitation.findFirst({
@@ -299,7 +306,7 @@ export async function inviteMember(input: InviteMemberInput) {
   });
 
   if (existingInvitation) {
-    throw new Error("An invitation is already pending for this email");
+    return { error: "INVITATION_PENDING" as const };
   }
 
   const token = randomBytes(32).toString("hex");
