@@ -75,7 +75,7 @@ export function NotificationBell({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-96 max-w-[90vw] rounded-xl border border-outline-variant/40 bg-surface-container/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden z-50">
+        <div className="fixed inset-x-2 top-16 sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 rounded-xl border border-outline-variant/40 bg-surface-container/95 backdrop-blur-xl shadow-2xl shadow-black/40 overflow-hidden z-50">
           <div className="p-4 border-b border-outline-variant/30 flex items-center justify-between">
             <h3 className="text-[15px] font-semibold text-on-surface">{labels.title}</h3>
             {unreadCount > 0 && (

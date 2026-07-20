@@ -1,37 +1,91 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { SignOutButton } from "./sign-out-button";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useCommandPalette } from "@/contexts/command-palette-context";
+import { LocaleSwitcher } from "@/components/ui/locale-switcher";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { NotificationBell } from "@/components/layout/notification-bell";
+import { UserMenu } from "@/components/layout/user-menu";
+import { WorkspaceSidebarNav } from "@/components/layout/workspace-sidebar-nav";
+import { PlanCard } from "@/components/layout/plan-card";
 
 // Same navy + blue tint as .onboarding-glass-card, instead of the neutral
 // --surface-container token, so the app chrome doesn't read as flat grey.
 const NAVY_BG = "linear-gradient(180deg, rgba(17,24,39,0.97) 0%, rgba(13,17,30,0.97) 100%)";
 
-interface MobileSidebarProps {
-  memberships: {
-    workspace: {
-      id: string;
-      name: string;
-      slug: string;
-      boards: { id: string; name: string }[];
-    };
-  }[];
-  userName: string;
+interface NotificationItem {
+  id: string;
+  type: string;
+  payload: unknown;
+  readAt: Date | null;
+  createdAt: Date;
 }
 
-export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
+interface Membership {
+  workspace: {
+    id: string;
+    slug: string;
+    name: string;
+    plan: "FREE" | "PRO" | "TEAM";
+    aiRequestsToday: number;
+    boards: { id: string; name: string }[];
+    _count: { members: number };
+  };
+}
+
+interface MobileSidebarProps {
+  memberships: Membership[];
+  userId: string;
+  userName: string;
+  userEmail: string;
+  locale: "fr" | "en";
+  unreadCount: number;
+  notifications: NotificationItem[];
+  notificationLabels: {
+    title: string;
+    markAllRead: string;
+    nothingHereYet: string;
+    seeAllActivity: string;
+  };
+}
+
+export function MobileSidebar({
+  memberships,
+  userId,
+  userName,
+  userEmail,
+  locale,
+  unreadCount,
+  notifications,
+  notificationLabels,
+}: MobileSidebarProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const t = useTranslations("nav");
+  const { open: openCommandPalette } = useCommandPalette();
+
+  // Close the drawer on navigation instead of wiring onClick on every link —
+  // WorkspaceSidebarNav is shared with desktop and has no notion of a mobile
+  // drawer to close.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { setOpen(false); }, [pathname]);
+
+  const workspaceSlugs = memberships.map((m) => m.workspace.slug);
+  const currentSlug = pathname.split("/")[1];
+  const slug = workspaceSlugs.includes(currentSlug) ? currentSlug : workspaceSlugs[0];
 
   return (
     <>
       <header
-        className="md:hidden h-14 border-b border-primary/10 flex items-center px-4 gap-3 sticky top-0 z-30"
+        className="md:hidden h-14 border-b border-primary/10 flex items-center px-3 gap-1 sticky top-0 z-30"
         style={{ background: NAVY_BG }}
       >
         <button
           onClick={() => setOpen(true)}
-          className="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant"
+          className="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant shrink-0"
           aria-label="Open menu"
         >
           <svg fill="none" height="20" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="20">
@@ -40,7 +94,43 @@ export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
             <line x1="3" x2="21" y1="18" y2="18" />
           </svg>
         </button>
-        <span className="text-[16px] font-semibold text-on-surface">Axiom</span>
+        <span className="text-[15px] font-semibold text-on-surface shrink-0 mr-1">Axiom</span>
+
+        <div className="flex items-center gap-0.5 ml-auto">
+          <button
+            onClick={openCommandPalette}
+            aria-label={t("searchPlaceholder")}
+            className="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors shrink-0"
+          >
+            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </button>
+          <LocaleSwitcher currentLocale={locale} />
+          <ThemeToggle />
+          <NotificationBell
+            workspaceSlugs={workspaceSlugs}
+            fallbackSlug={memberships[0]?.workspace.slug}
+            unreadCount={unreadCount}
+            notifications={notifications}
+            userId={userId}
+            labels={notificationLabels}
+          />
+          {slug && (
+            <Link
+              href={`/${slug}/settings`}
+              aria-label={t("settings")}
+              className="p-2 rounded-lg hover:bg-surface-container-high text-on-surface-variant hover:text-on-surface transition-colors shrink-0"
+            >
+              <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
+                <circle cx="12" cy="12" r="3" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+              </svg>
+            </Link>
+          )}
+          <UserMenu userName={userName} userEmail={userEmail} />
+        </div>
       </header>
 
       {open && (
@@ -56,7 +146,7 @@ export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
         }`}
         style={{ background: NAVY_BG }}
       >
-        <div className="p-5 border-b border-outline-variant flex items-center justify-between">
+        <div className="p-5 border-b border-outline-variant flex items-center justify-between shrink-0">
           <h1 className="text-[18px] font-semibold text-on-surface">Axiom</h1>
           <button
             onClick={() => setOpen(false)}
@@ -68,54 +158,8 @@ export function MobileSidebar({ memberships, userName }: MobileSidebarProps) {
           </button>
         </div>
 
-        <nav className="flex-1 p-4 overflow-y-auto">
-          <div className="text-[11px] font-semibold text-on-surface-variant uppercase tracking-wider mb-2">
-            Workspaces
-          </div>
-          {memberships.map((m) => (
-            <div key={m.workspace.id} className="mb-4">
-              <Link
-                href={`/${m.workspace.slug}`}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 px-3 py-2.5 text-[14px] text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
-              >
-                {m.workspace.name}
-              </Link>
-              <div className="ml-4 mt-1 space-y-1">
-                {m.workspace.boards.map((board) => (
-                  <Link
-                    key={board.id}
-                    href={`/${m.workspace.slug}/boards/${board.id}`}
-                    onClick={() => setOpen(false)}
-                    className="block px-3 py-2 text-[13px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded transition-colors"
-                  >
-                    {board.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </nav>
-
-        <div className="p-4 border-t border-outline-variant">
-          <Link
-            href="/pricing"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 mb-2 text-[13px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high rounded-lg transition-colors"
-          >
-            <svg fill="none" height="16" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="16">
-              <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
-              <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
-            </svg>
-            Pricing
-          </Link>
-          <div className="flex items-center justify-between">
-            <div className="text-[13px] text-on-surface-variant px-3 py-2">
-              {userName}
-            </div>
-            <SignOutButton />
-          </div>
-        </div>
+        <WorkspaceSidebarNav memberships={memberships} />
+        <PlanCard memberships={memberships} />
       </aside>
     </>
   );
