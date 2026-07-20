@@ -3,6 +3,7 @@
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { MOTION } from "@/lib/motion";
 import { TaskCard } from "./task-card";
 import type { Column as ColumnType } from "@/types/board.types";
@@ -20,6 +21,7 @@ interface ColumnProps {
 }
 
 export function Column({ column, tasks, onTaskClick, canEdit, conflictedTaskIds, columnIndex = 0 }: ColumnProps) {
+  const t = useTranslations("board");
   const { setNodeRef } = useDroppable({
     id: column.id,
   });
@@ -47,7 +49,12 @@ export function Column({ column, tasks, onTaskClick, canEdit, conflictedTaskIds,
         )}
       </div>
       <div ref={setNodeRef} className="flex-1 min-h-[200px] space-y-4 p-3 rounded-xl border border-dashed border-outline-variant/20 bg-surface-container-low/30">
-        <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+        {tasks.length === 0 && (
+          <div className="h-full flex items-center justify-center text-center px-4">
+            <p className="text-[13px] text-on-surface-variant/40">{t("emptyColumn")}</p>
+          </div>
+        )}
+        <SortableContext items={tasks.map((task) => task.id)} strategy={verticalListSortingStrategy}>
           <AnimatePresence>
             {tasks.map((task) => (
               <motion.div
