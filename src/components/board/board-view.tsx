@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useOptimistic, startTransition, useCallback } from "react";
+import { useState, useOptimistic, startTransition, useCallback, useRef } from "react";
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, KeyboardSensor, PointerSensor, TouchSensor, useSensor, useSensors } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { Column } from "./column";
@@ -29,6 +29,18 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [moveError, setMoveError] = useState<string | null>(null);
   const [conflictedTaskIds, setConflictedTaskIds] = useState<Set<string>>(new Set());
+  const [activeColumnIndex, setActiveColumnIndex] = useState(0);
+  const columnsScrollRef = useRef<HTMLDivElement>(null);
+
+  // Mobile-only: columns snap-scroll horizontally at a fixed 300px + gap-4
+  // width, so the nearest column index can be derived straight from
+  // scrollLeft instead of an IntersectionObserver per column.
+  const handleColumnsScroll = useCallback(() => {
+    const el = columnsScrollRef.current;
+    if (!el) return;
+    const index = Math.round(el.scrollLeft / (300 + 16));
+    setActiveColumnIndex(index);
+  }, []);
   const [optimisticColumns, setOptimisticColumns] = useOptimistic(
     columns,
     (state, newColumns: (ColumnType & { tasks: Task[] })[]) => newColumns
@@ -223,8 +235,24 @@ export function BoardView({ columns: initialColumns, onTaskClick, canEdit, board
           <PresenceAvatars members={members} currentUserId={currentUser.id} />
         </div>
       </div>
+      {optimisticColumns.length > 1 && (
+        <div className="flex md:hidden justify-center gap-1.5 pt-3">
+          {optimisticColumns.map((column, index) => (
+            <span
+              key={column.id}
+              className={`h-1.5 rounded-full transition-all ${
+                index === activeColumnIndex ? "w-4 bg-primary" : "w-1.5 bg-outline-variant/40"
+              }`}
+            />
+          ))}
+        </div>
+      )}
       <div className="relative min-h-0 flex-1">
-        <div className="flex gap-4 p-6 overflow-x-auto snap-x snap-mandatory md:overflow-x-visible h-full">
+        <div
+          ref={columnsScrollRef}
+          onScroll={handleColumnsScroll}
+          className="flex gap-4 p-6 overflow-x-auto snap-x snap-mandatory md:overflow-x-visible h-full"
+        >
           {optimisticColumns.map((column, index) => (
             <div key={column.id} className="snap-center shrink-0 w-[300px] md:w-0 md:min-w-0 md:flex-1 md:shrink h-full">
               <Column column={column} tasks={column.tasks} onTaskClick={onTaskClick} canEdit={canEdit} conflictedTaskIds={conflictedTaskIds} columnIndex={index} />

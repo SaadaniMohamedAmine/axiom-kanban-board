@@ -99,13 +99,26 @@ export default async function AppLayout({
           seeAllActivity: tSettings("seeAllActivity"),
         }}
       />
+      <MobileSidebar
+        memberships={memberships}
+        userId={session.user.id}
+        userName={session.user.name}
+        userEmail={session.user.email}
+        locale={locale}
+        unreadCount={unreadNotificationCount}
+        notifications={recentNotifications}
+        notificationLabels={{
+          title: tSettings("notifications"),
+          markAllRead: tSettings("markAllRead"),
+          nothingHereYet: tSettings("nothingHereYet"),
+          seeAllActivity: tSettings("seeAllActivity"),
+        }}
+      />
       <div className="flex flex-1 overflow-hidden">
         <CollapsibleSidebar>
           <WorkspaceSidebarNav memberships={memberships} />
           <PlanCard memberships={memberships} />
         </CollapsibleSidebar>
-
-        <MobileSidebar memberships={memberships} userName={session.user.name} />
 
         <main className="flex-1 flex flex-col overflow-hidden">
           <div className="hidden md:block shrink-0 p-3">

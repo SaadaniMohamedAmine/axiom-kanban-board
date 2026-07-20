@@ -161,8 +161,8 @@ export default async function AuditLogPage({ params, searchParams }: Props) {
           {t("noEvents")}
         </div>
       ) : (
-        <div className="rounded-xl border border-outline-variant/20 overflow-hidden">
-          <table className="w-full">
+        <div className="rounded-xl border border-outline-variant/20 overflow-hidden overflow-x-auto">
+          <table className="w-full min-w-160">
             <thead className="bg-surface-container-high">
               <tr>
                 {[t("colDate"), t("colActor"), t("colAction"), t("colTarget")].map((col) => (

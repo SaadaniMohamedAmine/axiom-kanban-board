@@ -118,21 +118,20 @@ export function MobileNav({ currentLocale, user, labels }: MobileNavProps) {
 
                   <div className="h-px bg-outline-variant/20 my-2" />
 
-                  <div className="flex items-center justify-between px-3">
-                    <div className="flex items-center gap-2">
-                      <ThemeToggle />
-                      <LocaleSwitcher currentLocale={currentLocale} />
-                    </div>
-                    {!user && (
-                      <Link
-                        href="/login"
-                        onClick={() => setOpen(false)}
-                        className="text-[14px] text-on-surface-variant hover:text-on-surface transition-colors"
-                      >
-                        {labels.signIn}
-                      </Link>
-                    )}
+                  <div className="flex items-center gap-2 px-3 mb-3">
+                    <ThemeToggle />
+                    <LocaleSwitcher currentLocale={currentLocale} />
                   </div>
+
+                  {!user && (
+                    <Link
+                      href="/login"
+                      onClick={() => setOpen(false)}
+                      className="px-3 py-2.5 mb-4 rounded-md text-[14px] text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors"
+                    >
+                      {labels.signIn}
+                    </Link>
+                  )}
                   {user ? (
                     <>
                       <div className="px-3 py-2 text-[13px] text-on-surface-variant truncate">{user.email}</div>
@@ -155,7 +154,7 @@ export function MobileNav({ currentLocale, user, labels }: MobileNavProps) {
                     <MotionCta
                       href="/sign-up"
                       onClick={() => setOpen(false)}
-                      className="mt-2 px-4 py-2.5 bg-primary text-white rounded-md text-[14px] font-medium text-center hover:brightness-110 transition-all"
+                      className="px-4 py-2.5 bg-primary text-white rounded-md text-[14px] font-medium text-center hover:brightness-110 transition-all"
                     >
                       {labels.getStarted}
                     </MotionCta>
