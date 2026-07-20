@@ -51,7 +51,7 @@ export async function SiteNav({ currentLocale }: Props) {
               >
                 {tNav("dashboard")}
               </MotionCta>
-              <UserMenu userName={session.user.name} userEmail={session.user.email} />
+              <UserMenu userName={session.user.name} userEmail={session.user.email} userImage={session.user.image} />
             </>
           ) : (
             <>

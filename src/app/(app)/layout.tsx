@@ -91,6 +91,7 @@ export default async function AppLayout({
         userId={session.user.id}
         userName={session.user.name}
         userEmail={session.user.email}
+        userImage={session.user.image}
         locale={locale}
         notificationLabels={{
           title: tSettings("notifications"),
@@ -104,6 +105,7 @@ export default async function AppLayout({
         userId={session.user.id}
         userName={session.user.name}
         userEmail={session.user.email}
+        userImage={session.user.image}
         locale={locale}
         unreadCount={unreadNotificationCount}
         notifications={recentNotifications}

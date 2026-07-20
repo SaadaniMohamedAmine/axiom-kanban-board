@@ -38,6 +38,7 @@ interface TopNavbarProps {
   userId: string;
   userName: string;
   userEmail: string;
+  userImage?: string | null;
   locale: "fr" | "en";
   notificationLabels: {
     title: string;
@@ -54,6 +55,7 @@ export function TopNavbar({
   userId,
   userName,
   userEmail,
+  userImage,
   locale,
   notificationLabels,
 }: TopNavbarProps) {
@@ -199,7 +201,7 @@ export function TopNavbar({
           </Link>
         )}
 
-        <UserMenu userName={userName} userEmail={userEmail} />
+        <UserMenu userName={userName} userEmail={userEmail} userImage={userImage} />
       </div>
     </div>
     </header>

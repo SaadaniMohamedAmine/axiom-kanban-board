@@ -41,6 +41,7 @@ interface MobileSidebarProps {
   userId: string;
   userName: string;
   userEmail: string;
+  userImage?: string | null;
   locale: "fr" | "en";
   unreadCount: number;
   notifications: NotificationItem[];
@@ -57,6 +58,7 @@ export function MobileSidebar({
   userId,
   userName,
   userEmail,
+  userImage,
   locale,
   unreadCount,
   notifications,
@@ -129,7 +131,7 @@ export function MobileSidebar({
               </svg>
             </Link>
           )}
-          <UserMenu userName={userName} userEmail={userEmail} />
+          <UserMenu userName={userName} userEmail={userEmail} userImage={userImage} />
         </div>
       </header>
 

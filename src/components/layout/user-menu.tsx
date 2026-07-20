@@ -9,14 +9,16 @@ import { SPLASH_EVENT } from "@/components/app-splash";
 interface UserMenuProps {
   userName: string;
   userEmail: string;
+  userImage?: string | null;
 }
 
-export function UserMenu({ userName, userEmail }: UserMenuProps) {
+export function UserMenu({ userName, userEmail, userImage }: UserMenuProps) {
   const t = useTranslations("nav");
   const tActions = useTranslations("actions");
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [imageFailed, setImageFailed] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -43,9 +45,19 @@ export function UserMenu({ userName, userEmail }: UserMenuProps) {
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={t("myAccount")}
-        className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary font-bold text-[12px] shrink-0 cursor-pointer hover:bg-primary/25 transition-colors"
+        className="w-8 h-8 rounded-full bg-primary/15 flex items-center justify-center text-primary font-bold text-[12px] shrink-0 cursor-pointer hover:bg-primary/25 transition-colors overflow-hidden"
       >
-        {userName.slice(0, 2).toUpperCase()}
+        {userImage && !imageFailed ? (
+          <img
+            src={userImage}
+            alt={userName}
+            referrerPolicy="no-referrer"
+            onError={() => setImageFailed(true)}
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          userName.slice(0, 2).toUpperCase()
+        )}
       </button>
 
       {open && (
